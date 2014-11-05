@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+        <h1>Cadastrar Novo Usuário</h1>
+        <form method="POST" action="{% url 'cadastro' %}">
+            {% csrf_token %}
+            <table border="0">
+                 <tr>
+                    <td><div style='font-size: 13px; font-family: verdana; '>Usuário ou E-mail: </div></td>
+                    <td><input type="text" id="useremail" name='useremail' /></td>
+                </tr>
+                <tr>
+                    <td><div style='font-size: 13px; font-family: verdana; '>RG: </div></td>
+                    <td><input type="text" id="rg" name='rg' /></td>
+                </tr>
+                <tr>
+                    <td><div style='font-size: 13px; font-family: verdana; '>Data de Nascimento: </div></td>
+                    <td><input type="text" id="nascimento" name='nascimento' /></td>
+                </tr>
+                <tr>
+                    <td> </td>
+                    <td>{{ mensagem }}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input id="submit" type="submit" value="Recuperar" /></td>
+                </tr>
+            </table>
+                <br />
+
+                <br />
+
+        </form>
+        </p>
+
+        <script type="text/javascript">
+                 $("#submit").jqxButton();
+                 $("#useremail").jqxInput({  width: '400px', height: '20px' });
+                 $("#nascimento").jqxMaskedInput({ width: 100, height: 25, mask: '##/##/####'});
+                 $("#rg").jqxInput({  width: '400px', height: '20px' });
+                 $("#rg").jqxMaskedInput({ mask: '#############'});
+         </script>
+
+{% endblock %}

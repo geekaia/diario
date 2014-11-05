@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+        <br />
+        <br />
+        <br />
+        <br />
+        <h1>Login</h1>
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <table border="0">
+                <tr>
+                    <td><div style='font-size: 13px; font-family: verdana; '>Usuário: </div></td>
+                    <td><input type="text" id="usuario" name='usuario' /></td>
+                </tr>
+                <tr>
+                    <td><div style='font-size: 13px; font-family: verdana; '>Senha: </div></td>
+                    <td><input type="password" id="senha" name='senha' /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><div style='font-size: 13px; font-family: verdana; '><a href="recuperar">Recuperar Senha</a> </div></td>
+                </tr>
+            </table>
+                <br />
+                {{ mensagem }}
+                <br />
+            <input id="submit" type="submit" value="Entrar" />
+        </form>
+        </p>
+
+        <script type="text/javascript">
+                 $("#submit").jqxButton();
+                 $("#senha").jqxPasswordInput({  width: '300px', height: '20px' });
+                 $("#usuario").jqxInput({  width: '300px', height: '20px' });
+         </script>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+        <h1>Cadastrar Novo Usuário</h1>
+        <form method="POST" action="{% url 'cadastro' %}">
+            {% csrf_token %}
+            <table border="0">
+                <tr>
+                    <td><div style='font-size: 13px; font-family: verdana; '>Nome: </div></td>
+                    <td><input type="text" id="nome" name='nome' /></td>
+                </tr>
+                <tr>
+                    <td><div style='font-size: 13px; font-family: verdana; '>E-mail: </div></td>
+                    <td><input type="email" id="email" name='email' /></td>
+                </tr>
+                <tr>
+                    <td><div style='font-size: 13px; font-family: verdana; '>Usuário: </div></td>
+                    <td><input type="text" id="usuario" name='usuario' /></td>
+                </tr>
+                <tr>
+                    <td><div style='font-size: 13px; font-family: verdana; '>Senha: </div></td>
+                    <td><input type="password" id="senha" name='senha' /></td>
+                </tr>
+                <tr>
+                    <td><div style='font-size: 13px; font-family: verdana; '>Confirmar Senha: </div></td>
+                    <td><input type="password" id="cfsenha" name='cfsenha' /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><div style='font-size: 13px; font-family: verdana; '><a href="recuperar">Recuperar Senha</a> </div></td>
+                </tr>
+            </table>
+                <br />
+                {{ mensagem }}
+                <br />
+            <input id="submit" type="submit" value="Entrar" />
+        </form>
+        </p>
+
+        <script type="text/javascript">
+                 $("#submit").jqxButton();
+                 $("#senha").jqxPasswordInput({  width: '200px', height: '20px' });
+                 $("#cfsenha").jqxPasswordInput({  width: '200px', height: '20px' });
+                 $("#nome").jqxInput({  width: '350px', height: '20px' });
+                 $("#usuario").jqxInput({  width: '250px', height: '20px' });
+                 $("#email").jqxInput({  width: '250px', height: '20px' });
+
+                 {{ aditionscript|safe }}
+         </script>
+
+{% endblock %}

@@ -1,0 +1,198 @@
+
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="pt-BR" encoding='utf-8'>
+<head>
+    <meta name="keywords" content="jQuery Menu, Main Menu, Context Menu, Vertical Menu, Popup Menu, Menu, jqxMenu" /> 
+    <meta name="description" content="jqxMenu allows you to change the popup's open direction by using the setItemOpenDirection method. The 'Services' item is opened above the menu and the 'Contact Us' item is opened below the menu and horizontally aligned to left."/>
+    <title id='Description'>Gerenciamento de Informações escolares </title>
+    <link rel="stylesheet" href="{% static "jqwidgets/styles/jqx.base.css"%}" type="text/css" />
+    <script type="text/javascript" src="{% static "scripts/jquery-1.11.1.min.js"%}"></script>
+    <script type="text/javascript" src="{% static "scripts/demos.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxcore.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxmenu.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxinput.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxbuttons.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxpasswordinput.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxpanel.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxscrollbar.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxmaskedinput.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxcombobox.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxlistbox.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxdropdownlist.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxcheckbox.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxexpander.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxdata.js"%}"></script>
+
+</head>
+
+<style type="text/css">
+    header { 
+       width: 800px; 
+       padding-top: 20px;
+       height: 50px;
+       text-align: right;
+       border: 2px;
+    }
+
+    .center {
+       width: 900px;
+       margin: auto
+    }
+
+    section {
+        width:900px;
+        border-radius: 13px 13px 13px 13px;
+        background: white;
+        min-height: 500px;
+        max-height: 1024px;
+        padding:10px;        
+    }
+
+    footer {
+        width:900px;
+        border-radius: 13px 13px 13px 13px;
+        font-size: 8px;
+        background: white;
+        height: 50px;
+        padding:10px;        
+    }
+
+
+
+
+</style>
+
+<body style="background-color: #f8f8f8;">
+<div class="center"> 
+    <header> 
+        <div id='content'>
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    // Create a jqxMenu
+                    $("#jqxMenu").jqxMenu({ width: '670', height: '30px'});
+                    $("#jqxMenu").css('visibility', 'visible');
+                    
+                    
+                    
+                });
+            </script>
+            <div id='jqxWidget' style='height: 400px;'>
+                <div id='jqxMenu' style='visibility: hidden; margin-left: 5px;'>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li>Entidades
+                            <ul style='width: 250px;'>
+                                <li><a href="#Education">Pessoas</a></li>
+                                <li><a href="#Financial">Turma</a></li>
+                                <li><a href="#Manufacturing"></a></li>
+                                <li type='separator'></li>
+                                <li>Software Solutions
+                                    <ul style='width: 220px;'>
+                                        <li><a href="#ConsumerPhoto">Consumer photo and video</a></li>
+                                        <li><a href="#Mobile">Mobile</a></li>
+                                        <li><a href="#RIA">Rich Internet applications</a></li>
+                                        <li><a href="#TechnicalCommunication">Technical communication</a></li>
+                                        <li><a href="#Training">Training and eLearning</a></li>
+                                        <li><a href="#WebConferencing">Web conferencing</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#">All industries and solutions</a></li>
+                            </ul>
+                        </li>
+                        <li>Products
+                            <ul>
+                                <li><a href="#PCProducts">PC products</a></li>
+                                <li><a href="#MobileProducts">Mobile products</a></li>
+                                <li><a href="#AllProducts">All products</a></li>
+                            </ul>
+                        </li>
+                        <li>Support
+                            <ul style='width: 200px;'>
+                                <li><a href="#SupportHome">Support home</a></li>
+                                <li><a href="#CustomerService">Customer Service</a></li>
+                                <li><a href="#KB">Knowledge base</a></li>
+                                <li><a href="#Books">Books</a></li>
+                                <li><a href="#Training">Training and certification</a></li>
+                                <li><a href="#SupportPrograms">Support programs</a></li>
+                                <li><a href="#Forums">Forums</a></li>
+                                <li><a href="#Documentation">Documentation</a></li>
+                                <li><a href="#Updates">Updates</a></li>
+                            </ul>
+                        </li>
+                        <li>Communities
+                            <ul style='width: 200px;'>
+                                <li><a href="#Designers">Designers</a></li>
+                                <li><a href="#Developers">Developers</a></li>
+                                <li><a href="#Educators">Educators and students</a></li>
+                                <li><a href="#Partners">Partners</a></li>
+                                <li type='separator'></li>
+                                <li>By resource
+                                    <ul>
+                                        <li><a href="#Labs">Labs</a></li>
+                                        <li><a href="#TV">TV</a></li>
+                                        <li><a href="#Forums">Forums</a></li>
+                                        <li><a href="#Exchange">Exchange</a></li>
+                                        <li><a href="#Blogs">Blogs</a></li>
+                                        <li><a href="#Experience Design">Experience Design</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>Company
+                            <ul style='width: 180px;'>
+                                <li><a href="#About">About Us</a></li>
+                                <li><a href="#Press">Press</a></li>
+                                <li><a href="#Investor">Investor Relations</a></li>
+                                <li><a href="#CorporateAffairs">Corporate Affairs</a></li>
+                                <li><a href="#Careers">Careers</a></li>
+                                <li><a href="#Showcase">Showcase</a></li>
+                                <li><a href="#Events">Events</a></li>
+                                <li><a href="#ContactUs">Contact Us</a></li>
+                                <li><a href="#Become an affiliate">Become an affiliate</a></li>
+                            </ul>
+                        </li>
+
+                        {% if user.is_authenticated %}
+                            <li><a href="profile">Profile</a></li>
+                            <li><a href="sair">Sair</a></li>
+                        {% else %}
+                            <li><a href="cadastro">Cadastro</a></li>
+                            <li><a href="login">Login</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <br />
+            </div>
+        </div>
+    </header>
+
+    <section>
+
+      {% block content %}
+        <center>
+            <br />
+            <br />
+            <br />
+            <img src={% static "Índice.jpeg" %} height='150px;' />
+            <br />
+            <br />
+            <h3>Seja bem vindo!!!!</h3>
+        </center>
+        {% endblock %}
+
+    </section>
+<br />
+    <footer>      
+Instituto Federal de Educação, Ciência e Tecnologia de Mato Grosso - Campus Barra do Garças <br />
+Estrada de Acesso a BR-158, s/n - CEP: 78.600-00 <br />
+Telefone: (66) 3402-0100 <br />
+Barra do Garças / MT
+
+    </footer>
+
+     </div>
+
+</body>
+</html>
