@@ -98,7 +98,8 @@
                         <li><a href="/">Home</a></li>
                         <li>Entidades
                             <ul style='width: 250px;'>
-                                <li><a href="listUsuarios">Pessoas</a></li>
+                                <li><a href="/listUsuarios">Pessoas</a></li>
+                                <li><a href="/listCourses">Cursos</a></li>
                                 <li><a href="#Financial">Turma</a></li>
                                 <li><a href="#Manufacturing"></a></li>
                                 <li type='separator'></li>
@@ -169,11 +170,11 @@
                         </li>
 
                         {% if user.is_authenticated %}
-                            <li><a href="profile">Profile</a></li>
-                            <li><a href="sair">Sair</a></li>
+                            <li><a href="/profile">Profile</a></li>
+                            <li><a href="/sair">Sair</a></li>
                         {% else %}
-                            <li><a href="cadastro">Cadastro</a></li>
-                            <li><a href="login">Login</a></li>
+                            <li><a href="/cadastro">Cadastro</a></li>
+                            <li><a href="/login">Login</a></li>
                         {% endif %}
                     </ul>
                 </div>

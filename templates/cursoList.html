@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+        <h1>Cursos</h1>
+        <input type='button' id="edit" value="Edit" />
+        <br />
+        <br />
+        <script>
+             $("#edit").jqxButton({width: 50});
+             var rowIndex = -1;
+
+            $(document).ready(function () {
+                 var url = "/geCourses";
+                // prepare the data
+                var source =
+                {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'id'},
+                        { name: 'nome'},
+                        { name: 'anoGrade'}
+                    ],
+                    url: url,
+                    async: false
+                };
+                var dataAdapter = new $.jqx.dataAdapter(source);
+
+                $("#jqxgrid").jqxGrid(
+                    {
+                        width: 780,
+                        source: dataAdapter,
+                        columns: [
+                          { text: 'ID', datafield: 'id', width: 0 },
+                          { text: 'Name', datafield: 'nome', width: 550 },
+                          { text: 'Ano Grade', datafield: 'anoGrade', width: 150 }
+                        ]
+                    });
+
+                $('#jqxgrid').on('rowselect', function (event)
+                {
+                    rowIndex = event.args.rowindex;
+                });
+
+
+                 $("#edit").bind('click', function () {
+                    var text = $('#jqxgrid').jqxGrid('getcelltextbyid', rowIndex, "id");
+{#                   var value = $('#jqxgrid').jqxGrid('getcellvalue', rowIndex, "ID");#}
+                     window.location = "./cursocad/"+text;
+
+                   //alert('text: '+ text);
+                });
+
+                $('#jqxgrid').jqxGrid('hidecolumn', 'id');
+
+            }); // end document ready
+
+
+        </script>
+
+        <div id='jqxWidget'>
+        <div id="jqxgrid"></div>
+    </div>
+{% endblock %}

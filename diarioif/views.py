@@ -19,7 +19,7 @@ from random import choice
 import django
 from django.conf import settings
 from django.core.mail import send_mail
-
+from django.contrib.auth.models import User
 from django.core.context_processors import csrf
 
 
@@ -38,19 +38,22 @@ def home(request):
 
 
 @login_required()
-def changeProfile(request):
+def changeProfile(request, id=None):
 
     context = {'ola': 1}
     user = User.objects.get(pk=request.user.id)
 
     print "ola mundo"
 
-    try:
-
+    if id != None:
+        user = User.objects.get(pk=id)
         myprof = ProfileUser.objects.get(user=user)
+        context['myprof'] = myprof
+    try:
 
         if request.POST:
             # If user == Aluno
+            myprof = ProfileUser.objects.get(user=user)
             myprof.nome = request.POST['nome']
             myprof.mae = request.POST['mae']
             myprof.pai = request.POST['pai']
@@ -244,28 +247,66 @@ def getUsers(request):
     users = []
 
 
-    user = {}
-    user['id'] = 1
-    user['nome'] =  'Jacinto José Franco'
-    users.append(user)
-    user = {}
-    user['id'] = 2
-    user['nome'] =  'Carlota Joaquina'
+    profs = ProfileUser.objects.all()
 
-    users.append(user)
-    user = {}
-    user['id'] = 3
-    user['nome'] = 'Maria Antonieta'
+    for prof in profs:
+        user = {}
+        user['id'] = prof.id
+        user['nome'] =  prof.nome
+        user['username'] =  prof.user.username
+        users.append(user)
 
 
-    users.append(user)
 
     return HttpResponse(json.dumps(users), content_type="application/json")
+
+
+def hasAcess(request):
+
+    prof =  ProfileUser.objects.get(user=request.user)
+
+    return ''
+
+
+
+@login_required()
+def geCourses(request):
+    cursos = []
+    Cursos = Curso.objects.all()
+
+
+    print "Full Path: ", request.get_full_path()
+
+    for c in Cursos:
+        curso = {}
+        curso['id'] = c.id
+        curso['nome'] = c.nome
+        curso['anoGrade'] = c.anoGrade
+
+        cursos.append(curso)
+
+    return HttpResponse(json.dumps(cursos), content_type="application/json")
+
+@login_required()
+def listCourses(request):
+
+    context = {}
+
+
+    return render(request, 'cursoList.html', context)
+
+
+
 
 
 def listUsuarios(request):
 
     context = {}
+
+    # Lista de cursos
+    cursos = Curso.objects.all()
+    context['cursos'] = cursos
+
 
 
     return render(request, 'listagemAlunos.html', context)

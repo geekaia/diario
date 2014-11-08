@@ -10,11 +10,16 @@ urlpatterns = patterns('',
     # User Info
     url(r'^login$', 'diarioif.views.loginUser', name='login'),
     url(r'^profile$', 'diarioif.views.changeProfile', name='profile'),
+    url(r'^profile/(?P<id>\d[^/]*)$', 'diarioif.views.changeProfile', name='profile'),
+
     url(r'^cadastro$', 'diarioif.views.cadastrarUser', name='cadastro'),
+
     url(r'^recuperar$', 'diarioif.views.recuperarSenha', name='recuperar'),
-    url(r'^getUsers', 'diarioif.views.getUsers', name='getUsers'),
+
 
     url(r'^listUsuarios$', 'diarioif.views.listUsuarios', name='listUsuarios'),
+    url(r'^listCourses', 'diarioif.views.listCourses', name='listCourses'),
+
 
 
 
@@ -25,11 +30,14 @@ urlpatterns = patterns('',
 
     url(r'^sair$', 'diarioif.views.sair', name='sair'),
 
-    # Json services
+    # Json services provided by the system
     url(r'^cities$', 'diarioif.views.getCities', name='cities'),
     url(r'^bairros$', 'diarioif.views.getBairros', name='bairros'),
     url(r'^ruas', 'diarioif.views.getRuas', name='ruas'),
     url(r'^cep', 'diarioif.views.getCep', name='cep'),
+    url(r'^getUsers', 'diarioif.views.getUsers', name='getUsers'),
+    url(r'^geCourses', 'diarioif.views.geCourses', name='geCourses'),
+
 
     # url(r'^blog/', include('blog.urls')),
     url(r'^admin/', include(admin.site.urls)),

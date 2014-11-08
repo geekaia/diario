@@ -2,21 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="09acc1be-3fcf-415f-8622-ea873ce4e75f" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/templates/cursoCad.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/diario.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/templates/listagemAlunos.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/scopes/scope_settings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/templates/cursoList.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/base.html" afterPath="$PROJECT_DIR$/templates/base.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/diarioif/models.py" afterPath="$PROJECT_DIR$/diarioif/models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/profile.html" afterPath="$PROJECT_DIR$/templates/profile.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/recuperarSenha.html" afterPath="$PROJECT_DIR$/templates/recuperarSenha.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/listagemAlunos.html" afterPath="$PROJECT_DIR$/templates/listagemAlunos.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/diario/urls.py" afterPath="$PROJECT_DIR$/diario/urls.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/diarioif/views.py" afterPath="$PROJECT_DIR$/diarioif/views.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="diario.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -55,16 +46,33 @@
       <file leaf-file-name="listagemAlunos.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/templates/listagemAlunos.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.77732795" vertical-offset="0" max-vertical-offset="1188">
-              <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.61133605" vertical-offset="699" max-vertical-offset="1566">
+              <caret line="64" column="23" selection-start-line="64" selection-start-column="23" selection-end-line="64" selection-end-column="23" />
               <folding>
-                <element signature="e#112#133#0#HTML" expanded="true" />
                 <element signature="e#172#203#0#HTML" expanded="true" />
                 <element signature="e#209#256#0#HTML" expanded="true" />
-                <element signature="e#520#565#0#HTML" expanded="true" />
-                <element signature="e#571#618#0#HTML" expanded="true" />
-                <element signature="e#715#747#0#HTML" expanded="true" />
+                <element signature="e#567#612#0#HTML" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="cursoList.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/cursoList.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-11.259259" vertical-offset="398" max-vertical-offset="1242">
+              <caret line="39" column="16" selection-start-line="39" selection-start-column="16" selection-end-line="53" selection-end-column="58" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="profile.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/profile.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-19.444445" vertical-offset="7359" max-vertical-offset="8100">
+              <caret line="438" column="42" selection-start-line="438" selection-start-column="42" selection-end-line="438" selection-end-column="42" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -74,18 +82,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="-14.777778" vertical-offset="1455" max-vertical-offset="2232">
               <caret line="103" column="17" selection-start-line="103" selection-start-column="17" selection-end-line="103" selection-end-column="17" />
-              <folding>
-                <element signature="e#205#252#0#HTML" expanded="true" />
-                <element signature="e#425#472#0#HTML" expanded="true" />
-                <element signature="e#633#680#0#HTML" expanded="true" />
-                <element signature="e#979#1026#0#HTML" expanded="true" />
-                <element signature="e#1643#1690#0#HTML" expanded="true" />
-                <element signature="e#2020#2067#0#HTML" expanded="true" />
-                <element signature="e#2321#2368#0#HTML" expanded="true" />
-                <element signature="e#2541#2588#0#HTML" expanded="true" />
-                <element signature="e#2789#2836#0#HTML" expanded="true" />
-                <element signature="e#3068#3089#0#HTML" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -93,8 +90,8 @@
       <file leaf-file-name="views.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/diarioif/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2928" max-vertical-offset="9324">
-              <caret line="186" column="57" selection-start-line="186" selection-start-column="57" selection-end-line="186" selection-end-column="57" />
+            <state vertical-scroll-proportion="-25.333334" vertical-offset="0" max-vertical-offset="10062">
+              <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -103,8 +100,8 @@
       <file leaf-file-name="base.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/base.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-14.481482" vertical-offset="653" max-vertical-offset="3924">
-              <caret line="58" column="17" selection-start-line="58" selection-start-column="14" selection-end-line="58" selection-end-column="17" />
+            <state vertical-scroll-proportion="-14.666667" vertical-offset="1674" max-vertical-offset="3942">
+              <caret line="115" column="60" selection-start-line="115" selection-start-column="60" selection-end-line="115" selection-end-column="60" />
               <folding />
             </state>
           </provider>
@@ -113,21 +110,9 @@
       <file leaf-file-name="models.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/diarioif/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2178">
-              <caret line="39" column="24" selection-start-line="39" selection-start-column="24" selection-end-line="39" selection-end-column="24" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2196">
+              <caret line="3" column="39" selection-start-line="3" selection-start-column="39" selection-end-line="3" selection-end-column="39" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="profile.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/profile.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.222222" vertical-offset="7386" max-vertical-offset="8100">
-              <caret line="438" column="42" selection-start-line="438" selection-start-column="42" selection-end-line="438" selection-end-column="42" />
-              <folding>
-                <element signature="e#6323#6351#0#HTML" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -135,8 +120,8 @@
       <file leaf-file-name="urls.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/diario/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="720">
-              <caret line="20" column="20" selection-start-line="20" selection-start-column="20" selection-end-line="20" selection-end-column="20" />
+            <state vertical-scroll-proportion="-5.6666665" vertical-offset="27" max-vertical-offset="864">
+              <caret line="12" column="25" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -156,14 +141,15 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/templates/recuperarSenha.html" />
-        <option value="$PROJECT_DIR$/templates/base.html" />
-        <option value="$PROJECT_DIR$/templates/listagemAlunos.html" />
         <option value="$PROJECT_DIR$/templates/curso.html" />
         <option value="$PROJECT_DIR$/diarioif/models.py" />
         <option value="$PROJECT_DIR$/templates/profile.html" />
+        <option value="$PROJECT_DIR$/templates/cursoCad.html" />
+        <option value="$PROJECT_DIR$/templates/base.html" />
         <option value="$PROJECT_DIR$/diario/urls.py" />
         <option value="$PROJECT_DIR$/diarioif/views.py" />
-        <option value="$PROJECT_DIR$/templates/cursoCad.html" />
+        <option value="$PROJECT_DIR$/templates/cursoList.html" />
+        <option value="$PROJECT_DIR$/templates/listagemAlunos.html" />
       </list>
     </option>
   </component>
@@ -199,7 +185,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -276,6 +261,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -536,7 +522,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15904573" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15838304" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -565,13 +551,13 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32920793" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15904573" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15882353" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39975247" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
     </layout-to-restore>
   </component>
@@ -595,24 +581,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/diarioif/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1415" max-vertical-offset="2196">
-          <caret line="99" column="0" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/profile.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="7116" max-vertical-offset="7974">
-          <caret line="427" column="45" selection-start-line="427" selection-start-column="45" selection-end-line="427" selection-end-column="45" />
-          <folding>
-            <element signature="e#6323#6351#0#HTML" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/diario/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="342" max-vertical-offset="594">
@@ -634,12 +602,9 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="108" max-vertical-offset="252">
           <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
           <folding>
-            <element signature="e#112#133#0#HTML" expanded="true" />
             <element signature="e#172#203#0#HTML" expanded="true" />
             <element signature="e#209#256#0#HTML" expanded="true" />
-            <element signature="e#520#565#0#HTML" expanded="true" />
-            <element signature="e#571#618#0#HTML" expanded="true" />
-            <element signature="e#715#747#0#HTML" expanded="true" />
+            <element signature="e#567#612#0#HTML" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -672,9 +637,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="5211" max-vertical-offset="7218">
           <caret line="309" column="1" selection-start-line="309" selection-start-column="1" selection-end-line="309" selection-end-column="1" />
-          <folding>
-            <element signature="e#6323#6351#0#HTML" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -722,9 +685,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2430" max-vertical-offset="6786">
           <caret line="160" column="77" selection-start-line="160" selection-start-column="77" selection-end-line="160" selection-end-column="77" />
-          <folding>
-            <element signature="e#6323#6351#0#HTML" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -772,9 +733,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2430" max-vertical-offset="6786">
           <caret line="160" column="77" selection-start-line="160" selection-start-column="77" selection-end-line="160" selection-end-column="77" />
-          <folding>
-            <element signature="e#6323#6351#0#HTML" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -822,9 +781,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2430" max-vertical-offset="6786">
           <caret line="160" column="77" selection-start-line="160" selection-start-column="77" selection-end-line="160" selection-end-column="77" />
-          <folding>
-            <element signature="e#6323#6351#0#HTML" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -872,9 +829,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2430" max-vertical-offset="6786">
           <caret line="160" column="77" selection-start-line="160" selection-start-column="77" selection-end-line="160" selection-end-column="77" />
-          <folding>
-            <element signature="e#6323#6351#0#HTML" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -922,9 +877,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2430" max-vertical-offset="6786">
           <caret line="160" column="77" selection-start-line="160" selection-start-column="77" selection-end-line="160" selection-end-column="77" />
-          <folding>
-            <element signature="e#6323#6351#0#HTML" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -943,14 +896,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.481482" vertical-offset="653" max-vertical-offset="3924">
-          <caret line="58" column="17" selection-start-line="58" selection-start-column="14" selection-end-line="58" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/recuperarSenha.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-13.259259" vertical-offset="200" max-vertical-offset="954">
@@ -963,9 +908,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.77080667" vertical-offset="1036" max-vertical-offset="34884">
           <caret line="91" column="23" selection-start-line="91" selection-start-column="23" selection-end-line="91" selection-end-column="23" />
-          <folding>
-            <element signature="e#351#362#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -973,41 +915,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.19462228" vertical-offset="478" max-vertical-offset="3474">
           <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/diario/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="720">
-          <caret line="20" column="20" selection-start-line="20" selection-start-column="20" selection-end-line="20" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/diarioif/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2928" max-vertical-offset="9324">
-          <caret line="186" column="57" selection-start-line="186" selection-start-column="57" selection-end-line="186" selection-end-column="57" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/diarioif/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2178">
-          <caret line="39" column="24" selection-start-line="39" selection-start-column="24" selection-end-line="39" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/profile.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.222222" vertical-offset="7386" max-vertical-offset="8100">
-          <caret line="438" column="42" selection-start-line="438" selection-start-column="42" selection-end-line="438" selection-end-column="42" />
-          <folding>
-            <element signature="e#6323#6351#0#HTML" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1015,32 +922,74 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-14.777778" vertical-offset="1455" max-vertical-offset="2232">
           <caret line="103" column="17" selection-start-line="103" selection-start-column="17" selection-end-line="103" selection-end-column="17" />
-          <folding>
-            <element signature="e#205#252#0#HTML" expanded="true" />
-            <element signature="e#425#472#0#HTML" expanded="true" />
-            <element signature="e#633#680#0#HTML" expanded="true" />
-            <element signature="e#979#1026#0#HTML" expanded="true" />
-            <element signature="e#1643#1690#0#HTML" expanded="true" />
-            <element signature="e#2020#2067#0#HTML" expanded="true" />
-            <element signature="e#2321#2368#0#HTML" expanded="true" />
-            <element signature="e#2541#2588#0#HTML" expanded="true" />
-            <element signature="e#2789#2836#0#HTML" expanded="true" />
-            <element signature="e#3068#3089#0#HTML" expanded="true" />
-          </folding>
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-14.666667" vertical-offset="1674" max-vertical-offset="3942">
+          <caret line="115" column="60" selection-start-line="115" selection-start-column="60" selection-end-line="115" selection-end-column="60" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/diario/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.6666665" vertical-offset="27" max-vertical-offset="864">
+          <caret line="12" column="25" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python2.7/dist-packages/django/contrib/auth/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7477593" vertical-offset="7426" max-vertical-offset="9234">
+          <caret line="465" column="12" selection-start-line="465" selection-start-column="12" selection-end-line="465" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/diarioif/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2196">
+          <caret line="3" column="39" selection-start-line="3" selection-start-column="39" selection-end-line="3" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/diarioif/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-25.333334" vertical-offset="0" max-vertical-offset="10062">
+          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/profile.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-19.444445" vertical-offset="7359" max-vertical-offset="8100">
+          <caret line="438" column="42" selection-start-line="438" selection-start-column="42" selection-end-line="438" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/cursoList.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-11.259259" vertical-offset="398" max-vertical-offset="1242">
+          <caret line="39" column="16" selection-start-line="39" selection-start-column="16" selection-end-line="53" selection-end-column="58" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/listagemAlunos.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.77732795" vertical-offset="0" max-vertical-offset="1188">
-          <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.61133605" vertical-offset="699" max-vertical-offset="1566">
+          <caret line="64" column="23" selection-start-line="64" selection-start-column="23" selection-end-line="64" selection-end-column="23" />
           <folding>
-            <element signature="e#112#133#0#HTML" expanded="true" />
             <element signature="e#172#203#0#HTML" expanded="true" />
             <element signature="e#209#256#0#HTML" expanded="true" />
-            <element signature="e#520#565#0#HTML" expanded="true" />
-            <element signature="e#571#618#0#HTML" expanded="true" />
-            <element signature="e#715#747#0#HTML" expanded="true" />
+            <element signature="e#567#612#0#HTML" expanded="true" />
           </folding>
         </state>
       </provider>

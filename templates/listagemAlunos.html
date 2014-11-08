@@ -7,10 +7,12 @@
         <table border="0" style="width: 850px;">
             <tr>
                 <td style="vertical-align: bottom;"><div style='font-size: 13px; font-family: verdana; '>Curso</div>
-                <select id="curso">
-                    <option>Agropecuaria</option>
-                    <option>Meio Ambinete</option>
-                    <option>Economia</option>
+                <select id="curso" name="curso">
+                    {% for curso in cursos %}
+                        <option>{{ curso.id }} - {{  curso.nome }} - {{ curso.anoGrade }} </option>
+                    {% endfor %}
+
+
                 </select>
                 </td>
                 <td style="vertical-align: bottom; width: 600px;"><div style='font-size: 13px; font-family: verdana; '>Pesquisar </div><input type='text' name="pesquisar" id="pesquisar" /> </td>
@@ -22,9 +24,11 @@
         <br />
 
         <script>
-            $("#curso").jqxDropDownList({ width: '200px', height: '20px' });
+            $("#curso").jqxDropDownList({ width: '400px', height: '20px' });
             $("#pesquisar").jqxInput({  width: '300px', height: '20px' });
             $("#edit").jqxButton({width: 50});
+
+            var rowIndex = -1;
 
             $(document).ready(function () {
                  var url = "/getUsers";
@@ -50,6 +54,23 @@
                           { text: 'Name', datafield: 'nome', width: 550 }
                         ]
                     });
+
+
+                $('#jqxgrid').on('rowselect', function (event)
+                {
+                    rowIndex = event.args.rowindex;
+                });
+
+
+                 $("#edit").bind('click', function () {
+                    var text = $('#jqxgrid').jqxGrid('getcelltextbyid', rowIndex, "id");
+{#                   var value = $('#jqxgrid').jqxGrid('getcellvalue', rowIndex, "ID");#}
+                     window.location = "./profile/"+text;
+
+                   //alert('text: '+ text);
+                });
+
+                $('#jqxgrid').jqxGrid('hidecolumn', 'id');
             }); // end document ready
 
 
