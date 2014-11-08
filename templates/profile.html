@@ -2,7 +2,8 @@
 
 {% block content %}
 
-        <form method="POST">
+        <form method="POST" action="/profile">
+            {% csrf_token %}
             <div id='infosgerais' style=" font-size: 13px; font-family: Verdana;">
                 <div style=''>
                     <h3>Informações Gerais</h3></div>
@@ -23,7 +24,7 @@
                         </tr>
                         <tr>
                             <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Nascimento: </div></td>
-                            <td><input type="text" id="nascimento" name='nascimento' /></td>
+                            <td><div id="nascimento" name="nascimento" </td>
                         </tr>
                          <tr>
                             <td><div style='font-size: 13px; font-family: verdana; '>Nacionalidade: </div></td>
@@ -58,22 +59,22 @@
 
                                     <tr>
                                         <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Estado: </div></td>
-                                        <td> <div id="estado" ></div>
+                                        <td> <div id="estado" name='estado' ><input type="hidden" name="estado" /> </div>
 
                                     </tr>
                                     <tr>
                                         <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Cidade: </div></td>
-                                        <td><div id="cidade"></div> </td>
+                                        <td><div id="cidadetemp"> <div id="cidade" name='cidade'><input type="hidden" name="cidade" /> </div> </div></td>
                                     </tr>
 
                                     <tr>
                                         <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Bairro: </div></td>
-                                        <td><div id="bairro"></div> </td>
+                                        <td><div id="bairro" name='bairro'><input type="hidden" name="bairro" /></div> </td>
                                     </tr>
 
                                     <tr>
                                         <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Rua: </div></td>
-                                        <td><div id="ruatemp"><input type="text" id="rua" name='rua' /></div></td>
+                                        <td><div id="rua" name='rua' ><input type="text" name='rua' /></div></td>
                                     </tr>
                                     <tr>
                                         <td><div style='font-size: 13px; font-family: verdana; '>Número: </div></td>
@@ -93,7 +94,7 @@
                                     </tr>
                                     <tr>
                                         <td><div style='font-size: 13px; font-family: verdana; vertical-position: top; '>Observações: </div></td>
-                                        <td><textarea id="observacoes" name='observacoes'></textarea></td>
+                                        <td><textarea id="observacoes" name='observacoes'>{{ prof.observacoes|safe }}</textarea></td>
                                     </tr>
                                 </table>
                             </div>
@@ -121,7 +122,7 @@
 
                                     <tr>
                                         <td><div style='font-size: 13px; font-family: verdana; '>Tipo Conta: </div></td>
-                                        <td><div id="tipo" /></td>
+                                        <td><div id="tipo" name="tipo" /></td>
                                     </tr>
                                 </table>
                             </div>
@@ -140,7 +141,7 @@
             <br />
             <br />
 
-            <input id="submit" type="button" value="Salvar" />
+            <input id="submit" type="submit" value="Salvar" />
         </form>
         </p>
 
@@ -152,8 +153,7 @@
                  $("#nome").jqxInput({  width: '400px', height: '20px' });
                  $("#mae").jqxInput({  width: '400px', height: '20px' });
                  $("#pai").jqxInput({  width: '400px', height: '20px' });
-
-                  $("#nascimento").jqxMaskedInput({ width: 100, height: 25, mask: '##/##/####'});
+                  $("#nascimento").jqxDateTimeInput({ width: '250px', height: '25px' });
                   $("#telefone1").jqxMaskedInput({ width: 120, height: 25, mask: '(##) #####-####'});
                   $("#telefone2").jqxMaskedInput({ width: 120, height: 25, mask: '(##) #####-####'});
                  $("#rg").jqxMaskedInput({ mask: '#############'});
@@ -163,7 +163,7 @@
                  $("#nacionalidade").jqxInput({  width: '200px', height: '20px' });
                  $("#naturalidade").jqxInput({  width: '200px', height: '20px' });
                  $("#cep").jqxMaskedInput({ width: 100, height: 25, mask: '##.###-###'});
-                 $("#rua").jqxInput({  width: '300px', height: '20px' });
+                 $("#rua").jqxComboBox({  width: '300px', height: '20px' });
                  $("#numero").jqxMaskedInput({ width: '50px', height: '20px'});
                  $("#complemento").jqxInput({  width: '300px', height: '20px' });
                  $("#observacoes").jqxInput({  width: '400px', height: '100px' });
@@ -201,7 +201,7 @@
 
                 $("#estado").jqxDropDownList({source: data, width: '200', theme: 'energyblue', height: '25'});
 
-                var contatipo={}
+                var contatipo={};
                 contatipo['adm'] = 'Administrador';
                 contatipo['aluno'] = 'Aluno';
                 contatipo['secretaria'] = 'Secretaria';
@@ -209,138 +209,164 @@
                 $("#tipo").jqxDropDownList({source: contatipo, width: '150', theme: 'energyblue', height: '25'});
 
 
-                $('#estado').on('select', function (event) {
-                    var args = event.args;
+                function setEstado() {
+                    $('#estado').on('change', function (event) {
+                        var args = event.args;
 
-                    if (args) {
-                        var item = args.item;
-                        var url = "/cities/estado="+item.label;
-                        // prepare the data
-                        var source =
-                        {
-                            datatype: "json",
-                            datafields: [
-                                { name: 'id' },
-                                { name: 'nome' }
-                            ],
-                            url: url,
-                            async: false
-                        };
+                        if (args) {
+                            //var item = args.item;
+                           // var url = "/cities/estado="+item.label;
+                            // prepare the data
+                           // var source =
+                         //   {
+                           //     datatype: "json",
+                          //      datafields: [
+                          //          { name: 'id' },
+                          //          { name: 'nome' }
+                         //       ],
+                           //     url: url,
+                           //     async: false
+                          //  };
 
-                        var dataAdapter = new $.jqx.dataAdapter(source);
-                        $("#cidade").jqxDropDownList({source: dataAdapter,  displayMember: "nome", valueMember: "id", width: '200', theme: 'energyblue', height: '25'});
-                    }
-                 });
-
-{#                 $('#cidade').on('select', function (event) {#}
-{#                    var args = event.args;#}
-{##}
-{#                    if (args) {#}
-{#                        var item = args.item;#}
-{#                        var Estado = $("#estado").val();#}
-{#                        var url = encodeURI("/bairros/estado="+Estado+"/cidade="+item.label);#}
-{##}
-{#                        // prepare the data#}
-{#                        var source =#}
-{#                        {#}
-{#                            datatype: "json",#}
-{#                            datafields: [#}
-{#                                { name: 'id' },#}
-{#                                { name: 'nome' }#}
-{#                            ],#}
-{#                            url: url,#}
-{#                            async: false#}
-{#                        };#}
-{##}
-{#                        var dataAdapter = new $.jqx.dataAdapter(source);#}
-{#                        $("#bairro").jqxComboBox({source: dataAdapter,  displayMember: "nome", valueMember: "id", width: '200', theme: 'energyblue', height: '25'});#}
-{#                    }#}
-{#                 });#}
+                            //var dataAdapter = new $.jqx.dataAdapter(source);
+                            //$("#cidade").jqxDropDownList({source: dataAdapter,  displayMember: "nome", valueMember: "nome", width: '200', theme: 'energyblue', height: '25'});
 
 
-              $('#cidade').on('select', function (event) {
-                    var args = event.args;
-                    var dataN = Array();
-                    dataN.push('');
-
-                    if (args) {
-                        var item = args.item;
-                        var Estado = $("#estado").val();
-
-                        $.ajax({
-                                url:  "/bairros",
-                                data: {
-                                    "estado": Estado,
-                                    "cidade": item.label,
-                                     csrfmiddlewaretoken: '{{ csrf_token }}'
-                                },
-                                cache: false,
-                                type: "POST",
-                                datatype: 'json',
-                                async: false,
-                                success: function(response) {
-                                    for ( var i = 0; i < response.length; i++ ) {
-                                       dataN.push(response[i].nome);
-                                       console.log( response[i].nome );
+                            var dataN = Array();
+                            dataN.push('');
+                            var Estado = $("#estado").val();
+                            $.ajax({
+                                    url:  "/cities",
+                                    data: {
+                                        "estado": Estado,
+                                         csrfmiddlewaretoken: '{{ csrf_token }}'
+                                    },
+                                    cache: false,
+                                    type: "POST",
+                                    datatype: 'json',
+                                    async: false,
+                                    success: function(response) {
+                                        for ( var i = 0; i < response.length; i++ ) {
+                                           dataN.push(response[i].nome);
+                                           console.log( response[i].nome );
+                                        }
                                     }
-                                }
-                        });
+                            });
 
-                        console.log("Tamanaho: "+ dataN.length);
+                            // Desabilitando os listener e limpando
+                            $("#cidade").off('change');
+                            $("#cidade").val('');
+                            $("#bairro").off('change');
+                            $("#bairro").jqxComboBox('clear');
 
-                       $("#bairro").jqxComboBox({ source: dataN, selectedIndex: 0, width: '200', height: '25'});
-                    }
-                 });
-            });
-
-        $('#bairro').on('select', function (event) {
-                    var args = event.args;
-                    var dataNRuas = Array();
-                    dataNRuas.push("");
-
-                    if (args) {
-                        var item = args.item;
-                        var Estado = $("#estado").val();
-                        var Cidade = $("#cidade").val();
-
-                        $.ajax({
-                                url:  "/ruas",
-                                data: {
-                                    "estado": Estado,
-                                    "cidade": Cidade,
-                                    "bairro": item.label,
-                                     csrfmiddlewaretoken: '{{ csrf_token }}'
-                                },
-                                cache: false,
-                                type: "POST",
-                                datatype: 'json',
-                                async: false,
-                                success: function(response) {
-                                    for ( var i = 0; i < response.length; i++ ) {
-                                       dataNRuas.push(response[i].nome);
-                                       console.log( response[i].nome );
-                                    }
-                                }
-                        });
-
-                        console.log("Tamanaho dataN: "+ dataNRuas.length);
-
-{#                        var ruaAt = $("#rua").val();#}
+                            $("#rua").off('change');
+                            $("#rua").jqxComboBox('clear');
 
 
-                        if (dataNRuas.length > 1) {
-{#                            console.log('Rua len: '+ruaAt.length+ ' Rua: '+ ruaAt);#}
-{#                            if(ruaAt.length == 0) {#}
-                                $("#ruatemp").html("<div id='rua'></div>");
-                                console.log('Replaced');
-                                $("#rua").jqxComboBox({ source: dataNRuas, selectedIndex: 0, width: '250', height: '25'});
-                                setRualistener();
+                            $("#cep").val('');
+
+                           $("#cidade").jqxDropDownList({ source: dataN, width: '200', height: '25'});
+                           setCidade();
                         }
-                    }
-                 });
+                     });
+              }
 
-         function setRualistener() {
-             $('#rua').on('select', function (event) {
+
+             function setCidade() {
+                  $('#cidade').on('change', function (event) {
+                        var args = event.args;
+                        var dataN = Array();
+                        dataN.push('');
+
+                        if (args) {
+                            var item = args.item;
+                            var Estado = $("#estado").val();
+
+                            $.ajax({
+                                    url:  "/bairros",
+                                    data: {
+                                        "estado": Estado,
+                                        "cidade": item.label,
+                                         csrfmiddlewaretoken: '{{ csrf_token }}'
+                                    },
+                                    cache: false,
+                                    type: "POST",
+                                    datatype: 'json',
+                                    async: false,
+                                    success: function(response) {
+                                        for ( var i = 0; i < response.length; i++ ) {
+                                           dataN.push(response[i].nome);
+                                           console.log( response[i].nome );
+                                        }
+                                    }
+                            });
+
+
+
+                            $("#bairro").off('change');
+                            $("#bairro").jqxComboBox('clear');
+
+                            $("#rua").off('change');
+                            $("#rua").jqxComboBox('clear');
+
+
+                            $("#cep").val('');
+
+
+                           $("#bairro").jqxComboBox({ source: dataN,  width: '200', height: '25'});
+
+                            setBairro();
+                        }
+                     });
+             }
+
+         function setBairro() {
+
+             $('#bairro').on('change', function (event) {
+                 var args = event.args;
+                 var dataNRuas = Array();
+                 dataNRuas.push("");
+
+                 if (args) {
+                     var item = args.item;
+                     var Estado = $("#estado").val();
+                     var Cidade = $("#cidade").val();
+
+                     $.ajax({
+                         url: "/ruas",
+                         data: {
+                             "estado": Estado,
+                             "cidade": Cidade,
+                             "bairro": item.label,
+                             csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                         cache: false,
+                         type: "POST",
+                         datatype: 'json',
+                         async: false,
+                         success: function (response) {
+                             for (var i = 0; i < response.length; i++) {
+                                 dataNRuas.push(response[i].nome);
+                                 console.log(response[i].nome);
+                             }
+                         }
+                     });
+
+
+                    $("#rua").off('change');
+                    $("#rua").val('');
+
+                    $("#cep").val('');
+                    $("#rua").jqxComboBox({ source: dataNRuas, width: '250', height: '25'});
+                    setRua();
+                 }
+             });
+         }
+
+
+
+         function setRua() {
+             $('#rua').on('change', function (event) {
                     var args = event.args;
                     var dataNRuas = Array();
 
@@ -364,16 +390,56 @@
                                 datatype: 'json',
                                 async: false,
                                 success: function(response) {
-                                    $('#cep').jqxMaskedInput({value: response.cep });
+                                    try {
+                                     $('#cep').jqxMaskedInput({value: response.cep });
+                                    }
+                                    catch(err) {
+                                        console.log('erro firefox');
+                                    }
                                 }
                         });
                     }
                  });
          }
 
-        setRualistener();
 
-        {{ aditionscript|safe }}
+         setEstado();
+         setCidade();
+         setBairro();
+         setRua();
 
+        $('#nome').jqxInput('val', "{{ prof.nome|safe }}");
+        $('#pai').jqxInput('val', "{{ prof.pai|safe }}");
+        $('#mae').jqxInput('val', "{{ prof.mae|safe }}");
+
+         try {
+             var date = new Date();
+            date.setFullYear({{ prof.nascimento|date:'Y' }}, {{   prof.nascimento|date:'m' }}, {{ prof.nascimento|date:'d' }});
+            $('#nascimento').jqxDateTimeInput('setDate', date);
+         } catch(err)  {
+             console.log('Err');
+         }
+
+        $('#telefone1').jqxMaskedInput('val', "{{ prof.telefone1|safe }}");
+        $('#telefone2').jqxMaskedInput('val', "{{ prof.telefone1|safe }}");
+        $('#rg').jqxMaskedInput('val', '1{{ prof.rg|safe }}');
+        $('#orgaoexp').jqxInput('val', '{{ prof.orgaoexp|safe }}');
+        $('#cpfcnpj').jqxMaskedInput('val', '{{ prof.cpfcnpj|safe }}');
+        $('#email').jqxInput('val', '{{ prof.email }}');
+        $('#nacionalidade').jqxInput('val', "{{ prof.nacionalidade|safe }}");
+        $('#naturalidade').jqxInput('val', '{{ prof.naturalidade|safe }}');
+        $('#estado').val('{{ prof.estado }}');
+
+        $('#cidade').val("{{ prof.cidade|safe }}");
+        $('#bairro').val("{{ prof.bairro|safe }}");
+        $('#rua').val("{{ prof.rua|safe }}");
+        $('#cep').jqxMaskedInput('val', '{{ prof.cep }}');
+        $('#numero').jqxMaskedInput('val', '{{ prof.numero|safe }}');
+        $('#complemento').jqxInput('val', "{{ prof.complemento|safe }}");
+        $('#tipo').val('{{ prof.tipo }}');
+
+        });
        </script>
+
+
 {% endblock %}

@@ -20,6 +20,8 @@ import django
 from django.conf import settings
 from django.core.mail import send_mail
 
+from django.core.context_processors import csrf
+
 
 @login_required()
 def home(request):
@@ -40,100 +42,159 @@ def changeProfile(request):
 
     context = {'ola': 1}
     user = User.objects.get(pk=request.user.id)
-    myprof = ProfileUser.objects.get(user=user)
 
-    if request.POST:
-        # If user == Aluno
-        myprof.nome = request.POST['nome']
-        myprof.mae = request.POST['mae']
-        myprof.pai = request.POST['pai']
-        date_object = datetime.strptime(request.POST['nascimento'], '%d/%m/%Y')
-        myprof.nascimento = date_object
-        myprof.telefone1 = request.POST['telefone1']
-        myprof.telefone2 = request.POST['telefone2']
-        myprof.rg = request.POST['rg']
-        myprof.orgaoexp = request.POST['orgaoexp']
-        myprof.cpfcnpj = request.POST['cpfcnpj']
-        myprof.email = request.POST['email']
-        myprof.nacionalidade = request.POST['nacionalidade']
-        myprof.naturalidade = request.POST['naturalidade']
-        myprof.estado = request.POST['estado']
-        myprof.cidade = request.POST['cidade']
-        myprof.cep = request.POST['cep']
-        myprof.rua = request.POST['rua']
-        myprof.numero = request.POST['numero']
-        myprof.complemento = request.POST['complemento']
-        myprof.observacoes = request.POST['observacoes']
-        myprof.tipo = request.POST['tipo']
+    print "ola mundo"
 
-        myprof.save()
+    try:
 
-    # Mostra isso quando acessa o profile
-    aditionscript = ''
-    aditionscript += "$('#nome').jqxInput('val', '"+toUTF8(myprof.nome)+"'); "
-    aditionscript += "$('#pai').jqxInput('val', '"+toUTF8(myprof.pai)+"'); "
-    aditionscript += "$('#mae').jqxInput('val', '"+toUTF8(	myprof.mae	)+"'); "
-    if myprof.nascimento != None:
-        data = myprof.nascimento.day+'/'+myprof.month+"/"+myprof.year
-        aditionscript += "$('#nascimento').jqxMaskedInput('val', '"+data+"'); "
+        myprof = ProfileUser.objects.get(user=user)
 
-    aditionscript += "$('#telefone1').jqxMaskedInput('val', '"+toUTF8(	myprof.telefone1	)+"'); "
-    aditionscript += "$('#telefone2').jqxMaskedInput('val', '"+toUTF8(	myprof.telefone2	)+"'); "
-    aditionscript += "$('#rg').jqxMaskedInput('val', '"+toUTF8(	myprof.rg	)+"'); "
-    aditionscript += "$('#orgaoexp').jqxInput('val', '"+toUTF8(	myprof.orgaoexp	)+"'); "
-    aditionscript += "$('#cpfcnpj').jqxMaskedInput('val', '"+toUTF8(	myprof.cpfcnpj	)+"'); "
-    aditionscript += "$('#email').jqxInput('val', '"+toUTF8(	myprof.email	)+"'); "
-    aditionscript += "$('#nacionalidade').jqxInput('val', '"+toUTF8(	myprof.nacionalidade	)+"'); "
-    aditionscript += "$('#naturalidade').jqxInput('val', '"+toUTF8(	myprof.naturalidade	)+"'); "
-    aditionscript += "$('#estado').jqxInput('val', '"+toUTF8(	myprof.estado	)+"'); "
-    aditionscript += "$('#cep').jqxMaskedInput('val', '"+toUTF8(	myprof.cep	)+"'); "
-    aditionscript += "$('#rua').jqxInput('val', '"+toUTF8(	myprof.rua	)+"'); "
-    aditionscript += "$('#numero').jqxMaskedInput('val', '"+toUTF8(	myprof.numero	)+"'); "
-    aditionscript += "$('#complemento').jqxInput('val', '"+toUTF8(	myprof.complemento	)+"'); "
-    aditionscript += "$('#tipo').jqxInput('val', '"+myprof.tipo+"'); "
+        if request.POST:
+            # If user == Aluno
+            myprof.nome = request.POST['nome']
+            myprof.mae = request.POST['mae']
+            myprof.pai = request.POST['pai']
 
-    context['aditionscript'] = aditionscript
+            try:
+                # date_object = datetime.strptime(request.POST['nascimento'], '%d/%m/%Y')
+                # myprof.nascimento = date_object
+                date_object = datetime.strptime(request.POST['nascimento'], '%d/%m/%Y')
 
-    # Tasks to do here
-    # --- Mudar a cidade, estado, rua e bairro de acordo com o que está no profile. Caso seja None, deixar Mato Grosso e Barra do Garças
-    # --- Desativar alguns campos de acordo com o tipo de usuário
+                myprof.nascimento = date_object
+            except:
+                print 'err'
 
-    toUTF8(	myprof.observacoes	)
-    toUTF8(	myprof.tipo	)
+            myprof.telefone1 = request.POST['telefone1']
+            myprof.telefone2 = request.POST['telefone2']
+            myprof.rg = request.POST['rg']
+            myprof.orgaoexp = request.POST['orgaoexp']
+            myprof.cpfcnpj = request.POST['cpfcnpj']
+            myprof.email = request.POST['email']
+            myprof.nacionalidade = request.POST['nacionalidade']
+            myprof.naturalidade = request.POST['naturalidade']
+            myprof.estado = request.POST['estado']
+            myprof.cidade = request.POST['cidade']
+            myprof.bairro = request.POST['bairro']
+            myprof.cep = request.POST['cep']
+            myprof.rua = request.POST['rua']
+
+            # Caso não haja o Bairro selecionado
+            try:
+
+                UfReg = Uf.objects.get(nome=myprof.estado)
+                mycity = Cidade.objects.get(uf=UfReg, nome=myprof.cidade)
+                bairro = Bairro.objects.filter(cidade=mycity, nome=myprof.bairro)
+
+                if len(bairro) == 0:
+                    bairroCad = Bairro()
+                    bairroCad.nome = myprof.bairro
+                    bairroCad.cidade = mycity
+                    bairroCad.save()
+
+            except:
+                print 'Erro ao Cadastrar o Bairro'
+
+
+            # Caso não haja a rua selecionada
+            try:
+                UfReg = Uf.objects.get(nome=myprof.estado)
+                mycity = Cidade.objects.get(uf=UfReg, nome=myprof.cidade)
+                bairro = Bairro.objects.get(cidade=mycity, nome=myprof.bairro)
+
+                ruas = Rua.objects.filter(bairro=bairro, nome=myprof.rua)
+
+                if len(ruas) == 0:
+                    rua = Rua()
+                    rua.nome = myprof.rua
+                    rua.bairro = bairro
+                    rua.tipo = 1 # Não irei utilizar
+                    rua.cep = myprof.cep
+                    rua.save()
+            except:
+                print 'Erro a rua '
+
+            myprof.numero = request.POST['numero']
+            myprof.complemento = request.POST['complemento']
+            myprof.observacoes = request.POST['observacoes']
+            myprof.tipo = request.POST['tipo']
+
+            myprof.save()
+
+        context['prof'] = myprof
+
+    except Exception, e:
+        print 'Erro ' + str(e)
 
 
     return render(request, 'profile.html', context)
 
 
 @login_required()
-def getCities(request, estado):
+def getCities(request):
 
-    #estado=request.GET['estado']
+
     cidades = []
-    try:
-        print "Estado: ", estado
+    if request.POST:
+        estado=request.POST['estado']
 
-        UfReg = Uf.objects.get(nome=estado)
+        try:
+            print "Estado: ", estado
 
-        print "Estou aqui", UfReg.nome, " sigla: ", UfReg.sigla
+            UfReg = Uf.objects.get(nome=estado)
 
-        cities = Cidade.objects.filter(uf=UfReg)
+            print "Estou aqui", UfReg.nome, " sigla: ", UfReg.sigla
 
-        print "Cidades: ", len(cities)
+            cities = Cidade.objects.filter(uf=UfReg)
 
+            print "Cidades: ", len(cities)
 
+            for i in cities:
+                cidade = {}
+                cidade['id'] = i.id
+                cidade['nome'] = i.nome
+                cidades.append(cidade)
+                # cidades[i.id] = i.nome
+        except:
+            print 'Erro ao pegar cidades'
 
-        for i in cities:
-            cidade = {}
-            cidade['id'] = i.id
-            cidade['nome'] = i.nome
-            cidades.append(cidade)
-            # cidades[i.id] = i.nome
-    except:
-        print 'Erro ao pegar cidades'
 
     return HttpResponse(json.dumps(cidades), content_type="application/json")
 
+
+@login_required()
+def cursocad(request, id=None):
+
+    context ={}
+
+
+    if request.POST:
+        try:
+            curso = Curso.objects.get(pk=int(request.POST['id']))
+            print 'Peguei o id'
+        except:
+            curso = Curso()
+
+        curso.nome = request.POST['nome']
+        curso.anoGrade = request.POST['anoGrade']
+        curso.periodo = request.POST['periodo']
+        curso.quantPeriodo = request.POST['quantPeriodo']
+        curso.habilitacao = request.POST['habilitacao']
+        curso.resolucaoreconhecimento = request.POST['resolucaoreconhecimento']
+
+        date_manip = datetime.strptime(request.POST['dataPublicacao'], '%d/%m/%Y')
+        curso.dataPublicacao = date_manip
+        curso.formaingresso = request.POST['formaingresso']
+        curso.avaliacaopor = request.POST['avaliacaopor']
+
+        curso.save()
+
+
+    if id != None:
+        curso = Curso.objects.get(pk=id)
+        context['curso'] = curso
+
+
+    return render(request, 'cursoCad.html', context)
 
 
 def toUTF8(val):
@@ -178,12 +239,49 @@ def toUTF8(val):
 
 
 @login_required()
+def getUsers(request):
+
+    users = []
+
+
+    user = {}
+    user['id'] = 1
+    user['nome'] =  'Jacinto José Franco'
+    users.append(user)
+    user = {}
+    user['id'] = 2
+    user['nome'] =  'Carlota Joaquina'
+
+    users.append(user)
+    user = {}
+    user['id'] = 3
+    user['nome'] = 'Maria Antonieta'
+
+
+    users.append(user)
+
+    return HttpResponse(json.dumps(users), content_type="application/json")
+
+
+def listUsuarios(request):
+
+    context = {}
+
+
+    return render(request, 'listagemAlunos.html', context)
+
+
+
+@login_required()
 def getBairros(request):
 
     try:
         bairroslist = []
         estado = request.POST['estado']
         cidade = request.POST['cidade']
+
+        if len(cidade)==0:
+            return HttpResponse(json.dumps(bairroslist), content_type="application/json")
 
         print "Estado: ", estado, " Cidade: ", cidade
 
@@ -218,7 +316,8 @@ def getRuas(request):
 
         # UfReg = Uf.objects.get(nome=estado)
         print "Uf ok"
-        mycity = Cidade.objects.get(pk=cidade)
+        UfReg = Uf.objects.get(nome=estado)
+        mycity = Cidade.objects.get(uf=UfReg, nome=cidade)
         print "Uf city"
         mybairro = Bairro.objects.get(cidade=mycity, nome=bairro)
         print "Uf bairro"
@@ -247,16 +346,14 @@ def getCep(request):
         bairro = request.POST['bairro']
         rua = request.POST['rua']
 
-        print "Estado: ", estado, " Cidade: ", cidade, " Bairro: ", bairro, ' Rua: ' + rua
-
         # UfReg = Uf.objects.get(nome=estado)
         print "Uf ok"
-        mycity = Cidade.objects.get(pk=cidade)
+        UfReg = Uf.objects.get(nome=estado)
+        mycity = Cidade.objects.get(uf=UfReg, nome=cidade)
         print "Uf city"
         mybairro = Bairro.objects.get(cidade=mycity, nome=bairro)
         print "Uf bairro"
         ruas = Rua.objects.get(bairro=mybairro, nome=rua)
-
         ruaslist['cep'] = ruas.cep
 
     except:

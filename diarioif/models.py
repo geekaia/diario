@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
@@ -17,7 +19,7 @@ class ProfileUser(models.Model):
     email = models.CharField(max_length=255, blank=True, null=True)
     nacionalidade = models.CharField(max_length=255, blank=True, null=True)
     naturalidade = models.CharField(max_length=255, blank=True, null=True)
-    estado = models.CharField(max_length=4, blank=True, null=True)
+    estado = models.CharField(max_length=255, blank=True, null=True)
     cidade = models.CharField(max_length=255, blank=True, null=True)
     cep = models.CharField(max_length=30, blank=True, null=True)
     bairro = models.CharField(max_length=255, blank=True, null=True)
@@ -29,7 +31,7 @@ class ProfileUser(models.Model):
 
 class Curso(models.Model):
     nome = models.CharField(max_length=255, blank=True, null=True)
-    ano = models.CharField(max_length=255, blank=True, null=True)
+    anoGrade = models.CharField(max_length=255, blank=True, null=True)
     periodo = models.CharField(max_length=255, blank=True, null=True)
     quantPeriodo = models.IntegerField(11)
     habilitacao = models.CharField(max_length=255, blank=True, null=True)
@@ -42,9 +44,17 @@ class Curso(models.Model):
 class Matricula(models.Model):
     user = models.ForeignKey(User)
     anoEntrada = models.CharField(max_length=5, blank=True, null=True)
-    situacao = models.CharField(max_length=255, blank=True, null=True)
     curso = models.ForeignKey(Curso)
     dataTranferencia = models.DateField()
+
+class SituacaoMatricula(models.Model):
+    """
+        Com esta entidade podemos armazenazr o histórico de uma Matrícula. Com isto poderemos ter um histórico completo da situação
+        Pois os usuários vai e vão.
+    """
+    matricula = models.ForeignKey(Matricula)
+    situacao = models.CharField(max_length=255, blank=True, null=True)
+    data = models.DateField(blank=True, null=True)
 
 
 class Turma(models.Model):
@@ -99,4 +109,8 @@ class Rua(models.Model):
     tipo = models.IntegerField(11)
     nome = models.CharField(max_length=500, blank=True, null=True)
     cep = models.CharField(max_length=50, blank=True, null=True)
+
+
+
+
 

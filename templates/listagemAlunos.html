@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+        <h1>Listagem de Pessoas</h1>
+
+        <table border="0" style="width: 850px;">
+            <tr>
+                <td style="vertical-align: bottom;"><div style='font-size: 13px; font-family: verdana; '>Curso</div>
+                <select id="curso">
+                    <option>Agropecuaria</option>
+                    <option>Meio Ambinete</option>
+                    <option>Economia</option>
+                </select>
+                </td>
+                <td style="vertical-align: bottom; width: 600px;"><div style='font-size: 13px; font-family: verdana; '>Pesquisar </div><input type='text' name="pesquisar" id="pesquisar" /> </td>
+                <td style="vertical-align: bottom; "><input type='button' id="edit" value="Edit" /></td>
+            </tr>
+
+        </table>
+
+        <br />
+
+        <script>
+            $("#curso").jqxDropDownList({ width: '200px', height: '20px' });
+            $("#pesquisar").jqxInput({  width: '300px', height: '20px' });
+            $("#edit").jqxButton({width: 50});
+
+            $(document).ready(function () {
+                 var url = "/getUsers";
+                // prepare the data
+                var source =
+                {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'id'},
+                        { name: 'nome'},
+                    ],
+                    url: url,
+                    async: false
+                };
+                var dataAdapter = new $.jqx.dataAdapter(source);
+
+                $("#jqxgrid").jqxGrid(
+                    {
+                        width: 900,
+                        source: dataAdapter,
+                        columns: [
+                          { text: 'ID', datafield: 'id', width: 30 },
+                          { text: 'Name', datafield: 'nome', width: 550 }
+                        ]
+                    });
+            }); // end document ready
+
+
+        </script>
+
+       <div id='jqxWidget'>
+        <div id="jqxgrid"></div>
+    </div>
+{% endblock %}

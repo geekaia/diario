@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>Curso</h1>
+
+    <form method="POST" action="./{{ curso.id }}">{%  csrf_token %}
+        <table border="0">
+            <tr>
+                <td><div style='font-size: 13px; font-family: verdana; '>Nome: </div></td>
+                <td><input type="text" id="nome" name='nome' value="{{ curso.nome }}" /></td>
+            </tr>
+            <tr>
+                <td><div style='font-size: 13px; font-family: verdana; '>Ano grade: </div></td>
+                <td><input type="text" id="anoGrade" name='anoGrade' /></td>
+            </tr>
+            <tr>
+                <td><div style='font-size: 13px; font-family: verdana; '>Periodo letivo por: </div></td>
+                <td><select id='periodo' name='periodo' >
+                        <option>Semestre</option>
+                        <option>Ano</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td ><div style='font-size: 13px; font-family: verdana; '>Quant. períodos: </div></td>
+                <td>
+                    <select id="quantPeriodo" name='quantPeriodo'>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                </select>
+                </td>
+            </tr>
+            <tr>
+                <td><div style='font-size: 13px; font-family: verdana; '>Avaliações por: </div></td>
+                <td>
+                    <select id='avaliacaopor' name='avaliacaopor' >
+                        <option>Bimestre</option>
+                        <option>Semestre</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><div style='font-size: 13px; font-family: verdana; '>Resolução de reconhecimento: </div></td>
+                <td><input type="text" id="resolucaoreconhecimento" name='resolucaoreconhecimento'  value="{{ curso.resolucaoreconhecimento }}" /></td>
+            </tr>
+            <tr>
+                <td><div style='font-size: 13px; font-family: verdana; '>Data de publicação: </div></td>
+                <td><div id="dataPublicacao" name='dataPublicacao'></div></td>
+            </tr>
+             <tr>
+                <td><div style='font-size: 13px; font-family: verdana; '>Habilitação: </div></td>
+                <td><input type="text" id="habilitacao" name='habilitacao' value="{{ curso.habilitacao }}" /></td>
+            </tr>
+            <tr>
+                <td><div style='font-size: 13px; font-family: verdana; '>Forma Ingresso: </div></td>
+                <td><input type="text" id="formaingresso" name='formaingresso'  value="{{ curso.formaingresso }}" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="height: 70px;">
+                    <input id="submit" type="submit" value="Salvar" />
+                    <input type="hidden" name="id" value="{{ curso.id|safe }}" />
+
+                </td>
+            </tr>
+
+        </table>
+
+    </form>
+
+    <script>
+
+        var date = new Date();
+        $(document).ready(function () {
+            // Initial setup
+            $("#submit").jqxButton();
+            $("#nome").jqxInput({  width: '400px', height: '20px' });
+            $("#anoGrade").jqxMaskedInput({ mask: '####'});
+            $("#periodo").jqxDropDownList({  width: '200px', height: '20px' });
+            $("#quantPeriodo").jqxDropDownList({ width: '50px', height: '20px' });
+            $("#habilitacao").jqxInput({  width: '400px', height: '20px' });
+            $("#resolucaoreconhecimento").jqxInput({  width: '400px', height: '20px' });
+            $("#formaingresso").jqxInput({  width: '200px', height: '20px' });
+            $("#avaliacaopor").jqxDropDownList({  width: '200px', height: '20px' });
+
+            $("#anoGrade").val("{{ curso.anoGrade }}");
+            $("#periodo").jqxDropDownList('val', "{{ curso.periodo }}");
+            $("#quantPeriodo").jqxDropDownList('val', "{{ curso.quantPeriodo }}");
+            $("#avaliacaopor").jqxDropDownList('val', "{{ curso.avaliacaopor }}");
+
+
+
+
+            $('#dataPublicacao').jqxDateTimeInput();
+            try {
+                var data = '{{ curso.dataPublicacao|safe }}';
+
+                var day = data.split('-')[2].split(' ')[0];
+                var month = data.split('-')[1];
+                var year = data.split('-')[0];
+                date.setFullYear(parseInt(year), parseInt(month) ,parseInt(day));
+                $('#dataPublicacao').jqxDateTimeInput('setDate', date);
+             } catch(e)  {
+                 console.log('Deu erro mano: ' +  e);
+             }
+
+        });
+    </script>
+
+{% endblock %}
