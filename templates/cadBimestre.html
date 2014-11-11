@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Bimestre/Semestre</h1>
+
+    <form method="POST" action="./{{ curso.id }}">{%  csrf_token %}
+        <table border="0">
+            <tr>
+                <td><div style='font-size: 13px; font-family: verdana; '>Ano: </div></td>
+                <td> <select id="ano" name='ano'>  </select>
+                </td>
+            </tr>
+            <tr>
+                <td><div style='font-size: 13px; font-family: verdana; '>Ano grade: </div></td>
+                <td>
+                   <select id="bimestreSemestre" name='bimestreSemestre'>
+                        <option>bimestre</option>
+                        <option>semestre</option>
+                   </select>
+                </td>
+            </tr>
+            <tr>
+                <td><div style='font-size: 13px; font-family: verdana; '>Número do Bimestre/Semestre: </div></td>
+                <td>
+                    <select id="numero" name='numero'>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td><div style='font-size: 13px; font-family: verdana; '>Periodo letivo por: </div></td>
+                <td><div id="dataInicio" name='dataInicio'></div> </td>
+            </tr>
+            <tr>
+                <td ><div style='font-size: 13px; font-family: verdana; '>Quant. períodos: </div></td>
+                <td><div id="dataFim" name='dataFim'></div>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td style="height: 70px;">
+                    <input id="submit" type="submit" value="Salvar" />
+                    <input type="hidden" name="id" value="{{ bimestre.id|safe }}" />
+
+                </td>
+            </tr>
+
+        </table>
+
+    </form>
+
+    <script>
+
+        var date = new Date();
+        $(document).ready(function () {
+            // Initial setup
+            $("#submit").jqxButton();
+
+            var data = new Date();
+            // Adicionando anos com mais de 30 abaixo
+            for (var i=data.getFullYear()-30; i<=data.getFullYear()+1;i++) {
+                var x = document.getElementById("ano");
+                var option = document.createElement("option");
+                option.text = i;
+                x.add(option,x[0]);
+            }
+
+            $("#ano").jqxDropDownList({  width: '70px', height: '20px' });
+            $("#ano").jqxDropDownList('val',data.getFullYear());
+
+            $("#bimestreSemestre").jqxDropDownList({  width: '200px', height: '20px' });
+            $("#numero").jqxDropDownList({  width: '200px', height: '20px' });
+            $('#dataInicio').jqxDateTimeInput();
+            $('#dataFim').jqxDateTimeInput();
+
+
+            $("#ano").jqxDropDownList('val', "{{ bimestre.ano }}");
+            $("#bimestreSemestre").jqxDropDownList('val', "{{ bimestre.bimestreSemestre }}");
+            $("#numero").jqxDropDownList('val', "{{ bimestre.numero }}");
+
+
+            try {
+                var date = new Date();
+                var dataI = '{{ bimestre.dataInicio|safe }}';
+                var day = dataI.split('-')[2].split(' ')[0];
+                var month = dataI.split('-')[1];
+                var year = dataI.split('-')[0];
+                date.setFullYear(parseInt(year), parseInt(month) -1 ,parseInt(day));
+                $('#dataInicio').jqxDateTimeInput('setDate', date);
+             } catch(e)  {
+                 console.log('Deu erro Data inicio ' +  e);
+             }
+
+            try {
+                var date = new Date();
+                var dataI = '{{ bimestre.dataFim|safe }}';
+                var day = dataI.split('-')[2].split(' ')[0];
+                var month = dataI.split('-')[1];
+                var year = dataI.split('-')[0];
+                date.setFullYear(parseInt(year), parseInt(month) -1 ,parseInt(day));
+                $('#dataFim').jqxDateTimeInput('setDate', date);
+             } catch(e)  {
+                 console.log('Deu erro Data inicio ' +  e);
+             }
+
+
+
+        });
+    </script>
+
+{% endblock %}

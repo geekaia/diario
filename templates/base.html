@@ -32,12 +32,15 @@
     <script type="text/javascript" src="{% static "jqwidgets/jqxtooltip.js"%}"></script>
     <script type="text/javascript" src="{% static "jqwidgets/globalization/globalize.js"%}"></script>
 
-
     <script type="text/javascript" src="{% static "jqwidgets/jqxgrid.js"%}"></script>
     <script type="text/javascript" src="{% static "jqwidgets/jqxgrid.sort.js"%}"></script>
     <script type="text/javascript" src="{% static "jqwidgets/jqxgrid.pager.js"%}"></script>
     <script type="text/javascript" src="{% static "jqwidgets/jqxgrid.selection.js"%}"></script>
     <script type="text/javascript" src="{% static "jqwidgets/jqxgrid.edit.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxwindow.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxtabs.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/globalization/globalize.culture.en-CA.js"%}"></script>
+
 
 </head>
 
@@ -100,17 +103,15 @@
                             <ul style='width: 250px;'>
                                 <li><a href="/listUsuarios">Pessoas</a></li>
                                 <li><a href="/listCourses">Cursos</a></li>
-                                <li><a href="#Financial">Turma</a></li>
-                                <li><a href="#Manufacturing"></a></li>
+                                <li><a href="/listBimestres">Período Letivo</a></li>
+                                <li><a href="/disciplinas"></a>Disciplinas</li>
+                                <li><a href="/turmas"></a>Turmas</li>
                                 <li type='separator'></li>
-                                <li>Software Solutions
+                                <li>Cadastro
                                     <ul style='width: 220px;'>
-                                        <li><a href="#ConsumerPhoto">Consumer photo and video</a></li>
-                                        <li><a href="#Mobile">Mobile</a></li>
-                                        <li><a href="#RIA">Rich Internet applications</a></li>
-                                        <li><a href="#TechnicalCommunication">Technical communication</a></li>
-                                        <li><a href="#Training">Training and eLearning</a></li>
-                                        <li><a href="#WebConferencing">Web conferencing</a></li>
+                                        <li><a href="/cadastro">Pessoas</a></li>
+                                        <li><a href="/cursocad">Cursos</a></li>
+                                        <li><a href="/bimestrecad">Período Letivo</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="#">All industries and solutions</a></li>
@@ -170,7 +171,7 @@
                         </li>
 
                         {% if user.is_authenticated %}
-                            <li><a href="/profile">Profile</a></li>
+                            <li><a href="/profile/{{ user.id }}">Profile</a></li>
                             <li><a href="/sair">Sair</a></li>
                         {% else %}
                             <li><a href="/cadastro">Cadastro</a></li>

@@ -56,12 +56,11 @@ class SituacaoMatricula(models.Model):
     situacao = models.CharField(max_length=255, blank=True, null=True)
     data = models.DateField(blank=True, null=True)
 
-
 class Turma(models.Model):
     curso = models.ForeignKey(Curso)
-    nome = models.CharField(max_length=255, blank=True, null=True)
+    nome = models.CharField(max_length=5, blank=True, null=True)
     anosemestre = models.IntegerField(11)
-    anoturma = models.CharField(max_length=5, blank=True, null=True)
+    anoturma = models.CharField(max_length=10, blank=True, null=True)
 
 
 class Disciplina(models.Model):
@@ -71,11 +70,13 @@ class Disciplina(models.Model):
     horaaula = models.CharField(max_length=255, blank=True, null=True)
     hora = models.CharField(max_length=10, blank=True, null=True)
 
+
 class Bimestre(models.Model):
     ano = models.CharField(max_length=5, blank=True, null=True)
-    bimestreSemestre = models.CharField(max_length=1, blank=True, null=True)
+    bimestreSemestre = models.CharField(max_length=15, blank=True, null=True)
+    numero = models.CharField(max_length=5, blank=True, null=True) # número do bimestre 4 para anual e 2 para semestral
     dataInicio = models.DateField()
-    dataInicio = models.DateField()
+    dataFim = models.DateField()
 
 
 class Presenca(models.Model):
@@ -86,8 +87,15 @@ class Presenca(models.Model):
 
 
 class AtribAula(models.Model):
-    disciplinas = models.ForeignKey(Disciplina)
+    disciplina = models.ForeignKey(Disciplina)
+    turma = models.ForeignKey(Turma)
+    professor = models.ForeignKey(ProfileUser, blank=True, null=True)
 
+    # default 1 ano para cursos anuais e 6 meses para cursos semestrais
+    periodoInicio = models.DateField()
+    periodoFim = models.DateField()
+    acesso = models.BooleanField()
+    # Esta variável permite finalizar o ano.
 
 class Uf(models.Model):
     sigla = models.CharField(max_length=2, blank=True, null=True)
@@ -103,7 +111,6 @@ class Bairro(models.Model):
     cidade = models.ForeignKey(Cidade)
     nome = models.CharField(max_length=255, blank=True, null=True)
 
-
 class Rua(models.Model):
     bairro = models.ForeignKey(Bairro)
     tipo = models.IntegerField(11)
@@ -111,6 +118,21 @@ class Rua(models.Model):
     cep = models.CharField(max_length=50, blank=True, null=True)
 
 
-
-
-
+class Notafalta(models.Model):
+    aluno = models.ForeignKey(ProfileUser)
+    disciplina = models.ForeignKey(Disciplina)
+    turma = models.ForeignKey(Turma)
+    nota1b = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
+    nota2b = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
+    nota3b = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
+    nota4b = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
+    falta1b = models.IntegerField()
+    falta2b = models.IntegerField()
+    falta3b = models.IntegerField()
+    falta4b = models.IntegerField()
+    falta5b = models.IntegerField()
+    mediafinal = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
+    recuperacao = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
+    situacaofinal = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
+    mediaanual = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
+    mediapospf = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)

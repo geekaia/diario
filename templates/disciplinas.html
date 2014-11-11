@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+        <h1>Cursos</h1>
+        <table border="0">
+             <tr>
+                <td><div style='font-size: 13px; font-family: verdana; '>Curso: </div></td>
+                <td><div id="curso" name="curso"></div></td>
+            </tr>
+            <tr>
+                 <td><div style='font-size: 13px; font-family: verdana; '>Períodos: </div></td>
+                <td>
+                    <div id="periodos" name='periodos'> </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 20px;"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="padding-right: 10px"></td>
+                <td width="200px;">
+                    <table border="0">
+                        <tr>
+                            <td style="padding-right: 10px;"><div id="btnE"> <input type='button' id="edit" value="Edit" /></div></td>
+                            <td style="padding-right: 10px;"><div id="btnN"> <input type='button' id="novo" value="Novo" /> </div></td>
+                            <td><div id="remE"> <input type='button' id="rem" value="Remover" /></div></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+       </table>
+
+        <br />
+        <br />
+        <div id="window">
+            <div id="windowHeader">
+                <span>
+                   Disciplina
+                </span>
+            </div>
+            <div style="overflow: hidden;" id="windowContent">
+                <table border="0">
+                    <tr>
+                        <td><div style='font-size: 13px; font-family: verdana; '>Disciplina: </div></td>
+                        <td><input type="text" name="nome" id="nome" /></td>
+                    </tr>
+                    <tr>
+                        <td><div style='font-size: 13px; font-family: verdana; '>Hora Aula: </div></td>
+                        <td><input type="text" name="horaaula" id="horaaula" /></td>
+                    </tr>
+                    <tr>
+                        <td><div style='font-size: 13px; font-family: verdana; '>Hora: </div></td>
+                        <td><input type="text" name="hora" id="hora" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding-top: 20px;"><input type="hidden" value="-1" id="id" /> <input type="button" id="btnSave" value="Salvar" /></td>
+                    </tr>
+            </table>
+            </div>
+        </div>
+
+        <script>
+             var rowIndex = -1;
+             var cursosData = new Array();
+
+             {% for i in cursos %}
+                    cursosData[{{ i.id }}]="{{i.id}}-{{ i.nome }} - {{ i.anoGrade }}";
+             {% endfor %}
+
+             $(document).ready(function () {
+                $("#btnN").hide();
+                $("#btnE").hide();
+                $("#remE").hide();
+                $("#window").hide();
+                $('#window').jqxWindow({
+{#                    showCollapseButton: false,#}
+                    maxHeight: 400,
+                    maxWidth: 700,
+                    minHeight: 200,
+                    minWidth: 200,
+                    height: 180,
+                    width: 500
+                });
+
+                $("#edit").jqxButton({width: 50});
+                $("#novo").jqxButton({width: 50});
+                $("#rem").jqxButton({width: 70});
+
+                $("#curso").jqxDropDownList({source: cursosData, width: '500', height: '25'});
+
+                $('#curso').on('select', function (event) {
+
+                    var args = event.args;
+                    if (args) {
+                        // get quant periodos curso
+                          $.ajax({
+                                    url:  "/getPeriodos/"+$("#curso").val().split('-')[0],
+                                    cache: false,
+                                    type: "GET",
+                                    datatype: 'json',
+                                    async: false,
+                                    success: function(response) {
+
+                                        // remove todos elementos
+                                        var dataN = new Array();
+                                        $("#periodos").off('change');
+                                        $("#periodos").val('');
+
+                                        for ( var i = 1; i <= parseInt(response.periodos); i++ ) {
+                                           dataN.push(i);
+                                        }
+                                        $("#periodos").jqxDropDownList({source: dataN, width: '70', height: '25'});
+                                        $("#periodos").jqxDropDownList('val', 1);
+
+
+                                        $("#periodos").on('change', function(event){
+                                            setGrid();
+                                        });
+
+                                        setGrid();
+                                        $("#btnN").show();
+                                        $("#btnE").show();
+                                        $("#remE").show();
+                                    }
+                          });
+
+                    }
+                });
+
+                function setGrid()
+                {
+
+                    var url =  "/getDisciplinas/"+$("#curso").val().split('-')[0]+"/"+$("#periodos").val();
+                    // prepare the data
+                    var source =
+                    {
+                        datatype: "json",
+                        datafields: [
+                            { name: 'id'},
+                            { name: 'nome'},
+                            { name: 'periodo'},
+                            { name: 'horaaula'},
+                            { name: 'hora'}
+                        ],
+                        url: url,
+                        async: false
+                    };
+                    var dataAdapter = new $.jqx.dataAdapter(source);
+
+                    $("#jqxgrid").jqxGrid(
+                    {
+                        width: 780,
+                        source: dataAdapter,
+                        columns: [
+                          { text: 'ID', datafield: 'id', width: 0 },
+                          { text: 'Name', datafield: 'nome', width: 400 },
+                          { text: 'Periodo', datafield: 'periodo', width: 150 },
+                          { text: 'hora aula', datafield: 'horaaula', width: 150 },
+                          { text: 'Hora', datafield: 'hora', width: 50 }
+                        ]
+                    });
+
+                    $('#jqxgrid').on('rowselect', function (event)
+                    {
+                        rowIndex = event.args.rowindex;
+                    });
+
+                }
+
+
+
+                 $("#edit").bind('click', function () {
+                    var text = $('#jqxgrid').jqxGrid('getcelltextbyid', rowIndex, "id");
+
+                     if( text) {
+                         $("#id").val(text);
+
+                        var idV = $('#jqxgrid').jqxGrid('getcelltextbyid', rowIndex, "id");
+                        var nomeV = $('#jqxgrid').jqxGrid('getcelltextbyid', rowIndex, "nome");
+                        var horaaulaV = $('#jqxgrid').jqxGrid('getcelltextbyid', rowIndex, "horaaula");
+                        var horaV = $('#jqxgrid').jqxGrid('getcelltextbyid', rowIndex, "hora");
+
+                        $("#nome").val(nomeV );
+                        $("#horaaula").val(horaaulaV);
+                        $("#hora").val(horaV);
+                        $("#id").val(idV);
+
+                         $('#window').jqxWindow('open');
+                         $('#window').jqxWindow('focus');
+                     } else {
+                         alert('selecione uma linha!');
+                     }
+
+                   //alert('text: '+ text);
+                });
+
+
+                 $("#rem").bind('click', function(){
+                     var text = $('#jqxgrid').jqxGrid('getcelltextbyid', rowIndex, "id");
+
+                     if (text) {
+                         $.ajax({
+                            url:  "/removerDisc/"+text,
+                            cache: false,
+                            type: "GET",
+                            async: false,
+                            success: function(response) {
+                                var respint = parseInt(response);
+
+                                if(respint == 1) {
+                                    setGrid();
+                                } else {
+                                    alert('Erro ao cadastrar a disciplina');
+                                }
+                            }
+                        });
+                     } else{
+                         alert('selecione uma linha para remover');
+                     }
+
+
+                 });
+
+
+                 $("#novo").bind('click', function () {
+                    // clean Field data
+                    $("#nome").val('');
+                    $("#horaaula").val('');
+                    $("#hora").val('');
+                    $("#id").val('-1');
+
+                     $('#window').jqxWindow('open');
+                     $('#window').jqxWindow('focus');
+
+                });
+
+                $('#jqxgrid').jqxGrid('hidecolumn', 'id');
+
+
+                // Adcions window
+
+                 $("#btnSave").jqxButton({width: 50});
+                 $("#nome").jqxInput({  width: '400px', height: '20px' });
+                 $("#horaaula").jqxInput({  width: '50px', height: '20px' });
+                 $("#hora").jqxInput({  width: '50px', height: '20px' });
+
+                 $("#btnSave").bind('click', function () {
+                     $.ajax({
+                            url:  "/cadDisciplinas",
+                            data: {
+                                "curso": $("#curso").val().split('-')[0],
+                                "nome": $("#nome").val(),
+                                "id": $("#id").val(),
+                                "horaaula": $("#horaaula").val(),
+                                "hora": $("#hora").val(),
+                                "periodo": parseInt($("#periodos").val()),
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                            },
+                            cache: false,
+                            type: "POST",
+                            datatype: 'json',
+                            async: false,
+                            success: function(response) {
+                                var respint = parseInt(response);
+
+                                if(respint == 1) {
+                                    // Close window
+                                    $('#window').jqxWindow('close');
+
+                                    // clean Field data
+                                    $("#nome").val('');
+                                    $("#horaaula").val('');
+                                    $("#hora").val('');
+                                    $("#id").val('-1');
+
+                                    // Fill grid without refresh page
+                                    setGrid();
+                                } else {
+                                    alert('Erro ao cadastrar a disciplina');
+                                }
+                        }
+                    });
+                });
+
+            }); // end document ready
+        </script>
+
+        <div id='jqxWidget'>
+        <div id="jqxgrid"></div>
+    </div>
+{% endblock %}

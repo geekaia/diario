@@ -1,0 +1,716 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+        <h1>Turmas</h1>
+        <table border="0">
+        <tr>
+            <td><div style='font-size: 13px; font-family: verdana; '>Curso: </div></td>
+            <td colspan="4"><div id="curso" name="curso"></div></td>
+        </tr>
+
+         <tr>
+            <td>
+                <div style='font-size: 13px; font-family: verdana; '>Períodos: </div>
+            </td>
+            <td>
+                <div id="periodos" name='periodos'> </div>
+            </td>
+             <td>
+                 <div style='font-size: 13px; font-family: verdana; '>Ano: </div>
+             </td>
+             <td>
+                <div id="ano" name='ano' />
+            </td>
+            <td style="padding-left: 150px;">
+                <table border="0">
+                    <tr>
+                        <td> <div id="turma" name="turma" /> </td>
+                        <td> <input type="button" value="+" id="addTurma" /> </td>
+                        <td> <input type="button" value="-" id="remTurma" /> </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+       </table>
+    <b />
+    <b />
+
+
+
+
+    <div id='jqxWidget'>
+        <div id='jqxTabs'>
+            <ul>
+                <li>Alunos</li>
+                <li>Atribuição de aulas</li>
+            </ul>
+            <div>
+                <br />
+                <table>
+                    <tr>
+                        <td> <input type="button" value="+" id="addAluno" /> </td>
+                        <td> <input type="button" value="-" id="remAluno" /> </td>
+                    </tr>
+                </table>
+                <br />
+                <div id="gridAlunos"></div>
+            </div>
+            <div>
+                <br />
+                <table>
+                    <tr>
+                        <td> <input type="button" value="+" id="addProfessor" /> </td>
+                        <td> <input type="button" value="Salvar" id="btnSaveProf" /> </td>
+                    </tr>
+                </table>
+                <br />
+                <div id="gridatribuicao"></div>
+            </div>
+        </div>
+    </div>
+
+
+     <div id="pro">
+        <div id="profs"></div>
+    </div>
+
+
+      <div id="window">
+            <div id="windowHeader">
+                <span>
+                   Turma
+                </span>
+            </div>
+            <div style="overflow: hidden;" id="windowContent">
+                <table border="0">
+                    <tr>
+                        <td><div style='font-size: 13px; font-family: verdana; '>Turma: </div></td>
+                        <td><div name="nome" id="nome"></div> </td></td>
+                    </tr>
+                    <tr>
+                        <td><div id="semestrel" style='font-size: 13px; font-family: verdana; '>Semestre: </div></td>
+                        <td><div name="semestre" id="semestre"></div> </td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding-top: 20px;"><input type="hidden" value="-1" id="id" /> <input type="button" id="btnSave" value="Salvar" /></td>
+                    </tr>
+                </table>
+            </div>
+      </div>
+
+
+     <div id="PesquiAluno">
+         <div id="windowHeader">
+             <span>
+                Adicionar alunos na turma
+             </span>
+         </div>
+
+         <div style="overflow: hidden;" id="windowContent">
+             <table border="0">
+                 <tr>
+                     <td><div style='font-size: 13px; font-family: verdana; '>Pesquisar: </div></td>
+                     <td><input type="text" name="pesqaluno" id="pesqaluno" /> </td>
+                     <td><input type="button" id="btnSelaluno" value="Adicionar" /></td>
+                 </tr>
+             </table>
+
+             <div id="gridpesq"></div>
+
+         </div>
+      </div>
+
+    <script language="javascript">
+
+
+                // Global variables iniciais
+                var rowIndex = -1;
+                var rowProfessores = -1;
+                var dataAdapter2;
+                var cursosData = new Array();
+                var profes = new Array();
+
+                {% for i in cursos %}
+                    cursosData[{{ i.id }}]="{{i.id}}-{{ i.nome }} - {{ i.anoGrade }}";
+                {% endfor %}
+
+                {% for i in profs %}
+                    profes.push("{{i.id}}-{{ i.nome }}");
+                {% endfor %}
+
+                // Ações iniciais do sistema
+                $("semestrel").hide();
+                $("semestre").hide();
+                $("#pro").hide();
+
+                $("#window").hide();
+                $('#window').jqxWindow({
+                    maxHeight: 200,
+                    maxWidth: 260,
+                    minHeight: 100,
+                    minWidth: 200,
+                    height: 200,
+                    width: 250
+                });
+
+                $("#btnSave").jqxButton();
+
+
+                $("#gridAlunos").jqxGrid(
+                    {
+                        width: 200,
+                        columns: [
+                          { text: 'ID', datafield: 'id', width: 0 },
+                          { text: 'Name', datafield: 'nome', width: 200 },
+                        ]
+                    });
+
+                $("#gridatribuicao").jqxGrid(
+                    {
+                        width: 800,
+                        columns: [
+                            { text: 'Name', datafield: 'nome', width: 750 },
+                        ]
+                    });
+
+
+                function fillAlunosTurma()
+                {
+
+                    $("#gridAlunos").jqxGrid('clear');
+
+                    var url = "/listAlunosTurma";
+                    // prepare the data
+                    var source =
+                    {
+                        datatype: "json",
+                        datafields: [
+                            { name: 'id'},
+                            { name: 'nome'},
+                        ],
+                        data: {
+                            'idturma': $("#turma").val().split('-')[0],
+                             csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        type: 'POST',
+                        url: url,
+                        async: false
+                    };
+                    var dataAdapter = new $.jqx.dataAdapter(source);
+
+                    $("#gridAlunos").jqxGrid(
+                        {
+                            width: 800,
+                            source: dataAdapter,
+                            columns: [
+                              { text: 'ID', datafield: 'id', width: 0 },
+                              { text: 'Name', datafield: 'nome', width: 750 },
+                            ]
+                        }
+                    );
+
+                    $('#gridAlunos').jqxGrid('hidecolumn', 'id');
+
+                }
+
+                function setupPesquialuno()
+                {
+                     // Window pesquisar aluno
+                     $("#PesquiAluno").hide();
+                     $('#PesquiAluno').jqxWindow({
+        {#                    showCollapseButton: false,#}
+                            maxHeight: 500,
+                            maxWidth: 600,
+                            minHeight: 410,
+                            minWidth: 510,
+                            height: 410,
+                            width: 510
+                    });
+
+                    $("#pesqaluno").jqxInput({  width: '250px', height: '20px' });
+                    $("#btnSelaluno").jqxButton({width: 100});
+                    $("#btnSelaluno").on('click', function(e){
+                         var text = $('#gridpesq').jqxGrid('getcelltextbyid', rowIndex, "id");
+
+                         if( text) {
+                             $("#id").val(text);
+                             var nomeV = $('#gridpesq').jqxGrid('getcelltextbyid', rowIndex, "nome");
+                             var idV = $('#gridpesq').jqxGrid('getcelltextbyid', rowIndex, "id");
+
+                             $.ajax({
+                                url:  "/cadTurmaAlunosDisc",
+                                data: {
+                                    "aluno": idV,
+                                    "nome": nomeV,
+                                    "idturma": $("#turma").val().split('-')[0],
+                                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                                },
+                                cache: false,
+                                type: "POST",
+                                datatype: 'json',
+                                async: false,
+                                success: function(response) {
+                                    var respint = parseInt(response);
+
+                                    if(respint == 1) {
+                                        // Close window
+                                        fillAlunosTurma();
+                                        $('#PesquiAluno').jqxWindow('close');
+
+                                    } else {
+                                        alert('Erro ao cadastrar a disciplina');
+                                    }
+                                }
+                            });
+
+                         // Insert em NotaFalta e setFillgrade
+                         } else {
+                             alert('selecione uma linha!');
+                         }
+                    });
+
+                    $("#pesqaluno").on('keyup', function(event){
+                        var url =  "/getAlunosCurso";
+                        // prepare the data
+                        var source =
+                        {
+                            datatype: "json",
+                            datafields: [
+                                { name: 'id'},
+                                { name: 'nome'}
+                            ],
+                            data: {
+                                'idcurso': $("#curso").val().split('-')[0],
+                                'nome': $("#pesqaluno").val(),
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                            },
+                            type: 'POST',
+                            url: url,
+                            async: false
+                        };
+                        var dataAdapter = new $.jqx.dataAdapter(source);
+
+                        $("#gridpesq").jqxGrid(
+                        {
+                            width: 780,
+                            source: dataAdapter,
+                            columns: [
+                              { text: 'ID', datafield: 'id', width: 0 },
+                              { text: 'Name', datafield: 'nome', width: 400 }
+                            ]
+                        });
+
+                         $('#gridpesq').on('rowselect', function (event){
+                                rowIndex = event.args.rowindex;
+                         });
+                        $('#gridpesq').jqxGrid('hidecolumn', 'id');
+                    });
+                }
+
+{#                function setLook()#}
+{#                {#}
+{#                    var rows = $('#gridatribuicao').jqxGrid('getrows');#}
+{#                    for(var i=0; i<rows.length; i++) {#}
+{#                        $("#sel" + i ).jqxDropDownList({source: profes, width: '200', height: '18'});#}
+{#                        $("#sel" + i ).on('select', function (event) {#}
+{#                            //console.log("I: "+ rowProfessores);#}
+{#                            dataAdapter2.records[rowProfessores]['profsel'] = $("#sel"+rowProfessores).val()+'-'+dataAdapter2.records[rowProfessores]['id'];#}
+{#                            //console.log("Val mudado: "+ dataAdapter2.records[rowProfessores]['profsel']);#}
+{#                        });#}
+{#                    }#}
+{#                }#}
+
+                function fillAtribuicao()
+                {
+                    $("#gridatribuicao").jqxGrid('clear');
+
+                    var url = "/listDiscTurma";
+                    // prepare the data
+                    var source2 =
+                    {
+                        datatype: "json",
+                        datafields: [
+                            { name: 'id'},
+                            { name: 'nome', type: 'string'},
+                            { name: 'profsel', type: 'string'},
+                            { name: 'inicio', type: 'date'},
+                            { name: 'fim', type: 'date'},
+                            { name: 'acesso', type: 'bool'},
+                        ],
+                        data: {
+                            'idturma': $("#turma").val().split('-')[0],
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        type: 'POST',
+                        url: url,
+                        async: false
+                    };
+                    dataAdapter2 = new $.jqx.dataAdapter(source2);
+
+                    function atualizaCampos()
+                    {
+
+                    }
+
+                    $("#gridatribuicao").jqxGrid(
+                    {
+                        width: 870,
+                        source: dataAdapter2,
+                        editable: true,
+                        columns: [
+                            { text: 'ID', datafield: 'id', width: 0, visible: false },
+                            { text: 'Name', datafield: 'nome', width: 310, editable: false},
+                            { text: 'Professor', datafield: 'profsel', width: 200, columntype: 'dropdownlist',
+                                createeditor: function (row, column, editor) {
+                                    // assign a new data source to the dropdownlist.
+                                    editor.jqxDropDownList({ autoDropDownHeight: true, source: profes });
+                                },
+                                // update the editor's value before saving it.
+                                cellvaluechanging: function (row, column, columntype, oldvalue, newvalue) {
+                                    // return the old value, if the new value is empty.
+
+                                    if (newvalue == "") return oldvalue;
+                                }
+                            },
+                            {
+                                text: 'Inicio', datafield: 'inicio', width: 110, columntype: 'datetimeinput', cellsformat: 'd/M/yyyy', createeditor: function (row, cellvalue, editor) {
+                                    editor.jqxDateTimeInput({ culture: 'en-CA' });
+
+                                }
+                            },
+                            {
+                                text: 'Fim', datafield: 'fim', width: 110, columntype: 'datetimeinput', cellsformat: 'd/M/yyyy', createeditor: function (row, cellvalue, editor) {
+                                    editor.jqxDateTimeInput({ culture: 'en-CA' });
+                               }
+                            },
+                            { text: 'Acesso', datafield: 'acesso', columntype: 'checkbox', width: 70, editable: true, type: 'bool' },
+                        ]
+                    });
+
+                     $("#btnSaveProf").click(function(event){
+                         // update entire table
+                                                  
+
+                        $.ajax({
+                            url:  "/changeAtrib",
+                            cache: false,
+                            data: {
+                                "id": $('#gridatribuicao').jqxGrid('getcelltextbyid', rowProfessores, "id"),
+                                "prof": value,
+                                "inicio": $('#gridatribuicao').jqxGrid('getcelltextbyid', rowProfessores, "inicio"),
+                                "fim": $('#gridatribuicao').jqxGrid('getcelltextbyid', rowProfessores, "fim"),
+                                "acesso": $('#gridatribuicao').jqxGrid('getcelltextbyid', rowProfessores, "acesso"),
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                            },
+                            type: "POST",
+                            datatype: 'json',
+                            async: false,
+                            success: function(response) {
+                                var respint = parseInt(response);
+
+                                if(respint == 1) {
+                                    console.log('Dados salvos com sucesso!!!');
+                                } else {
+                                    alert('Erro ao cadastrar a turma');
+                                }
+                            }
+                        });
+                    });
+
+                    $('#gridatribuicao').jqxGrid('hidecolumn', 'id');
+                    $('#gridatribuicao').on('rowselect', function (event){
+                        rowProfessores = event.args.rowindex;
+                        //setLook();
+                    });
+
+
+
+{#                    $('#gridatribuicao').on('keyup', function (event){#}
+{#                        setLook();#}
+{#                    });#}
+
+{#                    setLook();#}
+                }
+
+{#                otherRenderer = function(row, columnfield, value, defaulthtml, columnproperties) {#}
+{#                    console.log("Row "+ row);#}
+{#                    console.log("columnfield "+ columnfield);#}
+{#                    console.log("value "+ value);#}
+{#                    console.log("defaulthtml "+ defaulthtml);#}
+{#                    console.log("columnproperties "+ columnproperties);#}
+{##}
+{#                    var id = arguments[0];#}
+{#                    return "<div id='sel"+id+"'></div>";#}
+{#                };#}
+
+                 $(document).ready( function() {
+
+                    //dataAdapter2.records[0]['profsel']
+                    setupPesquialuno();
+                    $("#curso").jqxDropDownList({source: cursosData, width: '500', height: '25'});
+                    $("#profs").jqxDropDownList({source: profes, width: '500', height: '25'});
+
+
+
+                    $('#curso').on('select', function (event) {
+                        var args = event.args;
+                        if (args) {
+                              // get quant periodos curso
+                              $.ajax({
+                                url:  "/getPeriodos/"+$("#curso").val().split('-')[0],
+                                cache: false,
+                                type: "GET",
+                                datatype: 'json',
+                                async: false,
+                                success: function(response) {
+
+                                    // Limpando grid
+                                    try {
+                                        $('#gridAlunos').jqxGrid('clear');
+                                        $('#gridatribuicao').jqxGrid('clear');
+                                        $("#turma").jqxDropDownList('clear');
+                                        $("#ano").jqxDropDownList('clear');
+                                        $("#periodos").jqxDropDownList('clear');
+                                    } catch(err)  {
+                                        console.log('Ainda não foi construído'+ err);
+                                    }
+
+                                    // remove todos elementos
+                                    var dataN = new Array();
+                                    $("#periodos").off('change');
+                                    $("#periodos").val('');
+
+                                    for ( var i = 1; i <= parseInt(response.periodos); i++ ) {
+                                       dataN.push( i );
+                                    }
+
+                                    $("#periodos").jqxDropDownList({source: dataN, width: '70', height: '25'});
+                                    $('#periodos').on('change', function (event){
+                                        // Limpando grid
+                                        try {
+                                            $('#gridAlunos').jqxGrid('clear');
+                                            $('#gridatribuicao').jqxGrid('clear');
+                                            $("#turma").jqxDropDownList('clear');
+                                            $("#ano").jqxDropDownList('clear');
+                                        } catch(err)  {
+                                            console.log('Ainda não foi construído'+ err);
+                                        }
+
+                                        anoListener();
+                                    });
+
+                                    // Semestrer window Criar turmas
+                                    var datasemestre = [1, 2];
+                                    $("#semestre").jqxDropDownList({source: datasemestre, width: '70', height: '25'});
+                                    $("#semestre").jqxDropDownList('val', 1);
+
+                                    if(response.periodopor == 'Semestre') {
+                                        $("#semestre").show();
+                                        $("#semestrel").show();
+                                    } else {
+                                        $("#semestre").hide();
+                                        $("#semestrel").hide();
+                                    }
+                                    // Fim Window das turmas
+
+                                }
+                                });
+                        }
+                    });
+
+                    function anoListener()
+                    {
+                        var data = new Date();
+                        var itens = new Array();
+
+                        // Adicionando anos com mais de 30 abaixo
+                        for (var i=data.getFullYear()-30; i<=data.getFullYear()+1;i++) {
+                            itens.push( i );
+                        }
+
+                        // Listener
+
+                        $("#ano").off('change');
+                        $("#ano").jqxDropDownList('clear');
+                        $("#ano").jqxDropDownList({ source: itens,  width: '70px', height: '20px' });
+
+                        $("#ano").on('change', function() {
+                          // Limpando grid
+                          try {
+                              $('#gridAlunos').jqxGrid('clear');
+                              $('#gridatribuicao').jqxGrid('clear');
+                              $("#turma").jqxDropDownList('clear');
+                          } catch(err)  {
+                              console.log('Ainda não foi construído'+ err);
+                          }
+                          fillTurmas();
+                        });
+
+                        // Set current Year
+                        $("#ano").jqxDropDownList('val',data.getFullYear());
+                    }
+
+
+
+                     function fillTurmas()
+                     {
+                         $.ajax({
+                            url:  "/getTurmas/"+$("#curso").val().split('-')[0]+'/'+$("#periodos").val()+"/"+$("#ano").val(),
+                            cache: false,
+                            type: "GET",
+                            datatype: 'json',
+                            async: false,
+                            success: function(response) {
+                                // remove todos elementos
+                                var dataN = new Array();
+                                for ( var i = 0; i < response.length; i++ ) {
+                                   dataN.push(response[i].id+'-'+response[i].nome);
+                                }
+
+                                $("#turma").off('select');
+                                $("#turma").jqxDropDownList({source: dataN, width: '70', height: '25'});
+                                $('#turma').on('select', function (event) {
+                                    // Limpando grid
+                                    try {
+                                        $('#gridAlunos').jqxGrid('clear');
+                                        $('#gridatribuicao').jqxGrid('clear');
+                                    } catch(err)  {
+                                        console.log('Ainda não foi construído'+ err);
+                                    }
+
+                                    fillAlunosTurma();
+                                    fillAtribuicao();
+                                });
+                            }
+                        });
+                     }
+
+                    $("#remTurma").jqxButton({width: 20});
+                    $("#addTurma").jqxButton({width: 20});
+                    $("#addAluno").jqxButton({width: 20});
+                    $("#remAluno").jqxButton({width: 20});
+                    $("#btnSaveProf").jqxButton({width: 150});
+
+
+
+
+
+                    $("#addAluno").click(function(event){
+                        $("#PesquiAluno").jqxWindow('open');
+                        $('#gridpesq').jqxGrid('clear');
+                        $("#pesqaluno").val('');
+                    });
+
+                    $("#addTurma").click(function(event){
+                        var turmas = [
+                                'A',
+                                'B',
+                                'C',
+                                'D',
+                                'E',
+                                'F',
+                                'G',
+                                'H',
+                                'I',
+                                'J',
+                                'K',
+                                'L',
+                                'M',
+                                'N',
+                                'O',
+                                'P',
+                                'Q',
+                                'R',
+                                'S',
+                                'T',
+                                'U',
+                                'V',
+                                'X',
+                                'Z'
+                        ];
+
+                        var itensToRemove = $("#turma").jqxDropDownList('getItems');
+
+                        for (var i = 0; i < itensToRemove.length; i++) {
+                            try {
+    {#                           $("#nome").jqxDropDownList('removeItem', itensToRemove[i].label.split('-')[1]);#}
+                                var rem = itensToRemove[i].label.split('-')[1];
+                                delete turmas[turmas.indexOf(rem)];
+                            } catch(err) {
+                                console.log('Deu erro' + err);
+                            }
+                        }
+
+                        console.log('itens: '+ itensToRemove);
+                        $("#nome").jqxDropDownList({source: turmas, width: '70', height: '25'});
+
+
+                        $('#window').jqxWindow('open');
+                    });
+
+                    $("#remTurma").click(function(event){
+                        $.ajax({
+                                url:  "/delturma",
+                                data: {
+                                    "curso": $("#curso").val().split('-')[0],
+                                    "nome": $("#turma").val().split('-')[1],
+                                    "anosemestre": $("#periodos").val(),
+                                    "anoturma": $("#ano").val(),
+                                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                                },
+                                cache: false,
+                                type: "POST",
+                                datatype: 'json',
+                                async: false,
+                                success: function(response) {
+                                    var respint = parseInt(response);
+
+                                    if(respint == 1) {
+                                        // Close window
+                                        fillTurmas();
+                                    } else {
+                                        alert('Erro ao cadastrar a turma');
+                                    }
+                            }
+                        });
+                    });
+
+                     $("#btnSave").bind('click', function () {
+                         $.ajax({
+                                url:  "/cadturmas",
+                                data: {
+                                    "curso": $("#curso").val().split('-')[0],
+                                    "nome": $("#nome").val(),
+                                    "anosemestre": $("#periodos").val(),
+                                    "semestre": $("#semestre").val(),
+                                    "anoturma": $("#ano").val(),
+                                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                                },
+                                cache: false,
+                                type: "POST",
+                                datatype: 'json',
+                                async: false,
+                                success: function(response) {
+                                    var respint = parseInt(response);
+
+                                    if(respint == 1) {
+                                        // Close window
+                                        $('#window').jqxWindow('close');
+                                        fillTurmas();
+    {#                                    // Fill grid without refresh page#}
+    {#                                    setGrid();#}
+                                    } else {
+                                        alert('Erro ao cadastrar a turma');
+                                    }
+                            }
+                        });
+                    });
+
+                    $('#jqxTabs').jqxTabs({ width: '100%', height: '100%', position: 'top'});
+                 });
+
+    </script>
+
+{% endblock %}

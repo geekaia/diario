@@ -414,8 +414,13 @@
 
          try {
              var date = new Date();
-            date.setFullYear({{ prof.nascimento|date:'Y' }}, {{   prof.nascimento|date:'m' }}, {{ prof.nascimento|date:'d' }});
-            $('#nascimento').jqxDateTimeInput('setDate', date);
+             var data = '{{ curso.nascimento|safe }}';
+
+             var day = data.split('-')[2].split(' ')[0];
+             var month = data.split('-')[1];
+             var year = data.split('-')[0];
+             date.setFullYear(parseInt(year), parseInt(month) -1 ,parseInt(day));
+             $('#nascimento').jqxDateTimeInput('setDate', date);
          } catch(err)  {
              console.log('Err');
          }

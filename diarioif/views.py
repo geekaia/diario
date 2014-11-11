@@ -26,9 +26,7 @@ from django.core.context_processors import csrf
 @login_required()
 def home(request):
     mensagem = ''
-
     isAuth = request.user.is_authenticated()
-
     context = {'mensagem': mensagem, 'isAuth':isAuth}
 
     return render(request, 'base.html', context)
@@ -135,7 +133,6 @@ def changeProfile(request, id=None):
 @login_required()
 def getCities(request):
 
-
     cidades = []
     if request.POST:
         estado=request.POST['estado']
@@ -188,8 +185,9 @@ def cursocad(request, id=None):
         curso.dataPublicacao = date_manip
         curso.formaingresso = request.POST['formaingresso']
         curso.avaliacaopor = request.POST['avaliacaopor']
-
         curso.save()
+
+        return redirect('/listCourses')
 
 
     if id != None:
@@ -198,6 +196,73 @@ def cursocad(request, id=None):
 
 
     return render(request, 'cursoCad.html', context)
+
+@login_required()
+def bimestrecad(request, id=None):
+    context = {}
+
+    if request.POST:
+        try:
+            bimestre = Bimestre.objects.get(pk=int(request.POST['id']))
+            print 'Peguei o id do Bimestre'
+        except:
+            bimestre = Bimestre()
+
+        bimestre.ano = request.POST['ano']
+        bimestre.bimestreSemestre = request.POST['bimestreSemestre']
+        bimestre.numero = request.POST['numero']
+
+        date_manip = datetime.strptime(request.POST['dataInicio'], '%d/%m/%Y')
+        bimestre.dataInicio = date_manip
+
+        date_manipF = datetime.strptime(request.POST['dataFim'], '%d/%m/%Y')
+        bimestre.dataFim = date_manipF
+
+        bimestre.save()
+
+        return redirect('/listBimestres')
+
+    if id != None:
+        bimestre = Bimestre.objects.get(pk=id)
+        context['bimestre'] = bimestre
+
+    return render(request, 'cadBimestre.html', context)
+
+
+@login_required()
+def geBimestres(request, ano=None):
+
+    bimestres = []
+
+    print "Ano ", ano
+
+    try:
+
+        bimestreList = Bimestre.objects.filter(ano=str(ano))
+
+        print "len(bi): ", len(bimestreList)
+
+        for i in bimestreList:
+            bimestre = {}
+            bimestre['id'] = i.id
+            bimestre['ano'] = i.ano
+            bimestre['bimestreSemestre'] = i.bimestreSemestre
+            bimestre['numero'] = i.numero
+            bimestre['dataInicio'] = i.dataInicio.strftime('%d/%m/%Y')
+            bimestre['dataFim'] = i.dataFim.strftime('%d/%m/%Y')
+            bimestres.append(bimestre)
+            # cidades[i.id] = i.nome
+    except:
+        print 'Erro ao pegar cidades'
+
+    return HttpResponse(json.dumps(bimestres), content_type="application/json")
+
+
+@login_required()
+def listBimestres(request, id=None):
+    context = {}
+
+    return render(request, 'bimestreList.html', context)
 
 
 def toUTF8(val):
@@ -245,8 +310,6 @@ def toUTF8(val):
 def getUsers(request):
 
     users = []
-
-
     profs = ProfileUser.objects.all()
 
     for prof in profs:
@@ -255,7 +318,6 @@ def getUsers(request):
         user['nome'] =  prof.nome
         user['username'] =  prof.user.username
         users.append(user)
-
 
 
     return HttpResponse(json.dumps(users), content_type="application/json")
@@ -296,9 +358,301 @@ def listCourses(request):
     return render(request, 'cursoList.html', context)
 
 
+@login_required()
+def turmas(request):
+
+    context = {}
+    cursos = Curso.objects.all()
+    context['cursos'] = cursos
+
+    profs = ProfileUser.objects.filter(tipo='Professor')
+    context['profs'] = profs
+
+    return render(request, 'turmas.html', context)
+
+@login_required()
+def getTurmas(request, idcurso, periodo, ano ):
+    turmas = []
+
+    curso = Curso.objects.get(pk=idcurso)
+    turmasL = Turma.objects.filter(curso=curso, anosemestre=periodo, anoturma=ano)
+
+    for i in turmasL:
+        turma = {}
+        turma['id'] = i.id
+        turma['nome'] = i.nome
+        turmas.append(turma)
+
+
+    return HttpResponse(json.dumps(turmas), content_type="application/json")
+
+@login_required()
+def cadturmas(request):
+    try:
+        if request.POST:
+            # Lembrar de perguntar o periodo da turma caso o curso seja semestral para que possa montar o período inicial e final
+            turma = Turma()
+            turma.nome = request.POST['nome']
+            turma.anosemestre = request.POST['anosemestre']
+
+            # caso o curso seja semestral primeiro ou segundo semestre
+            periodo = request.POST['semestre']
+
+            turma.anoturma = request.POST['anoturma']
+            courseid = request.POST['curso']
+            turma.curso = Curso.objects.get(pk=courseid)
+            turma.save()
+
+            discs = Disciplina.objects.filter(curso=turma.curso, periodo=turma.anosemestre)
+            for disc in discs:
+                atrib = AtribAula()
+
+                # Atribuição de aula.
+                atrib.disciplina = disc
+                atrib.turma = turma
+
+                quantaV = 0
+
+                # Aqui temos toos os possíveis arranjos de cursos
+                # O Ano pode ser Anual
+                                # avaliações: Bimestrais ou Semestrais
+
+                # Semestral
+                                # Avaliações: Semestrais e Semestrais
+
+
+                inicio = 0
+
+                # Indez matriz 0, 1, 2, 3
+                if turma.curso.periodo == 'Ano' and turma.curso.avaliacaopor == 'Bimestre':
+                    print "Cai aqui 1"
+                    quantaV = 3
+                    bimestresSem = Bimestre.objects.filter(ano=turma.anoturma, bimestreSemestre='bimestre')
+                elif turma.curso.periodo == 'Ano' and turma.curso.avaliacaopor == 'Semestre':
+                    print "Cai aqui 2"
+                    quantaV = 1
+                    bimestresSem = Bimestre.objects.filter(ano=turma.anoturma, bimestreSemestre='semestre')
+
+                # Ainda falta determinar o início e fim pelo período
+                elif turma.curso.periodo == 'Semestre' and turma.curso.avaliacaopor == 'Bimestre':
+                    print "Cai aqui 3"
+                    if int(periodo) == 1:
+                        quantaV = 1
+                    else:
+                        inicio = 2
+                        quantaV = 3
+                    bimestresSem = Bimestre.objects.filter(ano=turma.anoturma, bimestreSemestre='bimestre')
+                # Ainda falta determinar o início e fim pelo período
+                elif turma.curso.periodo == 'Semestre' and turma.curso.avaliacaopor == 'Semestre':
+                    print "Cai aqui 4"
+                    if int(periodo) == 1:
+                        quantaV = 0
+                    else:
+                        inicio = 1
+                        quantaV = 1
+
+                    bimestresSem = Bimestre.objects.filter(ano=turma.anoturma, bimestreSemestre='semestre')
+
+                first = bimestresSem[inicio]
+                last = bimestresSem[quantaV]
+
+                # default 1 ano para cursos anuais e 6 meses para cursos semestrais
+                atrib.periodoInicio = first.dataInicio
+                atrib.periodoFim = last.dataFim
+                atrib.acesso = True
+                atrib.save()
+
+            return HttpResponse(1)
+
+    except:
+
+        return HttpResponse(-1)
+
+
+@login_required()
+def delturma(request):
+    try:
+        if request.POST:
+            nome = request.POST['nome']
+
+            anosemestre = request.POST['anosemestre']
+            anoturma = request.POST['anoturma']
+            courseid = request.POST['curso']
+            curso = Curso.objects.get(pk=courseid)
+            t = Turma.objects.get(nome=nome, anoturma=anoturma, curso=curso, anosemestre=anosemestre)
+            t.delete()
+
+            return HttpResponse(1)
+    except:
+        return HttpResponse(-1)
+
+@login_required()
+def getAlunosCurso(request):
+
+    try:
+        alunosmatch = []
+        idcurso = request.POST['idcurso']
+        nome = request.POST['nome']
+
+        # Aqui tem que mostrar os alunos que estão matriculados regularmente no curso
+        alunos = ProfileUser.objects.filter(tipo='Aluno', nome__contains=nome)
+
+        for i in alunos:
+            aluno = {}
+            aluno['id'] = i.id
+            aluno['nome'] = i.nome
+            alunosmatch.append(aluno)
+
+        return HttpResponse(json.dumps(alunosmatch), content_type="application/json")
+
+    except:
+        return HttpResponse(json.dumps(alunosmatch), content_type="application/json")
+
+@login_required()
+def cadTurmaAlunosDisc(request):
+    try:
+        idturma = request.POST['idturma']
+        print "idturma ", idturma
+        turma = Turma.objects.get(pk=idturma)
+        idaluno = request.POST['aluno']
+        print "idaluno ", idaluno
+        aluno = ProfileUser.objects.get(pk=idaluno)
+
+        print 'ok1'
+
+        # disciplinas
+        dics = Disciplina.objects.filter(curso=turma.curso, periodo=turma.anosemestre)
+        print 'ok2'
+
+        for disc in dics:
+            try:
+                # verifica se já não há nada para esta disciplina  - Isto evita duplicidade
+                nota = Notafalta.objects.get(disciplina=disc, curso=turma.curso, turma=turma, aluno=aluno)
+
+                # Pula pq já tem cadastro e não tem problema
+                continue
+            except:
+                nota = Notafalta()
+
+            nota.aluno = aluno
+            nota.disciplina = disc
+            nota.curso = turma.curso
+            nota.turma = turma
+            nota.falta1b = 0
+            nota.falta2b = 0
+            nota.falta3b = 0
+            nota.falta4b = 0
+            nota.falta5b = 0
+            nota.save()
+
+        return HttpResponse(1)
+    except Exception, e:
+        return HttpResponse(-1)
+
+@login_required()
+def listDiscTurma(request):
+    discs = []
+
+    try:
+        # profs = ProfileUser.objects.filter(tipo='Professor')
+        idturma = request.POST['idturma']
+        t = Turma.objects.get(pk=idturma)
+        dicsL = Disciplina.objects.filter(curso=t.curso, periodo=t.anosemestre)
+
+
+        for i in dicsL:
+            atrib  = AtribAula.objects.filter(disciplina=i, turma=t)
+
+            for at in atrib:
+                dic = {}
+                dic['id'] = i.id
+                dic['nome'] = i.nome
+                dic['inicio'] = at.periodoInicio.isoformat()
+                dic['fim'] = at.periodoFim.isoformat()        #strftime("%d/%m/%Y")
+                dic['acesso'] = at.acesso
+
+                try:
+                    u = ProfileUser.objects.get(pk=at.professor.id)
+                    profsel = str(u.id) + '-' + u.nome
+                except:
+                    print 'err'
+                    profsel =''
+
+                dic['profsel'] = profsel
+
+                discs.append(dic)
+
+    except Exception, e:
+        print 'Hello exception %s !!!' % e
+
+
+    return HttpResponse(json.dumps(discs), content_type="application/json")
 
 
 
+@login_required()
+def changeAtrib(request):
+    try:
+        at = AtribAula.objects.get(pk=request.POST['id'])
+        prof = ProfileUser.objects.get(pk=request.POST['prof'].split('-')[0])
+        at.professor = prof
+        inicio = datetime.strptime(request.POST['inicio'], '%d/%m/%Y')
+        at.periodoInicio = inicio
+        fim = datetime.strptime(request.POST['fim'], '%d/%m/%Y')
+        at.periodoFim = fim
+        at.acesso = request.POST['acesso']
+        at.save()
+
+        return HttpResponse(1)
+    except:
+        return HttpResponse(-1)
+
+
+
+@login_required()
+def listAlunosTurma(request):
+    alunos = []
+
+    try:
+        turma = Turma.objects.get(pk=request.POST['idturma'])
+        data = Notafalta.objects.values_list('aluno').filter(turma=turma).distinct()
+
+        for i in data:
+            print "Inteiro: ",  int(i[0])
+            aluno = {}
+            prof =  ProfileUser.objects.get(pk=int(i[0]))
+            aluno['id'] = int(i[0])
+            aluno['nome'] = prof.nome
+            alunos.append(aluno)
+    except:
+        print 'err'
+
+    return HttpResponse(json.dumps(alunos), content_type="application/json")
+
+
+@login_required()
+def updateRow(request):
+
+    try:
+        id = request.POST['id']
+        teacherid = request.POST['teacherid']
+        disc = request.POST['disc']
+
+        user = User.objects.get(pk=teacherid)
+
+        Notafalta.objects.filter()
+
+    except:
+        print 'erro ao atualizar'
+
+
+
+
+
+    return HttpResponse(-1)
+
+
+@login_required()
 def listUsuarios(request):
 
     context = {}
@@ -308,8 +662,8 @@ def listUsuarios(request):
     context['cursos'] = cursos
 
 
-
     return render(request, 'listagemAlunos.html', context)
+
 
 
 
@@ -403,7 +757,93 @@ def getCep(request):
     return HttpResponse(json.dumps(ruaslist), content_type="application/json")
 
 
+@login_required()
+def getPeriodos(request, idcurso=None):
+    cursoNumPs = {}
 
+    try:
+        curso = Curso.objects.get(pk=idcurso)
+        cursoNumPs['periodos'] = curso.quantPeriodo
+        cursoNumPs['periodopor'] = curso.periodo # Ano/Semestre
+
+
+    except:
+
+        print 'Erro Periodos'
+
+    return HttpResponse(json.dumps(cursoNumPs), content_type="application/json")
+
+
+@login_required()
+def disciplinas(request):
+
+    context = {}
+    cursos = Curso.objects.all()
+    context['cursos'] = cursos
+
+    return render(request, 'disciplinas.html', context)
+
+
+@login_required()
+def getDisciplinas(request,idcurso=None, numperiodo=None):
+    Disciplinas = []
+
+    try:
+        curso = Curso.objects.get(pk=idcurso)
+        discL = Disciplina.objects.filter(curso=curso, periodo=numperiodo)
+
+
+        for i in discL:
+            disc = {}
+            disc['id'] = i.id
+            disc['nome'] = i.nome
+            disc['periodo'] = i.periodo
+            disc['horaaula'] = i.horaaula
+            disc['hora'] = i.hora
+            Disciplinas.append(disc)
+    except:
+        print 'Erro Periodos'
+
+    return HttpResponse(json.dumps(Disciplinas), content_type="application/json")
+
+
+@login_required()
+def cadDisciplinas(request):
+
+    try:
+        if request.POST:
+
+            cursoID = request.POST['curso']
+            curso = Curso.objects.get(pk=cursoID)
+
+            id = request.POST['id']
+
+            if int(id) == -1:
+                disc = Disciplina()
+            else:
+                disc = Disciplina.objects.get(pk=id)
+
+            disc.nome = request.POST['nome']
+            disc.horaaula = request.POST['horaaula']
+            disc.periodo = int(request.POST['periodo'])
+            disc.hora = request.POST['hora']
+            disc.curso = curso
+            disc.save()
+
+            return HttpResponse(1)
+
+    except:
+        return HttpResponse(-1)
+
+@login_required()
+def removerDisc(request, idrem=None):
+    try:
+        disc = Disciplina.objects.get(pk=idrem)
+        disc.delete()
+
+        return HttpResponse(1)
+    except:
+        return HttpResponse(-1)
 
 
 @login_required()
