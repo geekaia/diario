@@ -1,0 +1,515 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+        <h1>Lançar Notas</h1>
+        <table border="0">
+        <tr>
+            <td><div style='font-size: 13px; font-family: verdana; '>Curso: </div></td>
+            <td colspan="4"><div id="curso" name="curso"></div></td>
+        </tr>
+
+         <tr>
+            <td>
+                <div style='font-size: 13px; font-family: verdana; '>Períodos: </div>
+            </td>
+            <td>
+                <div id="periodos" name='periodos'> </div>
+            </td>
+             <td>
+                 <div style='font-size: 13px; font-family: verdana; '>Ano: </div>
+             </td>
+             <td>
+                <div id="ano" name='ano' />
+            </td>
+            <td style="padding-left: 150px;">
+                <table border="0">
+                    <tr>
+                        <td> <div id="turma" name="turma" /> </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+       </table>
+    <b />
+    <b />
+
+    <div id='myNav'>
+        <div>
+            Disciplinas
+        </div>
+        <div>
+            <table border="0">
+                <tr style="padding-top: 20px;">
+                    <td><div style='font-size: 13px; font-family: verdana; '>Bimestre: </div></td>
+                    <td colspan="1"> <div id="bimestre" name='bimestre'></div></td>
+                    <td colspan="1"> <input type="button" value="Lançar Notas" id="LancarNota" /> </td>
+                </tr>
+            </table>
+            <br />
+
+            <div id="gridatribuicao"></div>
+        </div>
+        <div>
+            Notas e Faltas
+        </div>
+        <div>
+
+            <table>
+                <tr>
+                    <td><div style="padding: 10px;">
+                <input type="button" value="Salvar" id="btnSalvarNotas" />
+            </div>
+                    </td>
+                    <td><div id="disciplinasel">Disciplina</div> </td>
+
+                </tr>
+            </table>
+
+
+            <div id="gridAlunos"></div>
+        </div>
+    </div>
+
+
+
+
+    <script language="javascript">
+
+                // Global variables iniciais
+                var rowIndex = -1;
+                var rowProfessores = -1;
+                var dataAdapter2;
+                var cursosData = new Array();
+
+                {% for i in cursos %}
+                    cursosData[{{ i.id }}]="{{i.id}}-{{ i.nome }} - {{ i.anoGrade }}";
+                {% endfor %}
+
+                 $(document).ready( function() {
+
+
+                     // ***************** CURSO *****************
+                     // Curso
+                     $("#curso").jqxDropDownList({source: cursosData, width: '500', height: '25'});
+                      $('#curso').on('select', function (event) {
+                        var args = event.args;
+                        if (args) {
+                              // get quant periodos curso
+                              $.ajax({
+                                url:  "/getPeriodos/"+$("#curso").val().split('-')[0],
+                                cache: false,
+                                type: "GET",
+                                datatype: 'json',
+                                async: false,
+                                success: function(response) {
+
+                                    // Limpando grid
+                                    try {
+                                        $('#gridAlunos').jqxGrid('clear');
+                                        $('#gridatribuicao').jqxGrid('clear');
+                                        $("#turma").jqxDropDownList('clear');
+                                        $("#ano").jqxDropDownList('clear');
+                                        $("#periodos").jqxDropDownList('clear');
+                                    } catch(err)  {
+                                        console.log('Ainda não foi construído'+ err);
+                                    }
+
+                                    // remove todos elementos
+                                    var dataN = new Array();
+                                    $("#periodos").off('change');
+                                    $("#periodos").val('');
+
+                                    for ( var i = 1; i <= parseInt(response.periodos); i++ ) {
+                                       dataN.push( i );
+                                    }
+
+                                    $("#periodos").jqxDropDownList({source: dataN, width: '70', height: '25'});
+                                    $('#periodos').on('change', function (event){
+                                        // Limpando grid
+                                        try {
+                                            $('#gridAlunos').jqxGrid('clear');
+                                            $('#gridatribuicao').jqxGrid('clear');
+                                            $("#turma").jqxDropDownList('clear');
+                                            $("#ano").jqxDropDownList('clear');
+                                        } catch(err)  {
+                                            console.log('Ainda não foi construído'+ err);
+                                        }
+
+                                        anoListener();
+                                    });
+                                }
+                                });
+                        }
+                    });
+
+
+                    // *************** ANO ***************
+                    function anoListener()
+                    {
+                        var data = new Date();
+                        var itens = new Array();
+
+                        // Adicionando anos com mais de 30 abaixo
+                        for (var i=data.getFullYear()-30; i<=data.getFullYear()+1;i++) {
+                            itens.push( i );
+                        }
+
+                        // Listener
+
+                        $("#ano").off('change');
+                        $("#ano").jqxDropDownList('clear');
+                        $("#ano").jqxDropDownList({ source: itens,  width: '70px', height: '20px' });
+
+                        $("#ano").on('change', function() {
+                          // Limpando grid
+                          try {
+                              $('#gridAlunos').jqxGrid('clear');
+                              $('#gridatribuicao').jqxGrid('clear');
+                              $("#turma").jqxDropDownList('clear');
+                          } catch(err)  {
+                              console.log('Ainda não foi construído'+ err);
+                          }
+                          fillTurmas();
+                        });
+
+                        // Set current Year
+                        $("#ano").jqxDropDownList('val',data.getFullYear());
+                    }
+
+                     function fillTurmas()
+                     {
+                         $.ajax({
+                            url:  "/getTurmas/"+$("#curso").val().split('-')[0]+'/'+$("#periodos").val()+"/"+$("#ano").val(),
+                            cache: false,
+                            type: "GET",
+                            datatype: 'json',
+                            async: false,
+                            success: function(response) {
+                                // remove todos elementos
+                                var dataN = new Array();
+                                for ( var i = 0; i < response.length; i++ ) {
+                                   dataN.push(response[i].id+'-'+response[i].nome);
+                                }
+
+                                $("#turma").off('select');
+                                $("#turma").jqxDropDownList({source: dataN, width: '70', height: '25'});
+                                $('#turma').on('select', function (event) {
+                                    // Limpando grid
+                                    try {
+                                        $('#gridAlunos').jqxGrid('clear');
+                                        $('#gridatribuicao').jqxGrid('clear');
+                                        $("#myNav").jqxNavigationBar('expandAt', 0);
+                                    } catch(err)  {
+                                        console.log('Ainda não foi construído'+ err);
+                                    }
+
+                                    // get quantidade de bimestres
+                                    $.ajax({
+                                        url:  "/quantBimestre",
+                                        data: {
+                                            "idturma": $("#turma").val().split('-')[0],
+                                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                                        },
+                                        cache: false,
+                                        type: "POST",
+                                        datatype: 'json',
+                                        async: false,
+                                        success: function(response) {
+                                            var respint = parseInt( response );
+                                            var quantBi = new Array();
+
+                                            for( var i=1; i<=respint; i++) {
+                                                quantBi.push( i );
+                                            }
+                                            quantBi.push('PF');
+                                            quantBi.push('ALL');
+
+                                            $("#bimestre").jqxDropDownList({source: quantBi, width: '150', height: '25'});
+                                    }
+                                });
+                                 fillAtribuicao();
+                                });
+                            }
+                        });
+                     }
+
+                    function fillAlunosTurma()
+                    {
+                        // pega o professor
+                        $("#gridAlunos").jqxGrid('clear');
+
+                        var url = "/notasAlunosTurma";
+                        // prepare the data
+                        var source =
+                        {
+                            datatype: "json",
+                            datafields: [
+                                { name: 'id'},
+                                { name: 'nome'},
+                                { name: 'nota1b',  type: 'number'},
+                                { name: 'falta1b',  type: 'number'},
+                                { name: 'nota2b',  type: 'number'},
+                                { name: 'falta2b',  type: 'number'},
+                                { name: 'nota3b',  type: 'number'},
+                                { name: 'falta3b',  type: 'number'},
+                                { name: 'nota4b',  type: 'number'},
+                                { name: 'falta4b',  type: 'number'},
+                                { name: 'mediafinal',  type: 'number'},
+                                { name: 'recuperacao',  type: 'number'},
+                                { name: 'situacaofinal',  type: 'number'},
+                                { name: 'mediaanual',  type: 'number'},
+                                { name: 'mediapospf',  type: 'number'},
+                            ],
+                            data: {
+                                'idturma': $("#turma").val().split('-')[0],
+                                'atrib': $('#gridatribuicao').jqxGrid('getcelltextbyid', rowProfessores, "id"),
+                                'bimestre': $("#bimestre").val(),
+                                 csrfmiddlewaretoken: '{{ csrf_token }}'
+                            },
+                            type: 'POST',
+                            url: url,
+                            async: false
+                        };
+                        var dataAdapter = new $.jqx.dataAdapter( source );
+
+                        var b = $("#bimestre").val();
+                        var bim = -1;
+                        if (b =='PF')
+                        {
+                            bim = 5;
+                        } else if (b == 'ALL') {
+                            bim = 6;
+                        } else {
+                            bim = parseInt(b); // Avoid exceptions
+                        }
+
+                        var nt1 = false;
+                        var ft1 = false;
+                        var nt2 = false;
+                        var ft2 = false;
+                        var nt3 = false;
+                        var ft3 = false;
+                        var nt4 = false;
+                        var ft4 = false;
+                        var pf = false;
+
+                        // primeiro bimestre
+                        if (bim==1) {
+                            nt1 = false;
+                            ft1 = false;
+                            nt2 = true;
+                            ft2 = true;
+                            nt3 = true;
+                            ft3 = true;
+                            nt4 = true;
+                            ft4 = true;
+                            pf = true;
+                        } else if( bim==2) {
+                            nt1 = true;
+                            ft1 = true;
+                            nt2 = false;
+                            ft2 = false;
+                            nt3 = true;
+                            ft3 = true;
+                            nt4 = true;
+                            ft4 = true;
+                            pf = true;
+                        } else  if (bim==3) {
+                            nt1 = true;
+                            ft1 = true;
+                            nt2 = true;
+                            ft2 = true;
+                            nt3 = false;
+                            ft3 = false;
+                            nt4 = true;
+                            ft4 = true;
+                            pf = true;
+                        } else  if (bim==4) {
+                            nt1 = true;
+                            ft1 = true;
+                            nt2 = true;
+                            ft2 = true;
+                            nt3 = true;
+                            ft3 = true;
+                            nt4 = false;
+                            ft4 = false;
+                            pf = true;
+                        } else if(bim==5) {
+                            nt1 = true;
+                            ft1 = true;
+                            nt2 = true;
+                            ft2 = true;
+                            nt3 = true;
+                            ft3 = true;
+                            nt4 = true;
+                            ft4 = true;
+                            pf = false;
+                        } else if(bim==6) {
+                            nt1 = false;
+                            ft1 = false;
+                            nt2 = false;
+                            ft2 = false;
+                            nt3 = false;
+                            ft3 = false;
+                            nt4 = false;
+                            ft4 = false;
+                            pf  = false;
+                        }
+
+
+                        $("#gridAlunos").jqxGrid(
+                            {
+                                width: 900,
+                                source: dataAdapter,
+                                editable: true,
+                                enabletooltips: true,
+                                selectionmode: 'multiplecellsadvanced',
+                                columns: [
+                                  { text: 'ID', datafield: 'id', hidden: true },
+                                  { text: 'Name', datafield: 'nome', width: 300, editable: false },
+                                  { text: 'Nota 1b', datafield: 'nota1b', hidden: nt1,  align: 'right', cellsalign: 'right', width: 60, cellsformat: 'f', columntype: 'numberinput',
+                                    createeditor: function (row, cellvalue, editor) {
+                                          editor.jqxNumberInput({ digits: 2, min: 0, max: 10  });
+                                      }
+                                  },
+                                  { text: 'Falta 1b', datafield: 'falta1b', hidden: ft1,  width: 60, columntype: 'numberinput' },
+                                  { text: 'Nota 2b', datafield: 'nota2b', align: 'right', hidden: nt2, cellsalign: 'right', width: 60, cellsformat: 'f', columntype: 'numberinput',
+                                    createeditor: function (row, cellvalue, editor) {
+                                          editor.jqxNumberInput({ digits: 2, min: 0, max: 10  });
+                                      }
+                                  },
+                                  { text: 'Falta 2b', datafield: 'falta2b', width: 60, hidden: ft2, columntype: 'numberinput' },
+                                  { text: 'Nota 3b', datafield: 'nota3b', align: 'right', hidden: nt3, cellsalign: 'right', width: 60, cellsformat: 'f', columntype: 'numberinput',
+                                    createeditor: function (row, cellvalue, editor) {
+                                          editor.jqxNumberInput({ digits: 2, min: 0, max: 10  });
+                                      }
+                                  },
+                                  { text: 'Falta 3b', datafield: 'falta3b', width: 60, hidden: ft3, columntype: 'numberinput' },
+                                  { text: 'Nota 4b', datafield: 'nota4b', align: 'right', hidden: nt4, cellsalign: 'right', width: 60, cellsformat: 'f', columntype: 'numberinput',
+                                    createeditor: function (row, cellvalue, editor) {
+                                          editor.jqxNumberInput({ digits: 2, min: 0, max: 10  });
+                                      }
+                                  },
+                                  { text: 'Falta 4b', datafield: 'falta4b', width: 60, hidden:ft4, columntype: 'numberinput' },
+                                  { text: 'MF', datafield: 'mediafinal', align: 'right', hidden: true, cellsalign: 'right', width: 60, cellsformat: 'f', columntype: 'numberinput',
+                                    createeditor: function (row, cellvalue, editor) {
+                                          editor.jqxNumberInput({ digits: 2, min: 0, max: 10  });
+                                      }
+                                  },
+                                  { text: 'REC', datafield: 'recuperacao',align: 'right',  hidden: pf, cellsalign: 'right', width: 60, cellsformat: 'f', columntype: 'numberinput',
+                                    createeditor: function (row, cellvalue, editor) {
+                                          editor.jqxNumberInput({ digits: 2, min: 0, max: 10  });
+                                      }
+                                  },
+                                  { text: 'SIT Final', datafield: 'situacaofinal', hidden: pf, width: 80, editable: false },
+                                  { text: 'MD Anual', datafield: 'mediaanual', align: 'right', hidden: pf, cellsalign: 'right', width: 80, cellsformat: 'f', editable: false},
+                                  { text: 'MD Pós PF', datafield: 'mediapospf', align: 'right', hidden: pf, cellsalign: 'right', width: 100, cellsformat: 'f', editable: false},
+                                ]
+                            }
+                        );
+                        $('#gridAlunos').jqxGrid('hidecolumn', 'id');
+                    }
+
+
+
+                    function fillAtribuicao()
+                    {
+                        $("#gridatribuicao").jqxGrid('clear');
+
+                        var url = "/listDiscTurma";
+                        // prepare the data
+                        var source2 =
+                        {
+                            datatype: "json",
+                            datafields: [
+                                { name: 'id'},
+                                { name: 'nome', type: 'string'},
+                                { name: 'profsel', type: 'string'},
+                            ],
+                            data: {
+                                'idturma': $("#turma").val().split('-')[0],
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                            },
+                            type: 'POST',
+                            url: url,
+                            async: false
+                        };
+                        dataAdapter2 = new $.jqx.dataAdapter(source2);
+
+
+                        $("#gridatribuicao").jqxGrid(
+                        {
+                            width: 900,
+                            source: dataAdapter2,
+                            columns: [
+                                { text: 'ID', datafield: 'id', width: 0, hidden: true },
+                                { text: 'Name', datafield: 'nome', width: 350 },
+                                { text: 'Professor', datafield: 'profsel', width: 300 },
+                            ]
+                        });
+
+                        $('#gridatribuicao').jqxGrid('hidecolumn', 'id');
+                        $('#gridatribuicao').on('rowselect', function (event){
+                            rowProfessores = event.args.rowindex;
+                        });
+                    }
+
+                    $("#LancarNota").jqxButton({width: 100});
+                    $("#LancarNota").off('click');
+                    $("#LancarNota").on('click', function(e) {
+                        fillAlunosTurma();
+                        $("#myNav").jqxNavigationBar('expandAt', 1);
+                        $("#disciplinasel").html("<h3>"+$('#gridatribuicao').jqxGrid('getcelltextbyid', rowProfessores, "nome")+"</h3>");
+                    });
+
+
+
+                    $("#btnSalvarNotas").jqxButton({width: 100});
+                    $("#btnSalvarNotas").on('click',function(event){
+                         // update entire table
+                        var rows = $('#gridAlunos').jqxGrid('getrows');
+
+                         for(var i=0; i < rows.length; i++ ) {
+                             console.log('i: '+i);
+                            $.ajax({
+                                url:  "/saveNotas",
+                                cache: false,
+                                data: {
+                                    "id": $('#gridAlunos').jqxGrid('getcelltextbyid', i, "id"),
+                                    "nota1b": $('#gridAlunos').jqxGrid('getcelltextbyid', i, "nota1b"),
+                                    "falta1b": $('#gridAlunos').jqxGrid('getcelltextbyid', i, "falta1b"),
+                                    "nota2b": $('#gridAlunos').jqxGrid('getcelltextbyid', i, "nota2b"),
+                                    "falta2b": $('#gridAlunos').jqxGrid('getcelltextbyid', i, "falta2b"),
+                                    "nota3b": $('#gridAlunos').jqxGrid('getcelltextbyid', i, "nota3b"),
+                                    "falta3b": $('#gridAlunos').jqxGrid('getcelltextbyid', i, "falta3b"),
+                                    "nota4b": $('#gridAlunos').jqxGrid('getcelltextbyid', i, "nota4b"),
+                                    "falta4b": $('#gridAlunos').jqxGrid('getcelltextbyid', i, "falta4b"),
+                                    "recuperacao": $('#gridAlunos').jqxGrid('getcelltextbyid', i, "recuperacao"),
+                                    "situacaofinal": $('#gridAlunos').jqxGrid('getcelltextbyid', i, "situacaofinal"),
+                                    "mediaanual": $('#gridAlunos').jqxGrid('getcelltextbyid', i, "mediaanual"),
+                                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                                },
+                                type: "POST",
+                                datatype: 'json',
+                                async: false,
+                                success: function(response) {
+                                    var respint = parseInt(response);
+                                    if(respint == 1) {
+                                        console.log('Dados salvos com sucesso na linha '+ i);
+                                    } else {
+                                        console.log('Houve erro ao salvar os dados');
+                                    }
+                                }
+                            });
+
+                         }
+                    });
+
+
+                    $("#myNav").jqxNavigationBar({ width: 900, height: 600});
+                 });
+
+    </script>
+
+{% endblock %}

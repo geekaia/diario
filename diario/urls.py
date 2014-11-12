@@ -7,20 +7,19 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'diarioif.views.home', name='home'),
 
-    # User Info
-    url(r'^login$', 'diarioif.views.loginUser', name='login'),
-    url(r'^profile$', 'diarioif.views.changeProfile', name='profile'),
-    url(r'^profile/(?P<id>\d[^/]*)$', 'diarioif.views.changeProfile', name='profile'),
+    # Usuarios Manip
+    url(r'^login$', 'diarioif.usuarios.loginUser', name='login'),
+    url(r'^profile$', 'diarioif.usuarios.changeProfile', name='profile'),
+    url(r'^profile/(?P<id>\d[^/]*)$', 'diarioif.usuarios.changeProfile', name='profile'),
+    url(r'^cadastro$', 'diarioif.usuarios.cadastrarUser', name='cadastro'),
+    url(r'^recuperar$', 'diarioif.usuarios.recuperarSenha', name='recuperar'),
+    url(r'^listUsuarios$', 'diarioif.usuarios.listUsuarios', name='listUsuarios'),
+    url(r'^cadUsuario', 'diarioif.usuarios.cadUsuario', name='cadUsuario'),
+    url(r'^getUsers', 'diarioif.usuarios.getUsers', name='getUsers'),
 
-    url(r'^cadastro$', 'diarioif.views.cadastrarUser', name='cadastro'),
 
-    url(r'^recuperar$', 'diarioif.views.recuperarSenha', name='recuperar'),
-
-
-    url(r'^listUsuarios$', 'diarioif.views.listUsuarios', name='listUsuarios'),
+    # Cursos
     url(r'^listCourses', 'diarioif.views.listCourses', name='listCourses'),
-
-
     url(r'^cursocad/$', 'diarioif.views.cursocad', name='cursocad'),
     url(r'^cursocad/(?P<id>\d[^/]*)$', 'diarioif.views.cursocad', name='cursocad'),
 
@@ -48,6 +47,14 @@ urlpatterns = patterns('',
     url(r'^getTurmas/(?P<idcurso>\d[^/]*)/(?P<periodo>\d[^/]*)/(?P<ano>\d[^/]*)$', 'diarioif.views.getTurmas', name='getTurmas'),
     url(r'^cadTurmaAlunosDisc', 'diarioif.views.cadTurmaAlunosDisc', name='cadTurmaAlunosDisc'),
 
+    # Lancar notas
+    url(r'^lancarnotas', 'diarioif.lancarnotas.notas', name='lancarnotas'),
+    url(r'^notasAlunosTurma', 'diarioif.lancarnotas.notasAlunosTurma', name='notasAlunosTurma'),
+    url(r'^quantBimestre', 'diarioif.lancarnotas.quantBimestre', name='quantBimestre'),
+    url(r'^saveNotas', 'diarioif.lancarnotas.saveNotas', name='saveNotas'),
+
+
+
 
     url(r'^sair$', 'diarioif.views.sair', name='sair'),
 
@@ -56,7 +63,6 @@ urlpatterns = patterns('',
     url(r'^bairros$', 'diarioif.views.getBairros', name='bairros'),
     url(r'^ruas', 'diarioif.views.getRuas', name='ruas'),
     url(r'^cep', 'diarioif.views.getCep', name='cep'),
-    url(r'^getUsers', 'diarioif.views.getUsers', name='getUsers'),
     url(r'^geCourses', 'diarioif.views.geCourses', name='geCourses'),
     url(r'^geBimestres/(?P<ano>\d[^/]*)$', 'diarioif.views.geBimestres', name='geBimestres'),
 

@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 <!DOCTYPE html>
-<html lang="pt-BR" encoding='utf-8'>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 <head>
     <meta name="keywords" content="jQuery Menu, Main Menu, Context Menu, Vertical Menu, Popup Menu, Menu, jqxMenu" /> 
     <meta name="description" content="jqxMenu allows you to change the popup's open direction by using the setItemOpenDirection method. The 'Services' item is opened above the menu and the 'Contact Us' item is opened below the menu and horizontally aligned to left."/>
@@ -40,7 +40,9 @@
     <script type="text/javascript" src="{% static "jqwidgets/jqxwindow.js"%}"></script>
     <script type="text/javascript" src="{% static "jqwidgets/jqxtabs.js"%}"></script>
     <script type="text/javascript" src="{% static "jqwidgets/globalization/globalize.culture.en-CA.js"%}"></script>
-
+    <script type="text/javascript" src="{% static "jqwidgets/jqxexpander.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxnavigationbar.js"%}"></script>
+    <script type="text/javascript" src="{% static "jqwidgets/jqxnumberinput.js"%}"></script>
 
 </head>
 
@@ -117,11 +119,12 @@
                                 <li><a href="#">All industries and solutions</a></li>
                             </ul>
                         </li>
-                        <li>Products
+                        <li>Diario
                             <ul>
-                                <li><a href="#PCProducts">PC products</a></li>
-                                <li><a href="#MobileProducts">Mobile products</a></li>
-                                <li><a href="#AllProducts">All products</a></li>
+                                <li><a href="/lancarnotas">Lançar Notas</a></li>
+                                <li><a href="/presenca">Presença e conteúdo</a></li>
+                                <li><a href="/conteudo">Conteúdo</a></li>
+                                <li><a href="/atividades">Atividades avaliativas</a></li>
                             </ul>
                         </li>
                         <li>Support

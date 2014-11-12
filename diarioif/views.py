@@ -33,103 +33,6 @@ def home(request):
 
 
 
-
-
-@login_required()
-def changeProfile(request, id=None):
-
-    context = {'ola': 1}
-    user = User.objects.get(pk=request.user.id)
-
-    print "ola mundo"
-
-    if id != None:
-        user = User.objects.get(pk=id)
-        myprof = ProfileUser.objects.get(user=user)
-        context['myprof'] = myprof
-    try:
-
-        if request.POST:
-            # If user == Aluno
-            myprof = ProfileUser.objects.get(user=user)
-            myprof.nome = request.POST['nome']
-            myprof.mae = request.POST['mae']
-            myprof.pai = request.POST['pai']
-
-            try:
-                # date_object = datetime.strptime(request.POST['nascimento'], '%d/%m/%Y')
-                # myprof.nascimento = date_object
-                date_object = datetime.strptime(request.POST['nascimento'], '%d/%m/%Y')
-
-                myprof.nascimento = date_object
-            except:
-                print 'err'
-
-            myprof.telefone1 = request.POST['telefone1']
-            myprof.telefone2 = request.POST['telefone2']
-            myprof.rg = request.POST['rg']
-            myprof.orgaoexp = request.POST['orgaoexp']
-            myprof.cpfcnpj = request.POST['cpfcnpj']
-            myprof.email = request.POST['email']
-            myprof.nacionalidade = request.POST['nacionalidade']
-            myprof.naturalidade = request.POST['naturalidade']
-            myprof.estado = request.POST['estado']
-            myprof.cidade = request.POST['cidade']
-            myprof.bairro = request.POST['bairro']
-            myprof.cep = request.POST['cep']
-            myprof.rua = request.POST['rua']
-
-            # Caso não haja o Bairro selecionado
-            try:
-
-                UfReg = Uf.objects.get(nome=myprof.estado)
-                mycity = Cidade.objects.get(uf=UfReg, nome=myprof.cidade)
-                bairro = Bairro.objects.filter(cidade=mycity, nome=myprof.bairro)
-
-                if len(bairro) == 0:
-                    bairroCad = Bairro()
-                    bairroCad.nome = myprof.bairro
-                    bairroCad.cidade = mycity
-                    bairroCad.save()
-
-            except:
-                print 'Erro ao Cadastrar o Bairro'
-
-
-            # Caso não haja a rua selecionada
-            try:
-                UfReg = Uf.objects.get(nome=myprof.estado)
-                mycity = Cidade.objects.get(uf=UfReg, nome=myprof.cidade)
-                bairro = Bairro.objects.get(cidade=mycity, nome=myprof.bairro)
-
-                ruas = Rua.objects.filter(bairro=bairro, nome=myprof.rua)
-
-                if len(ruas) == 0:
-                    rua = Rua()
-                    rua.nome = myprof.rua
-                    rua.bairro = bairro
-                    rua.tipo = 1 # Não irei utilizar
-                    rua.cep = myprof.cep
-                    rua.save()
-            except:
-                print 'Erro a rua '
-
-            myprof.numero = request.POST['numero']
-            myprof.complemento = request.POST['complemento']
-            myprof.observacoes = request.POST['observacoes']
-            myprof.tipo = request.POST['tipo']
-
-            myprof.save()
-
-        context['prof'] = myprof
-
-    except Exception, e:
-        print 'Erro ' + str(e)
-
-
-    return render(request, 'profile.html', context)
-
-
 @login_required()
 def getCities(request):
 
@@ -305,30 +208,10 @@ def toUTF8(val):
         return ""
 
 
-
-@login_required()
-def getUsers(request):
-
-    users = []
-    profs = ProfileUser.objects.all()
-
-    for prof in profs:
-        user = {}
-        user['id'] = prof.id
-        user['nome'] =  prof.nome
-        user['username'] =  prof.user.username
-        users.append(user)
-
-
-    return HttpResponse(json.dumps(users), content_type="application/json")
-
-
 def hasAcess(request):
-
     prof =  ProfileUser.objects.get(user=request.user)
 
     return ''
-
 
 
 @login_required()
@@ -486,6 +369,8 @@ def delturma(request):
     except:
         return HttpResponse(-1)
 
+
+
 @login_required()
 def getAlunosCurso(request):
 
@@ -561,14 +446,14 @@ def listDiscTurma(request):
 
 
         for i in dicsL:
-            atrib  = AtribAula.objects.filter(disciplina=i, turma=t)
+            atrib = AtribAula.objects.filter(disciplina=i, turma=t)
 
             for at in atrib:
                 dic = {}
-                dic['id'] = i.id
+                dic['id'] = at.id
                 dic['nome'] = i.nome
-                dic['inicio'] = at.periodoInicio.isoformat()
-                dic['fim'] = at.periodoFim.isoformat()        #strftime("%d/%m/%Y")
+                dic['inicio'] = at.periodoInicio.strftime("%m/%d/%Y") #isoformat()
+                dic['fim'] = at.periodoFim.strftime("%m/%d/%Y")       #strftime("%d/%m/%Y")
                 dic['acesso'] = at.acesso
 
                 try:
@@ -597,15 +482,25 @@ def changeAtrib(request):
         prof = ProfileUser.objects.get(pk=request.POST['prof'].split('-')[0])
         at.professor = prof
         inicio = datetime.strptime(request.POST['inicio'], '%d/%m/%Y')
+        print "Data inicio: ", inicio
         at.periodoInicio = inicio
         fim = datetime.strptime(request.POST['fim'], '%d/%m/%Y')
+        print "Data fim: ", fim
         at.periodoFim = fim
-        at.acesso = request.POST['acesso']
+        at.acesso = False if request.POST['acesso'] =='false' else True
+
         at.save()
 
         return HttpResponse(1)
-    except:
+    except Exception, e:
+        print "Erro: %s " % e
         return HttpResponse(-1)
+# id:4
+# prof:5-Carlinha Gostosinha
+# inicio:25/1/2014
+# fim:25/12/2014
+# acesso:false
+
 
 
 
@@ -646,23 +541,7 @@ def updateRow(request):
         print 'erro ao atualizar'
 
 
-
-
-
     return HttpResponse(-1)
-
-
-@login_required()
-def listUsuarios(request):
-
-    context = {}
-
-    # Lista de cursos
-    cursos = Curso.objects.all()
-    context['cursos'] = cursos
-
-
-    return render(request, 'listagemAlunos.html', context)
 
 
 
@@ -852,145 +731,13 @@ def sair(request):
 
     return redirect('/')
 
-def cadastrarUser(request):
-
-    mensagem=''
-    nome=''
-    usuario=''
-    senha=''
-    email=''
-
-    context = {}
-
-
-    if request.POST:
-        nome = request.POST['nome']
-        usuario = request.POST['usuario']
-        senha = request.POST['senha']
-        cfsenha = request.POST['cfsenha']
-        email = request.POST['email']
-
-        # Vou validar pelo javascript
-        if cfsenha != senha or len(senha) < 6:
-
-            context['mensagem'] = 'As senhas não conferem!!!'
-
-            aditionscript = ''
-            aditionscript += "$('#senha').jqxPasswordInput('val', '"+senha+"'); "
-            aditionscript += "$('#cfsenha').jqxPasswordInput('val', ''); "
-            aditionscript += "$('#nome').jqxInput('val', '"+nome+"'); "
-            aditionscript += "$('#email').jqxInput('val', '"+email+"'); "
-            aditionscript += "$('#usuario').jqxInput('val', '"+usuario+"'); "
-            context['aditionscript'] = aditionscript
-
-            return render(request, 'cadastraUsuario.html', context)
-
-        else:
-            user = User.objects.create_user(usuario, email, senha)
-            user.set_password(senha)
-            user.is_staff = False
-            user.is_superuser = False
-            user.save()
-
-            # Profile do Usuario
-            profuser = ProfileUser()
-            profuser.user = user
-            profuser.nome = nome
-            profuser.email = email
-            profuser.tipo = 'Aluno'
-            profuser.save()
-
-            # Authenticate user
-            loginUser(request)
-
-            # Redireciona para o profile
-            return redirect('/profile')
-
-
-    context['mensagem'] = mensagem
-    context['aditionscript'] = ''
-
-
-    return render(request, 'cadastraUsuario.html', context)
-
-def gera_senha(tamanho):
-    caracters = '0123456789abcdefghijlmnopqrstuwvxzABCEFGHIJKLMNOPQRSTUVXZ'
-    senha = ''
-    for char in xrange(tamanho):
-        senha += choice(caracters)
-    mypass=[]
-    mypass.append(senha)
-
-    return mypass
 
 
 
 
 
-def recuperarSenha(request):
-    context =  {}
-
-    try:
-        if request.POST:
-            context['mensagem'] = 'Verifique o seu e-mail!!'
-
-            loginEmail = request.POST['useremail']
-            nascimento = request.POST['nascimento']
-            rg = request.POST['rg']
-
-            if len(loginEmail.split('@'))>1:
-                # Email
-                prof = ProfileUser.objects.get(email=loginEmail)
-                user = prof.user
-
-                nascMonth = prof.nascimento.month
-                nascDay = prof.nascimento.day
-                nascYear = prof.nascimento.year
-
-                nascRDay = int(nascimento.split('/')[0])
-                nascRMonth = int(nascimento.split('/')[1])
-                nascRYear = int(nascimento.split('/')[2])
-
-                if nascMonth==nascRMonth and nascRDay==nascDay and nascYear==nascRYear and rg==prof.rg:
-                    newsenha = gera_senha(25)
-                    user.set_password(newsenha)
-                    user.save()
-
-                    send_mail('Nova Senha sistema', 'Senha: ' + newsenha, settings.EMAIL_HOST_USER,
-                              [ prof.email ], fail_silently=False )
-
-                    context['mensagem'] = 'Por favor, verifique seu e-mail!'
-                else:
-                    context['mensagem'] = 'RG ou Data de nascimento incorretos!'
-
-    except:
-        context['mensagem'] = 'Usuario/Email não encontrado em nossa Base de dados!'
-
-    return render(request, 'recuperarSenha.html', context)
 
 
-def loginUser(request):
 
-    state=''
-
-    if request.POST:
-        username = request.POST['usuario']
-        senha = request.POST['senha']
-
-        user = authenticate(username=username, password=senha)
-
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-
-                return redirect('/')
-            else:
-                state = "Seu usuario nao esta ativo"
-        else:
-            state = "Voce digitou o usuario e/ou senha incorretamente."
-
-    context = {'mensagem': state}
-
-    return render(request, 'login.html', context)
 
 

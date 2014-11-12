@@ -37,8 +37,6 @@
     <b />
 
 
-
-
     <div id='jqxWidget'>
         <div id='jqxTabs'>
             <ul>
@@ -61,7 +59,7 @@
                 <table>
                     <tr>
                         <td> <input type="button" value="+" id="addProfessor" /> </td>
-                        <td> <input type="button" value="Salvar" id="btnSaveProf" /> </td>
+                        <td style="padding-left: 10px;"> <input type="button" value="Salvar" id="btnSaveProf" /> </td>
                     </tr>
                 </table>
                 <br />
@@ -349,10 +347,6 @@
                     };
                     dataAdapter2 = new $.jqx.dataAdapter(source2);
 
-                    function atualizaCampos()
-                    {
-
-                    }
 
                     $("#gridatribuicao").jqxGrid(
                     {
@@ -388,41 +382,46 @@
                             { text: 'Acesso', datafield: 'acesso', columntype: 'checkbox', width: 70, editable: true, type: 'bool' },
                         ]
                     });
-
-                     $("#btnSaveProf").click(function(event){
+                    $("#btnSaveProf").off('click');
+                    $("#btnSaveProf").on('click',function(event){
                          // update entire table
-                                                  
+                        var rows = $('#gridatribuicao').jqxGrid('getrows');
 
-                        $.ajax({
-                            url:  "/changeAtrib",
-                            cache: false,
-                            data: {
-                                "id": $('#gridatribuicao').jqxGrid('getcelltextbyid', rowProfessores, "id"),
-                                "prof": value,
-                                "inicio": $('#gridatribuicao').jqxGrid('getcelltextbyid', rowProfessores, "inicio"),
-                                "fim": $('#gridatribuicao').jqxGrid('getcelltextbyid', rowProfessores, "fim"),
-                                "acesso": $('#gridatribuicao').jqxGrid('getcelltextbyid', rowProfessores, "acesso"),
-                                csrfmiddlewaretoken: '{{ csrf_token }}'
-                            },
-                            type: "POST",
-                            datatype: 'json',
-                            async: false,
-                            success: function(response) {
-                                var respint = parseInt(response);
+                         console.log('Número: '+rows.length);
 
-                                if(respint == 1) {
-                                    console.log('Dados salvos com sucesso!!!');
-                                } else {
-                                    alert('Erro ao cadastrar a turma');
+                         for(var i=0; i < rows.length; i++ ) {
+                             console.log('i: '+i);
+                            $.ajax({
+                                url:  "/changeAtrib",
+                                cache: false,
+                                data: {
+                                    "id": $('#gridatribuicao').jqxGrid('getcelltextbyid', i, "id"),
+                                    "prof": $('#gridatribuicao').jqxGrid('getcelltextbyid', i, "profsel"),
+                                    "inicio": $('#gridatribuicao').jqxGrid('getcelltextbyid', i, "inicio"),
+                                    "fim": $('#gridatribuicao').jqxGrid('getcelltextbyid', i, "fim"),
+                                    "acesso": $('#gridatribuicao').jqxGrid('getcelltextbyid', i, "acesso"),
+                                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                                },
+                                type: "POST",
+                                datatype: 'json',
+                                async: false,
+                                success: function(response) {
+                                    var respint = parseInt(response);
+
+                                    if(respint == 1) {
+                                        console.log('Dados salvos com sucesso na linha '+ i);
+                                    }
                                 }
-                            }
-                        });
+                            });
+
+                         }
+
+
                     });
 
                     $('#gridatribuicao').jqxGrid('hidecolumn', 'id');
                     $('#gridatribuicao').on('rowselect', function (event){
                         rowProfessores = event.args.rowindex;
-                        //setLook();
                     });
 
 
@@ -591,7 +590,7 @@
                     $("#addTurma").jqxButton({width: 20});
                     $("#addAluno").jqxButton({width: 20});
                     $("#remAluno").jqxButton({width: 20});
-                    $("#btnSaveProf").jqxButton({width: 150});
+                    $("#btnSaveProf").jqxButton({width: 120});
 
 
 

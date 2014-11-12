@@ -45,7 +45,8 @@ class Matricula(models.Model):
     user = models.ForeignKey(User)
     anoEntrada = models.CharField(max_length=5, blank=True, null=True)
     curso = models.ForeignKey(Curso)
-    dataTranferencia = models.DateField()
+    dataMatricula = models.DateField()
+    atual = models.BooleanField() # o aluno só pode ter uma matrícula
 
 class SituacaoMatricula(models.Model):
     """
@@ -122,17 +123,39 @@ class Notafalta(models.Model):
     aluno = models.ForeignKey(ProfileUser)
     disciplina = models.ForeignKey(Disciplina)
     turma = models.ForeignKey(Turma)
-    nota1b = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
-    nota2b = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
-    nota3b = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
-    nota4b = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
+    nota1b = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    nota2b = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    nota3b = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    nota4b = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     falta1b = models.IntegerField()
     falta2b = models.IntegerField()
     falta3b = models.IntegerField()
     falta4b = models.IntegerField()
     falta5b = models.IntegerField()
-    mediafinal = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
-    recuperacao = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
-    situacaofinal = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
-    mediaanual = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
-    mediapospf = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
+    mediafinal = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    recuperacao = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    situacaofinal = models.CharField(max_length=255, blank=True, null=True)
+    mediaanual = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    mediapospf = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+
+
+class Dia(models.Model):
+    disciplina = models.ForeignKey(Disciplina)
+    turma = models.ForeignKey(Turma)
+    data = models.DateField()
+
+class Conteudo(models.Model):
+    conteudo = models.TextField()
+    dia = models.ForeignKey(Dia)
+
+class Chamada(models.Model):
+    presenca = models.BooleanField(default=True)
+    dia = models.ForeignKey(Dia)
+    numero = models.IntegerField() # id da aula. Para 4 aulas temos 1, 2, 3, 4 ....
+
+
+# Tenho que pensar em uma atividade avlaiativa
+# Como criar com exercícios randômicos
+# Pensar em como criar classes de forma randômica
+# Tenho que verificar a segurança de aocrdo com os níveis dos usuários
+
