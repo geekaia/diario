@@ -16,7 +16,9 @@ urlpatterns = patterns('',
     url(r'^listUsuarios$', 'diarioif.usuarios.listUsuarios', name='listUsuarios'),
     url(r'^cadUsuario', 'diarioif.usuarios.cadUsuario', name='cadUsuario'),
     url(r'^getUsers', 'diarioif.usuarios.getUsers', name='getUsers'),
-
+    url(r'^matriculasAluno', 'diarioif.usuarios.matriculasAluno', name='matriculasAluno'),
+    url(r'^matricularAluno', 'diarioif.usuarios.matricularAluno', name='matricularAluno'),
+    url(r'^turmasCursoAluno', 'diarioif.usuarios.turmasCursoAluno', name='turmasCursoAluno'),
 
     # Cursos
     url(r'^listCourses', 'diarioif.views.listCourses', name='listCourses'),

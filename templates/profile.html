@@ -2,6 +2,8 @@
 
 {% block content %}
 
+        <input type="hidden" id="idaluno" value="{{ prof.user.id }}" />
+
         <form method="POST" action="{{ actionform }}">
             {% csrf_token %}
             <div id='infosgerais' style=" font-size: 13px; font-family: Verdana;">
@@ -24,7 +26,7 @@
                         </tr>
                         <tr>
                             <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Nascimento: </div></td>
-                            <td><div id="nascimento" name="nascimento" </td>
+                            <td><div id="nascimento" name="nascimento"></div> </td>
                         </tr>
                          <tr>
                             <td><div style='font-size: 13px; font-family: verdana; '>Nacionalidade: </div></td>
@@ -39,15 +41,15 @@
             </div>
 
         <br />
-            <table border="0">
-                <tr>
-                    <td style="vertical-align: top;">
-                        <div id='contato' style=" font-size: 13px; font-family: Verdana;">
-                            <div style=''>
-                                <h3>Informações para Contato</h3></div>
 
-                            <div style='white-space: nowrap;'>
-                                <table border="0">
+             <div id='jqxtabs'>
+        <ul style='margin-left: 20px;'>
+                <li>Informações para Contato</li>
+                <li>Documentos</li>
+                <li>Dados das Matrículas</li>
+            </ul>
+            <div>
+                <table border="0">
                                     <tr>
                                         <td style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Telefone: </div></td>
                                         <td><input type="text" id="telefone1" name='telefone1' /></td>
@@ -97,85 +99,116 @@
                                         <td><textarea id="observacoes" name='observacoes'>{{ prof.observacoes|safe }}</textarea></td>
                                     </tr>
                                 </table>
-                            </div>
-                        </div>
-                    </td>
-                    <td style="vertical-align: top;">
-                        <div id='docs' style=" font-size: 13px; font-family: Verdana;">
-                            <div style=''>
-                                <h3>Documentos</h3></div>
+            </div>
+            <div>
+                <table border="0">
+                    <tr>
+                        <td><div style='font-size: 13px; font-family: verdana; '>RG: </div></td>
+                        <td><input type="text" id="rg" name='rg' /></td>
+                    </tr>
+                    <tr>
+                        <td><div style='font-size: 13px; font-family: verdana; '>Orgao Expeditor: </div></td>
+                        <td><input type="text" id="orgaoexp" name='orgaoexp' /></td>
+                    </tr>
+                    <tr>
+                        <td><div style='font-size: 13px; font-family: verdana; '>CPF/CNPJ: </div></td>
+                        <td><input type="text" id="cpfcnpj" name='cpfcnpj' /></td>
+                    </tr>
 
-                            <div style='white-space: nowrap;'>
-                                <table border="0">
-                                    <tr>
-                                        <td><div style='font-size: 13px; font-family: verdana; '>RG: </div></td>
-                                        <td><input type="text" id="rg" name='rg' /></td>
-                                    </tr>
-                                    <tr>
-                                        <td><div style='font-size: 13px; font-family: verdana; '>Orgao Expeditor: </div></td>
-                                        <td><input type="text" id="orgaoexp" name='orgaoexp' /></td>
-                                    </tr>
-                                    <tr>
-                                        <td><div style='font-size: 13px; font-family: verdana; '>CPF/CNPJ: </div></td>
-                                        <td><input type="text" id="cpfcnpj" name='cpfcnpj' /></td>
-                                    </tr>
+                    <tr>
+                        <td><div style='font-size: 13px; font-family: verdana; '>Tipo Conta: </div></td>
+                        <td><div id="tipo" name="tipo" /></td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <table border="0">
+                   <tr>
+                      <td><input type="button" value="Edit" id="btnEdit" /> <input type="button" value="Adicionar" id="btnAddMatricula" /></td>
+                    </tr>
+                    <tr>
+                        <td >
+                            <div id="tableMatriculas"></div>
+                            <br />
+                            <table border="0">
+                                <tr>
+                                    <td></td>
+                                    <td><input type="button" id="btnAddSit" value="+" /></td>
+                                </tr>
+                                <tr>
+                                    <td><div id="turmasaluno"></div></td>
+                                    <td><div id="situacaomatricula"></div></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
 
-                                    <tr>
-                                        <td><div style='font-size: 13px; font-family: verdana; '>Tipo Conta: </div></td>
-                                        <td><div id="tipo" name="tipo" /></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
+        <br />
 
-                        <div id='docs' style=" font-size: 13px; font-family: Verdana;">
-                            <div style=''>
-                                <h3>Dados das Matrícula</h3></div>
-                            <div style='white-space: nowrap;'>
-                                <table border="0">
-                                        <tr>
-                                            <td><input type="button" value="Edit" id="btnEdit" /></td>
-                                            <td><input type="button" value="Adicionar" id="btnAddMatricula" /></td>
-                                        </tr>
-                                    {% for matricula in matriculas %}
-                                        <tr>
-                                            <td><div style='font-size: 13px; font-family: verdana; '>Curso: </div></td>
-                                            <td> <div style='font-size: 13px; font-family: verdana; '>{{ matricula.curso.nome }} </div>  </td>
-                                        </tr>
-                                        <tr>
-                                            <td><div style='font-size: 13px; font-family: verdana; '>Ano Entrada: </div></td>
-                                            <td> <div style='font-size: 13px; font-family: verdana; '>{{ matricula.anoEntrada }} </div>  </td>
-                                        </tr>
-                                        <tr>
-                                            <td><div style='font-size: 13px; font-family: verdana; '>Data da matrícula: </div></td>
-                                            <td> <div style='font-size: 13px; font-family: verdana; '>{{ matricula.dataMatricula }} </div>  </td>
-                                        </tr>
-                                    {% endfor %}
-                                    <div id="fimtable"></div>
-                                </table>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-
-
-            <br />
+        <input id="submit" type="submit" value="Salvar" />
+    </form>
 
 
 
 
-            <br />
-            <br />
+        <div id="matriculaturma">
+         <div id="windowHeader">
+             <span>
+                Matricular este aluno em um curso
+             </span>
+         </div>
 
-            <input id="submit" type="submit" value="Salvar" />
-        </form>
-        </p>
+         <div style="overflow: hidden;" id="windowContent">
+             <div style="padding-top: 15px;"></div>
+             <table border="0">
+                 <tr>
+                     <td><div style='font-size: 13px;  font-family: verdana; '>Curso: </div></td>
+                     <td><div id="curso"></div> </td>
+                 </tr>
+                 <tr>
+                     <td><div style='font-size: 13px; font-family: verdana; '>Data de Matrícula: </div></td>
+                     <td> <div id="dataMatricula" name="dataMatricula"></div>  </td>
+                 </tr>
 
-        <script type="text/javascript">
+                 <tr>
+                     <td><div style='font-size: 13px; font-family: verdana; '>Atual: </div></td>
+                     <td> <div id="atual"> </div>  </td>
+                 </tr>
+
+                 <tr>
+                     <td></td>
+                     <td><input type="button" id="btnSaveAluno" value="Salvar" /></td>
+                 </tr>
+             </table>
+         </div>
+      </div>
+
+
+
+  <script type="text/javascript">
+
+        var cursosData = new Array();
+        {% for i in cursos %}
+            cursosData[{{ i.id }}]="{{i.id}}-{{ i.nome }}-{{ i.anoGrade }}";
+        {% endfor %}
+
+
+        var rowIndex = -1;
+        var idedit = '';
+
 
          $(document).ready(function () {
 
+                $('#jqxtabs').jqxTabs({ width: 900, height: 440 });
+                $("#atual").jqxCheckBox({ width: 80, height: 25, checked: true });
+
+
+                $("#curso").jqxDropDownList({source: cursosData, width: '400', height: '25'});
+                $("#dataMatricula").jqxDateTimeInput({ width: '250px', height: '25px' });
+                $("#matriculaturma").hide();
                 $("#submit").jqxButton();
                 $("#nome").jqxInput({  width: '400px', height: '20px' });
                 $("#mae").jqxInput({  width: '400px', height: '20px' });
@@ -183,9 +216,9 @@
                 $("#nascimento").jqxDateTimeInput({ width: '250px', height: '25px' });
                 $("#telefone1").jqxMaskedInput({ width: 120, height: 25, mask: '(##) #####-####'});
                 $("#telefone2").jqxMaskedInput({ width: 120, height: 25, mask: '(##) #####-####'});
-                $("#rg").jqxMaskedInput({ mask: '#############'});
+                $("#rg").jqxMaskedInput({ mask: '#############', width:130});
                 $("#orgaoexp").jqxInput({  width: '70px', height: '20px' });
-                $("#cpfcnpj").jqxMaskedInput({ mask: '##################'});
+                $("#cpfcnpj").jqxMaskedInput({ mask: '##################', width:130});
                 $("#email").jqxInput({  width: '300px', height: '20px' });
                 $("#nacionalidade").jqxInput({  width: '200px', height: '20px' });
                 $("#naturalidade").jqxInput({  width: '200px', height: '20px' });
@@ -427,10 +460,10 @@
          }
 
 
-         setEstado();
-         setCidade();
-         setBairro();
-         setRua();
+        setEstado();
+        setCidade();
+        setBairro();
+        setRua();
 
         $('#nome').jqxInput('val', "{{ prof.nome|safe }}");
         $('#pai').jqxInput('val', "{{ prof.pai|safe }}");
@@ -467,8 +500,159 @@
         $('#complemento').jqxInput('val', "{{ prof.complemento|safe }}");
         $('#tipo').val('{{ prof.tipo }}');
 
-        });
-       </script>
+        function fillMatriculas()
+        {
+            // Grid das Matrículas
+            $("#tableMatriculas").jqxGrid('clear');
 
+            var url = "/matriculasAluno";
+            // prepare the data
+            var source =
+            {
+                datatype: "json",
+                datafields: [
+                    { name: 'id'},
+                    { name: 'idcurso'},
+                    { name: 'nome'},
+                    { name: 'anograde'},
+                    { name: 'datamat', type: 'date'},
+                    { name: 'atual'},
+                ],
+                data: {
+                    'id': {{ prof.user.id }},
+                     csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                type: 'POST',
+                url: url,
+                async: false
+            };
+            var dataAdapter = new $.jqx.dataAdapter( source );
+
+            $("#tableMatriculas").jqxGrid(
+                {
+                    width: 800,
+                    height: 150,
+                    source: dataAdapter,
+                    columns: [
+                      { text: 'ID', datafield: 'id', hidden: true },
+                      { text: 'ID', datafield: 'idcurso', hidden: true },
+                      { text: 'Curso', datafield: 'nome', width: 500, editable: false },
+                      { text: 'Ano Grade', datafield: 'anograde', width: 80, editable: false },
+                      { text: 'Data de Matrícula', datafield: 'datamat', columntype: 'datetimeinput', cellsformat: 'dd/MM/yyyy'},
+                      { text: 'Atual?', datafield: 'atual', width: 60, editable: false,  columntype: 'checkbox' },
+                    ]
+                }
+            );
+            $('#tableMatriculas').jqxGrid('hidecolumn', 'id');
+
+             $('#tableMatriculas').on('rowselect', function (event)
+            {
+                rowIndex = event.args.rowindex;
+                fillTurmas();
+            });
+        }
+
+        function fillTurmas()
+        {
+            // preenchendo os dados da turma
+            $("#turmasaluno").jqxGrid('clear');
+            var url = "/turmasCursoAluno";
+            // prepare the data
+            var source =
+            {
+                datatype: "json",
+                datafields: [
+                    { name: 'id'},
+                    { name: 'letra'},
+                    { name: 'ano'},
+                ],
+                data: {
+                    'id': {{ prof.user.id }},
+                    'idcurso': $('#tableMatriculas').jqxGrid('getcelltextbyid', rowIndex, "idcurso"),
+                     csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                type: 'POST',
+                url: url,
+                async: false
+            };
+            var dataAdapter = new $.jqx.dataAdapter( source );
+
+            $("#turmasaluno").jqxGrid(
+                {
+                    width: 100,
+                    height: 150,
+                    source: dataAdapter,
+                    columns: [
+                      { text: 'ID', datafield: 'id', hidden: true },
+                      { text: 'Letra', datafield: 'letra', width: 40, editable: false },
+                      { text: 'Ano', datafield: 'ano', width: 60, editable: false },
+                    ]
+                }
+            );
+            $('#turmasaluno').jqxGrid('hidecolumn', 'id');
+
+        }
+
+
+
+        fillMatriculas();
+
+{#        // botoes action#}
+        $("#btnEdit").jqxButton({width: 70});
+        $("#btnAddMatricula").jqxButton({width: 70});
+        $("#btnSaveAluno").jqxButton({width: 70});
+        $("#btnAddMatricula").off('click');
+        $("#btnAddMatricula").on('click', function(event){
+            $("#matriculaturma").jqxWindow('open');
+        });
+        $("#btnEdit").on('click', function(event){
+            $("#matriculaturma").jqxWindow('open');
+            idedit = $('#tableMatriculas').jqxGrid('getcelltextbyid', rowIndex, "id");
+            // Selecte the course
+            cursoSel = $('#tableMatriculas').jqxGrid('getcelltextbyid', rowIndex, "idcurso")+'-'+$('#tableMatriculas').jqxGrid('getcelltextbyid', rowIndex, "nome")+'-'+$('#tableMatriculas').jqxGrid('getcelltextbyid', rowIndex, "anograde");
+
+            $("#curso").val(cursoSel);
+            $("#atual").jqxCheckBox({ checked: $('#tableMatriculas').jqxGrid('getcelltextbyid', rowIndex, "atual") });
+            var dataEdit = $('#tableMatriculas').jqxGrid('getcellvalue', rowIndex, "datamat");
+            $("#dataMatricula").jqxDateTimeInput({ value: dataEdit});
+        });
+
+        $("#matriculaturma").jqxWindow({ width: 500, height: 200 });
+
+        $("#btnSaveAluno").off('click');
+        $("#btnSaveAluno").on('click', function(){
+            // a Ajax request
+            $.ajax({
+                url: "/matricularAluno",
+                data: {
+                    'id': $("#idaluno").val(),
+                    'idmat': idedit,
+                    'atual': $("#atual").val(),
+                    'idcurso': $("#curso").val().split('-')[0],
+                    'dataMatricula': $("#dataMatricula").val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                cache: false,
+                type: "POST",
+                datatype: 'json',
+                async: false,
+                success: function (response) {
+                    console.log('Cadastrei!!');
+
+                    var respint = parseInt(response);
+
+                    if(respint == 1) {
+                        // Close window
+                        fillMatriculas();
+                        $('#matriculaturma').jqxWindow('close');
+
+                    } else {
+                        alert('Erro ao matricular o aluno');
+                    }
+                }
+            }); // end ajax
+        }); // end btnSaveAluno
+    }); // end document ready
+   </script>
 
 {% endblock %}

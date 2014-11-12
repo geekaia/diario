@@ -43,10 +43,11 @@ class Curso(models.Model):
 
 class Matricula(models.Model):
     user = models.ForeignKey(User)
-    anoEntrada = models.CharField(max_length=5, blank=True, null=True)
     curso = models.ForeignKey(Curso)
     dataMatricula = models.DateField()
-    atual = models.BooleanField() # o aluno só pode ter uma matrícula
+
+    # o aluno só pode ter uma matrícula
+    atual = models.BooleanField()
 
 class SituacaoMatricula(models.Model):
     """

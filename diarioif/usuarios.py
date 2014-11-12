@@ -149,6 +149,9 @@ def changeProfile(request, id=None):
     context['actionform'] = '/profile/'+str(myprof.user.id)
     context['prof'] = myprof
 
+    cursos = Curso.objects.all()
+    context['cursos'] = cursos
+
 
     context['nascimento'] = datetime.now().strftime("%m/%d/%Y") if type(myprof.nascimento)==type(None) else myprof.nascimento.strftime("%m/%d/%Y")
 
@@ -228,6 +231,79 @@ def cadastrarUser(request):
 
 
 @login_required()
+def matriculasAluno(request):
+    matriculas = []
+
+    idaluno = request.POST['id']
+    user =User.objects.get(pk=idaluno)
+    Matriculas = Matricula.objects.filter(user=user)
+
+    for mt in Matriculas:
+        matri = {}
+        matri['id'] = mt.id
+        matri['idcurso'] = mt.curso.id
+        matri['nome'] = mt.curso.nome
+        matri['anograde'] = mt.curso.anoGrade
+        matri['datamat'] = mt.dataMatricula.strftime("%m/%d/%Y")
+        matri['atual'] = mt.atual
+        matriculas.append(matri)
+
+    return HttpResponse(json.dumps(matriculas), content_type="application/json")
+
+@login_required()
+def matricularAluno(request):
+    try:
+        idaluno = request.POST['id']
+        idcurso = request.POST['idcurso']
+        data = request.POST['dataMatricula']
+        date_object = datetime.strptime(data, '%d/%m/%Y')
+        curso = Curso.objects.get(pk=idcurso)
+        user = User.objects.get(pk=idaluno)
+
+        try:
+            idmat = request.POST['idmat'] # Edita uma matrícula
+            mat = Matricula.objects.get(pk=idmat)
+
+
+            print 'Update matricula'
+        except:
+            mat = Matricula()
+
+            print 'New matricula'
+
+        atual = request.POST['atual']
+
+        dic = {}
+        dic['false'] = False
+        dic['true'] = True
+
+        mat.atual = dic[atual]
+        mat.user = user
+        mat.curso = curso
+        mat.dataMatricula = date_object
+        mat.save()
+
+        print "Mat.atual: ", mat.atual, 'type ', type(mat.atual)
+
+        if mat.atual == True:
+            print "Mudando o atual"
+            # Procura por todas as matrículas do usuário e seta como atual False
+            mats = Matricula.objects.filter(user=mat.user)
+
+            for mt in mats:
+                # Todos menos o que eu acabei de salvar
+                if mat.id != mt.id:
+                    mt.atual = False
+                    mt.save()
+
+        return HttpResponse(1)
+    except:
+        return HttpResponse(-1)
+    return ''
+
+
+
+@login_required()
 def cadUsuario(request):
     mensagem=''
     nome=''
@@ -264,7 +340,6 @@ def cadUsuario(request):
         profuser.tipo = 'Aluno'
 
         profuser.save()
-
 
         # Redireciona para o profile
         return HttpResponse(user.id)
@@ -388,3 +463,35 @@ def getUsers(request):
 
 
     return HttpResponse(json.dumps(users), content_type="application/json")
+
+
+
+def turmasCursoAluno(request):
+
+    turmas = []
+    try:
+        idusuario = request.POST['id']
+        idcurso = request.POST['idcurso']
+
+        curso = Curso.objects.get(pk=idcurso)
+
+        # Pega todos as turmas de um curso
+        turmasCurso = Turma.objects.filter(curso=curso)
+
+        for tm in turmasCurso:
+            notasF = Notafalta.objects.filter(turma=tm)[:4]
+            turma = {}
+
+            if len(notasF) > 0:
+                turma['id'] = tm.id
+                turma['letra'] = tm.nome
+                turma['ano'] = tm.anoturma
+                turmas.append(turma)
+
+        return HttpResponse(json.dumps(turmas), content_type="application/json")
+    except:
+        print 'err'
+    return HttpResponse(json.dumps(turmas), content_type="application/json")
+
+
+    return ''
