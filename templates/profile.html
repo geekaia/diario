@@ -36,6 +36,10 @@
                             <td><div style='font-size: 13px; font-family: verdana; '>Naturalidade: </div></td>
                             <td><input type="text" id="naturalidade" name='naturalidade' /></td>
                         </tr>
+                        <tr>
+                            <td><div style='font-size: 13px; font-family: verdana; '>Tipo Conta: </div></td>
+                            <td><div id="tipo" name="tipo" /></td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -50,55 +54,55 @@
             </ul>
             <div>
                 <table border="0">
-                                    <tr>
-                                        <td style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Telefone: </div></td>
-                                        <td><input type="text" id="telefone1" name='telefone1' /></td>
-                                    </tr>
-                                    <tr>
-                                        <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Telefone: </div></td>
-                                        <td><input type="text" id="telefone2" name='telefone2' /></td>
-                                    </tr>
+                    <tr>
+                        <td style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Telefone: </div></td>
+                        <td><input type="text" id="telefone1" name='telefone1' /></td>
+                    </tr>
+                    <tr>
+                        <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Telefone: </div></td>
+                        <td><input type="text" id="telefone2" name='telefone2' /></td>
+                    </tr>
 
-                                    <tr>
-                                        <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Estado: </div></td>
-                                        <td> <div id="estado" name='estado' ><input type="hidden" name="estado" /> </div>
+                    <tr>
+                        <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Estado: </div></td>
+                        <td> <div id="estado" name='estado' ><input type="hidden" name="estado" /> </div>
 
-                                    </tr>
-                                    <tr>
-                                        <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Cidade: </div></td>
-                                        <td><div id="cidadetemp"> <div id="cidade" name='cidade'><input type="hidden" name="cidade" /> </div> </div></td>
-                                    </tr>
+                    </tr>
+                    <tr>
+                        <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Cidade: </div></td>
+                        <td><div id="cidadetemp"> <div id="cidade" name='cidade'><input type="hidden" name="cidade" /> </div> </div></td>
+                    </tr>
 
-                                    <tr>
-                                        <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Bairro: </div></td>
-                                        <td><div id="bairro" name='bairro'><input type="hidden" name="bairro" /></div> </td>
-                                    </tr>
+                    <tr>
+                        <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Bairro: </div></td>
+                        <td><div id="bairro" name='bairro'><input type="hidden" name="bairro" /></div> </td>
+                    </tr>
 
-                                    <tr>
-                                        <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Rua: </div></td>
-                                        <td><div id="rua" name='rua' ><input type="text" name='rua' /></div></td>
-                                    </tr>
-                                    <tr>
-                                        <td><div style='font-size: 13px; font-family: verdana; '>Número: </div></td>
-                                        <td><input type="text" id="numero" name='numero' /></td>
-                                    </tr>
-                                    <tr>
-                                        <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>CEP: </div></td>
-                                        <td><input type="text" id="cep" name='cep' /></td>
-                                    </tr>
-                                    <tr>
-                                        <td><div style='font-size: 13px; font-family: verdana; '>Complemento: </div></td>
-                                        <td><input type="text" id="complemento" name='complemento' /></td>
-                                    </tr>
-                                    <tr>
-                                        <td><div style='font-size: 13px; font-family: verdana; '>E-mail: </div></td>
-                                        <td><input type="text" id="email" name='email' /></td>
-                                    </tr>
-                                    <tr>
-                                        <td><div style='font-size: 13px; font-family: verdana; vertical-position: top; '>Observações: </div></td>
-                                        <td><textarea id="observacoes" name='observacoes'>{{ prof.observacoes|safe }}</textarea></td>
-                                    </tr>
-                                </table>
+                    <tr>
+                        <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>Rua: </div></td>
+                        <td><div id="rua" name='rua' ><input type="text" name='rua' /></div></td>
+                    </tr>
+                    <tr>
+                        <td><div style='font-size: 13px; font-family: verdana; '>Número: </div></td>
+                        <td><input type="text" id="numero" name='numero' /></td>
+                    </tr>
+                    <tr>
+                        <td  style="width: 120px;"><div style='font-size: 13px; font-family: verdana; '>CEP: </div></td>
+                        <td><input type="text" id="cep" name='cep' /></td>
+                    </tr>
+                    <tr>
+                        <td><div style='font-size: 13px; font-family: verdana; '>Complemento: </div></td>
+                        <td><input type="text" id="complemento" name='complemento' /></td>
+                    </tr>
+                    <tr>
+                        <td><div style='font-size: 13px; font-family: verdana; '>E-mail: </div></td>
+                        <td><input type="text" id="email" name='email' /></td>
+                    </tr>
+                    <tr>
+                        <td><div style='font-size: 13px; font-family: verdana; vertical-position: top; '>Observações: </div></td>
+                        <td><textarea id="observacoes" name='observacoes'>{{ prof.observacoes|safe }}</textarea></td>
+                    </tr>
+                </table>
             </div>
             <div>
                 <table border="0">
@@ -115,10 +119,6 @@
                         <td><input type="text" id="cpfcnpj" name='cpfcnpj' /></td>
                     </tr>
 
-                    <tr>
-                        <td><div style='font-size: 13px; font-family: verdana; '>Tipo Conta: </div></td>
-                        <td><div id="tipo" name="tipo" /></td>
-                    </tr>
                 </table>
             </div>
             <div>
@@ -133,7 +133,14 @@
                             <table border="0">
                                 <tr>
                                     <td></td>
-                                    <td><input type="button" id="btnAddSit" value="+" /></td>
+                                    <td>
+                                        <table>
+                                            <tr>
+                                                <td><input type="button" id="btnEditSit" value="Edit" /></td>
+                                                <td><input type="button" id="btnAddSit" value="Adicionar" /></td>
+                                            </tr>
+                                        </table>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td><div id="turmasaluno"></div></td>
@@ -188,6 +195,35 @@
 
 
 
+    <div id="changesit">
+         <div id="windowHeader">
+             <span>
+                Mudar a situação da matrícula
+             </span>
+         </div>
+
+         <div style="overflow: hidden;" id="windowContent">
+             <div style="padding-top: 15px;"></div>
+             <table border="0">
+                 <tr>
+                     <td><div style='font-size: 13px;  font-family: verdana; '>Situação: </div></td>
+                     <td><div id="sitmatri"></div> </td>
+                 </tr>
+                 <tr>
+                     <td><div style='font-size: 13px; font-family: verdana; '>Data da mudança: </div></td>
+                     <td> <div id="datamud" name="datamud"></div>  </td>
+                 </tr>
+                 <tr>
+                     <td></td>
+                     <td><input type="button" id="btnMudanca" value="Salvar" /></td>
+                 </tr>
+             </table>
+         </div>
+      </div>
+
+
+
+
   <script type="text/javascript">
 
         var cursosData = new Array();
@@ -195,25 +231,35 @@
             cursosData[{{ i.id }}]="{{i.id}}-{{ i.nome }}-{{ i.anoGrade }}";
         {% endfor %}
 
+        var situacaoMatricula = ['Matriculado', 'Transferido', 'Desistente', 'Trancado', 'Concluido'];
 
         var rowIndex = -1;
         var idedit = '';
-
+        var idchange = '';
+        var rowSituacao= -1;
 
          $(document).ready(function () {
 
                 $('#jqxtabs').jqxTabs({ width: 900, height: 440 });
                 $("#atual").jqxCheckBox({ width: 80, height: 25, checked: true });
 
+                // Window Mudança de situação da matrícula
+                $("#changesit").hide();
+                $("#datamud").jqxDateTimeInput({ width: '250px', height: '25px' });
+                $("#sitmatri").jqxDropDownList({source: situacaoMatricula, width: '400', height: '25'});
+
 
                 $("#curso").jqxDropDownList({source: cursosData, width: '400', height: '25'});
                 $("#dataMatricula").jqxDateTimeInput({ width: '250px', height: '25px' });
                 $("#matriculaturma").hide();
+
                 $("#submit").jqxButton();
+                $("#btnMudanca").jqxButton();
                 $("#nome").jqxInput({  width: '400px', height: '20px' });
                 $("#mae").jqxInput({  width: '400px', height: '20px' });
                 $("#pai").jqxInput({  width: '400px', height: '20px' });
                 $("#nascimento").jqxDateTimeInput({ width: '250px', height: '25px' });
+
                 $("#telefone1").jqxMaskedInput({ width: 120, height: 25, mask: '(##) #####-####'});
                 $("#telefone2").jqxMaskedInput({ width: 120, height: 25, mask: '(##) #####-####'});
                 $("#rg").jqxMaskedInput({ mask: '#############', width:130});
@@ -538,7 +584,7 @@
                       { text: 'ID', datafield: 'idcurso', hidden: true },
                       { text: 'Curso', datafield: 'nome', width: 500, editable: false },
                       { text: 'Ano Grade', datafield: 'anograde', width: 80, editable: false },
-                      { text: 'Data de Matrícula', datafield: 'datamat', columntype: 'datetimeinput', cellsformat: 'dd/MM/yyyy'},
+                      { text: 'Data de Matrícula', datafield: 'datamatdatamat', columntype: 'datetimeinput', cellsformat: 'dd/MM/yyyy'},
                       { text: 'Atual?', datafield: 'atual', width: 60, editable: false,  columntype: 'checkbox' },
                     ]
                 }
@@ -549,6 +595,7 @@
             {
                 rowIndex = event.args.rowindex;
                 fillTurmas();
+                fillSituacaoMatricula();
             });
         }
 
@@ -590,21 +637,63 @@
                 }
             );
             $('#turmasaluno').jqxGrid('hidecolumn', 'id');
-
         }
 
 
+        function fillSituacaoMatricula()
+        {
+            // preenchendo os dados da turma
+            $("#situacaomatricula").jqxGrid('clear');
+            var url = "/situacaoMatricula";
+            // prepare the data
+            var source =
+            {
+                datatype: "json",
+                datafields: [
+                    { name: 'id'},
+                    { name: 'situacao'},
+                    { name: 'data', type: 'date'},
+                ],
+                data: {
+                    'id': {{ prof.user.id }},
+                    'idmat': $('#tableMatriculas').jqxGrid('getcelltextbyid', rowIndex, "id"),
+                     csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                type: 'POST',
+                url: url,
+                async: false
+            };
+            var dataAdapter = new $.jqx.dataAdapter( source );
+
+            $("#situacaomatricula").jqxGrid(
+                {
+                    width: 500,
+                    height: 150,
+                    source: dataAdapter,
+                    columns: [
+                      { text: 'ID', datafield: 'id', hidden: true },
+                      { text: 'Situação', datafield: 'situacao', width: 200, editable: false },
+                      { text: 'Data', datafield: 'data', columntype: 'datetimeinput', cellsformat: 'dd/MM/yyyy', width: 120, editable: false },
+                    ]
+                }
+            );
+            $('#situacaomatricula').jqxGrid('hidecolumn', 'id');
+        }
 
         fillMatriculas();
 
-{#        // botoes action#}
+        // botoes action
         $("#btnEdit").jqxButton({width: 70});
+        $("#btnEditSit").jqxButton({width: 70});
+        $("#btnAddSit").jqxButton({width: 70});
         $("#btnAddMatricula").jqxButton({width: 70});
         $("#btnSaveAluno").jqxButton({width: 70});
         $("#btnAddMatricula").off('click');
         $("#btnAddMatricula").on('click', function(event){
+            idedit = -1;
             $("#matriculaturma").jqxWindow('open');
         });
+
         $("#btnEdit").on('click', function(event){
             $("#matriculaturma").jqxWindow('open');
             idedit = $('#tableMatriculas').jqxGrid('getcelltextbyid', rowIndex, "id");
@@ -618,6 +707,7 @@
         });
 
         $("#matriculaturma").jqxWindow({ width: 500, height: 200 });
+
 
         $("#btnSaveAluno").off('click');
         $("#btnSaveAluno").on('click', function(){
@@ -652,6 +742,66 @@
                 }
             }); // end ajax
         }); // end btnSaveAluno
+
+
+         $("#btnAddSit").on('click', function(evt){
+             idchange ='';
+             $("#changesit").jqxWindow('open');
+         });
+
+          $('#situacaomatricula').on('rowselect', function (event) {
+                rowSituacao = event.args.rowindex;
+          });
+
+         $("#btnEditSit").on('click', function(evt){
+             idchange = $('#situacaomatricula').jqxGrid('getcellvalue', rowSituacao, "id");
+             $("#sitmatri").val($('#situacaomatricula').jqxGrid('getcellvalue', rowSituacao, "situacao"));
+
+            var dataEdit = $('#tableMatriculas').jqxGrid('getcellvalue', rowSituacao, "datamat");
+            $("#datamud").jqxDateTimeInput({ value: $('#situacaomatricula').jqxGrid('getcellvalue', rowSituacao, "data")});
+
+
+             $("#changesit").jqxWindow('open');
+         });
+
+         $("#changesit").jqxWindow({ width: 500, height: 200 });
+         $("#btnMudanca").on('click', function(evt){
+             console.log('Eu mudei ');
+
+             // Ajax call to add
+              $.ajax({
+                url: "/changesituacao",
+                data: {
+                    'id': idchange,
+                    'sitmatri': $("#sitmatri").val(),
+                    'datamud': $("#datamud").val(),
+                    'idmatricula': $('#tableMatriculas').jqxGrid('getcelltextbyid', rowIndex, "id"),
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                cache: false,
+                type: "POST",
+                datatype: 'json',
+                async: false,
+                success: function (response) {
+                    console.log('Cadastrei a Situação!!');
+
+                    var respint = parseInt(response);
+
+                    if(respint == 1) {
+                        // Close window
+                        fillSituacaoMatricula();
+                        $('#changesit').jqxWindow('close');
+                    } else {
+                        alert('Erro ao matricular o aluno');
+                    }
+                }
+            }); // end ajax
+
+             // fil table
+         });
+
+
+
     }); // end document ready
    </script>
 

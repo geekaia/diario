@@ -356,13 +356,8 @@ def cadturmas(request):
 def delturma(request):
     try:
         if request.POST:
-            nome = request.POST['nome']
-
-            anosemestre = request.POST['anosemestre']
-            anoturma = request.POST['anoturma']
-            courseid = request.POST['curso']
-            curso = Curso.objects.get(pk=courseid)
-            t = Turma.objects.get(nome=nome, anoturma=anoturma, curso=curso, anosemestre=anosemestre)
+            idturma = request.POST['idturma']
+            t = Turma.objects.get(pk=idturma)
             t.delete()
 
             return HttpResponse(1)

@@ -496,6 +496,7 @@
                                     var respint = parseInt(response);
                                     if(respint == 1) {
                                         console.log('Dados salvos com sucesso na linha '+ i);
+                                         $("#myNav").jqxNavigationBar('expandAt', 0);
                                     } else {
                                         console.log('Houve erro ao salvar os dados');
                                     }

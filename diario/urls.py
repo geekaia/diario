@@ -19,6 +19,14 @@ urlpatterns = patterns('',
     url(r'^matriculasAluno', 'diarioif.usuarios.matriculasAluno', name='matriculasAluno'),
     url(r'^matricularAluno', 'diarioif.usuarios.matricularAluno', name='matricularAluno'),
     url(r'^turmasCursoAluno', 'diarioif.usuarios.turmasCursoAluno', name='turmasCursoAluno'),
+    url(r'^situacaoMatricula', 'diarioif.usuarios.situacaoMatricula', name='situacaoMatricula'),
+    url(r'^changesituacao', 'diarioif.usuarios.changesituacao', name='changesituacao'),
+    # Cria varios alunos baseando-se em uma Lista
+    url(r'^importarAlunos', 'diarioif.importar.importarAlunos', name='importarAlunos'),
+    url(r'^addvarios', 'diarioif.importar.addvarios', name='addvarios'),
+
+
+
 
     # Cursos
     url(r'^listCourses', 'diarioif.views.listCourses', name='listCourses'),

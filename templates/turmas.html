@@ -36,7 +36,6 @@
     <b />
     <b />
 
-
     <div id='jqxWidget'>
         <div id='jqxTabs'>
             <ul>
@@ -448,7 +447,7 @@
 
                     //dataAdapter2.records[0]['profsel']
                     setupPesquialuno();
-                    $("#curso").jqxDropDownList({source: cursosData, width: '500', height: '25'});
+                    $("#curso").jqxDropDownList({source: cursosData, width: '600', height: '25'});
                     $("#profs").jqxDropDownList({source: profes, width: '500', height: '25'});
 
 
@@ -653,10 +652,7 @@
                         $.ajax({
                                 url:  "/delturma",
                                 data: {
-                                    "curso": $("#curso").val().split('-')[0],
-                                    "nome": $("#turma").val().split('-')[1],
-                                    "anosemestre": $("#periodos").val(),
-                                    "anoturma": $("#ano").val(),
+                                    "idturma": $("#turma").val().split('-')[0],
                                     csrfmiddlewaretoken: '{{ csrf_token }}'
                                 },
                                 cache: false,

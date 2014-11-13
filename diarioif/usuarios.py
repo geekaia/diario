@@ -452,20 +452,51 @@ def listUsuarios(request):
 def getUsers(request):
 
     users = []
-    profs = ProfileUser.objects.all()
 
-    for prof in profs:
-        user = {}
-        user['id'] = prof.user.id
-        user['nome'] = prof.nome
-        user['username'] = prof.user.username
-        users.append(user)
+    if request.POST['idcurso'] == 'Todos':
+        profs = ProfileUser.objects.filter(nome__contains=request.POST['pesquisar'])[:100]
+
+        for prof in profs:
+            user = {}
+            user['id'] = prof.user.id
+            user['nome'] = prof.nome
+            user['username'] = prof.user.username
+
+            try:
+                mat = Matricula.objects.get(user=prof.user, atual=True)
+                user['matriculado'] = mat.curso.nome + '-' + mat.curso.anoGrade
+            except:
+                user['matriculado'] = ''
+
+            users.append(user)
+    else:
+        # Procura para ver se o aluno esta matriculado no curso da pesquisa
+        idcurso = request.POST['idcurso']
+        curso = Curso.objects.get(pk=idcurso)
+
+        mats = Matricula.objects.filter(curso=curso)
+
+        for mat in mats:
+            # pegarei os alunos que estão entre os que podem se cadastrar
+            try:
+                prof = ProfileUser.objects.get(user=mat.user, nome__contains=request.POST['pesquisar'])
+
+                user = {}
+                user['id'] = prof.user.id
+                user['nome'] = prof.nome
+                user['username'] = prof.user.username
+                user['matriculado'] = mat.curso.nome + '-' + mat.curso.anoGrade
+
+                users.append(user)
+            except Exception, e:
+                print 'Err %s ', e
+
 
 
     return HttpResponse(json.dumps(users), content_type="application/json")
 
 
-
+@login_required()
 def turmasCursoAluno(request):
 
     turmas = []
@@ -493,5 +524,51 @@ def turmasCursoAluno(request):
         print 'err'
     return HttpResponse(json.dumps(turmas), content_type="application/json")
 
+@login_required()
+def situacaoMatricula(request):
 
-    return ''
+    sitmats = []
+    try:
+        idmatricula = request.POST['idmat']
+        matricula = Matricula.objects.get(pk=idmatricula)
+        sits = SituacaoMatricula.objects.filter(matricula=matricula)
+
+        for st in sits:
+            sit = {}
+            sit['id'] = st.id
+            sit['situacao'] = st.situacao
+            sit['data'] = st.data.strftime("%m/%d/%Y")
+
+            sitmats.append(sit)
+
+        return HttpResponse(json.dumps(sitmats), content_type="application/json")
+    except Exception, e:
+        print 'Err' , e
+    return HttpResponse(json.dumps(sitmats), content_type="application/json")
+
+
+@login_required()
+def changesituacao(request):
+    try:
+
+        sitmatri = request.POST['sitmatri']
+        datamud = request.POST['datamud']
+        idmatricula = request.POST['idmatricula']
+
+        matri = Matricula.objects.get(pk=idmatricula)
+
+        try:
+            sit = SituacaoMatricula.objects.get(pk=request.POST['id'])
+        except:
+            sit = SituacaoMatricula()
+
+        sit.matricula = matri
+        date_object = datetime.strptime(datamud, '%d/%m/%Y')
+        sit.data = date_object
+        sit.situacao = sitmatri
+        sit.save()
+
+        return HttpResponse(1)
+    except Exception, e:
+        print "Erro: ", e
+        return HttpResponse(-1)

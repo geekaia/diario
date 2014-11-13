@@ -24,67 +24,91 @@
 
         <table border="0" style="width: 850px;">
             <tr>
-                <td style="vertical-align: bottom;"><div style='font-size: 13px; font-family: verdana; '>Curso</div>
-                <select id="curso" name="curso">
-                    {% for curso in cursos %}
-                        <option>{{ curso.id }} - {{  curso.nome }} - {{ curso.anoGrade }} </option>
-                    {% endfor %}
-
-
-                </select>
+                <td colspan="4">
+                    <div style='font-size: 13px; font-family: verdana; '>Curso</div>
+                    <div id="curso" name="curso"> </div>
                 </td>
-                <td style="vertical-align: bottom; width: 600px;"><div style='font-size: 13px; font-family: verdana; '>Pesquisar </div><input type='text' name="pesquisar" id="pesquisar" /> </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="vertical-align: bottom; width: 600px;"><div style='font-size: 13px; font-family: verdana; '>Pesquisar </div><input type='text' name="pesquisar" id="pesquisar" /> </td>
                 <td style="vertical-align: bottom; "><input type='button' id="btnNew" value="Novo" /></td>
                 <td style="vertical-align: bottom; "><input type='button' id="edit" value="Edit" /></td>
+
             </tr>
 
         </table>
-
         <br />
-
         <script>
             $("#curso").jqxDropDownList({ width: '400px', height: '20px' });
-            $("#pesquisar").jqxInput({  width: '300px', height: '20px' });
+            $("#pesquisar").jqxInput({  width: '500px', height: '20px' });
             $("#edit").jqxButton({width: 50});
             $("#btnNew").jqxButton({width: 50});
             $("#btnSaveAluno").jqxButton({width: 100});
             $("#criaUsuario").hide();
+            $("#criaUsuariosBunch").hide();
+
+            var cursosData = new Array();
+            {% for i in cursos %}
+                cursosData[{{ i.id }}]="{{i.id}}-{{ i.nome }}-{{ i.anoGrade }}";
+            {% endfor %}
+            cursosData.push('Todos');
 
             var rowIndex = -1;
 
             $(document).ready(function () {
-                 var url = "/getUsers";
-                // prepare the data
-                var source =
-                {
-                    datatype: "json",
-                    datafields: [
-                        { name: 'id'},
-                        { name: 'nome'},
-                    ],
-                    url: url,
-                    async: false
-                };
-                var dataAdapter = new $.jqx.dataAdapter(source);
 
-                $("#jqxgrid").jqxGrid(
-                    {
-                        width: 900,
-                        source: dataAdapter,
-                        columns: [
-                          { text: 'ID', datafield: 'id', width: 30 },
-                          { text: 'Name', datafield: 'nome', width: 550 }
-                        ]
-                    });
+                $("#curso").jqxDropDownList({source: cursosData, width: '400', height: '25'});
 
-
-                $('#jqxgrid').on('rowselect', function (event)
-                {
-                    rowIndex = event.args.rowindex;
+                $("#curso").on('select', function() {
+                    fillGrade();
                 });
 
+                $("#curso").val('Todos');
 
-                 $("#edit").bind('click', function () {
+                 $("#pesquisar").on('keyup', function(event){
+                    fillGrade();
+                 });
+
+                function fillGrade()  {
+                    var url = "/getUsers";
+                    var source =
+                    {
+                        datatype: "json",
+                        datafields: [
+                            { name: 'id'},
+                            { name: 'nome'},
+                            { name: 'matriculado'},
+                        ],
+                        data: {
+                            'idcurso': $("#curso").val().split('-')[0],
+                            'pesquisar': $("#pesquisar").val(),
+                             csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        type: 'POST',
+                        url: url,
+                        async: false
+                    };
+
+                    var dataAdapter = new $.jqx.dataAdapter(source);
+                    $("#jqxgrid").jqxGrid(
+                        {
+                            width: 900,
+                            source: dataAdapter,
+                            columns: [
+                              { text: 'ID', datafield: 'id', width: 30 },
+                              { text: 'Name', datafield: 'nome', width: 400 },
+                              { text: 'Matriculado em', datafield: 'matriculado', width: 400 }
+                            ]
+                        });
+
+                    $('#jqxgrid').on('rowselect', function (event)
+                    {
+                        rowIndex = event.args.rowindex;
+                    });
+
+                }
+
+                $("#edit").bind('click', function () {
                     var text = $('#jqxgrid').jqxGrid('getcelltextbyid', rowIndex, "id");
 {#                   var value = $('#jqxgrid').jqxGrid('getcellvalue', rowIndex, "ID");#}
                      window.location = "./profile/"+text;

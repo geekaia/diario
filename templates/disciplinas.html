@@ -89,7 +89,7 @@
                 $("#novo").jqxButton({width: 50});
                 $("#rem").jqxButton({width: 70});
 
-                $("#curso").jqxDropDownList({source: cursosData, width: '500', height: '25'});
+                $("#curso").jqxDropDownList({source: cursosData, width: '600', height: '25'});
 
                 $('#curso').on('select', function (event) {
 
@@ -152,7 +152,7 @@
 
                     $("#jqxgrid").jqxGrid(
                     {
-                        width: 780,
+                        width: 800,
                         source: dataAdapter,
                         columns: [
                           { text: 'ID', datafield: 'id', width: 0 },
@@ -167,6 +167,7 @@
                     {
                         rowIndex = event.args.rowindex;
                     });
+                    $('#jqxgrid').jqxGrid('hidecolumn', 'id');
 
                 }
 
