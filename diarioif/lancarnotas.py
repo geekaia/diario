@@ -30,6 +30,8 @@ from decimal import Decimal
 
 from decimal import *
 
+from importar import FileUploadedForm
+
 @login_required()
 def notas(request):
     context = {}
@@ -38,6 +40,8 @@ def notas(request):
 
     profs = ProfileUser.objects.filter(tipo='Professor')
     context['profs'] = profs
+    context['form'] = FileUploadedForm
+
 
     return render(request, 'lancarnotas.html', context)
 
@@ -106,8 +110,6 @@ def saveNotas(request):
         nota.falta4b = int(request.POST['falta4b'])
         nota.recuperacao = Decimal(request.POST['recuperacao'])
         nota.situacaofinal = request.POST['situacaofinal']
-
-
 
         # Falta gera uma função que recalcule a situação final do aluno
         nota.save()

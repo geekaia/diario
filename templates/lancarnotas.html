@@ -2,6 +2,21 @@
 
 {% block content %}
 
+   <style>
+        .container {
+            width: 500px;
+            margin: 0 auto;
+        }
+        .progress_outer {
+            border: 1px solid #000;
+        }
+        .progress {
+            width: 20%;
+            background: #DEDEDE;
+            height: 20px;
+        }
+    </style>
+
         <h1>Lançar Notas</h1>
         <table border="0">
         <tr>
@@ -44,6 +59,7 @@
                     <td><div style='font-size: 13px; font-family: verdana; '>Bimestre: </div></td>
                     <td colspan="1"> <div id="bimestre" name='bimestre'></div></td>
                     <td colspan="1"> <input type="button" value="Lançar Notas" id="LancarNota" /> </td>
+                    <td colspan="1"> <input type="button" value="Importar" id="btnImportar" /> </td>
                 </tr>
             </table>
             <br />
@@ -62,12 +78,44 @@
             </div>
                     </td>
                     <td><div id="disciplinasel">Disciplina</div> </td>
-
                 </tr>
             </table>
-
-
             <div id="gridAlunos"></div>
+        </div>
+    </div>
+
+
+
+
+    <div id="winupload">
+        <div id="windowHeader">
+            <span>
+               Importar Notas
+            </span>
+        </div>
+        <div style="overflow: hidden;" id="windowContent">
+            <form id="formplan" name="formplan" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form }}
+{#                <input name="file" type="file" />#}
+                <input type="button" id="btnUploadf" value="Upload" />
+            </form>
+            <div class='progress_outer'>
+                <div id='_progress' class='progress'></div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="winInporConfirm">
+        <div id="windowHeader">
+            <span>
+               Confirmar inserção no banco de dados
+            </span>
+        </div>
+        <div style="overflow: hidden;" id="windowContent">
+            <div id="gridImport"></div>
+            <input type="button" value="Confirmar inserção" />
         </div>
     </div>
 
@@ -81,12 +129,77 @@
                 var rowProfessores = -1;
                 var dataAdapter2;
                 var cursosData = new Array();
+                $("#winupload").hide();
 
                 {% for i in cursos %}
                     cursosData[{{ i.id }}]="{{i.id}}-{{ i.nome }} - {{ i.anoGrade }}";
                 {% endfor %}
 
                  $(document).ready( function() {
+
+                     $('#winupload').jqxWindow({
+                         maxHeight: 400,
+                         maxWidth: 700,
+                         minHeight: 100,
+                         minWidth: 200,
+                         height: 120,
+                         width: 500
+                     });
+
+                     $("#btnImportar").jqxButton();
+                     $("#btnImportar").on('click', function(event) {
+                         $('#formplan').trigger("reset");
+                       _progress = document.getElementById('_progress');
+                       _progress.style.width = '10%';
+                        $("#winupload").jqxWindow('Open');
+                     });
+
+                    var urlUploa = '/importXlsNotas';
+
+                   $('#btnUploadf').on('click', function(){
+
+                       _progress = document.getElementById('_progress');
+                       _progress.style.width = '10%';
+
+                       var fd = new FormData(document.getElementById("formplan"));
+
+
+                       fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+                        var request = new XMLHttpRequest();
+                        request.onreadystatechange = function(){
+                            if(request.readyState == 4){
+                                try {
+                                    var resp = JSON.parse(request.response);
+                                } catch (e){
+                                    var resp = {
+                                        status: 'error',
+                                        data: 'Unknown error occurred: [' + request.responseText + ']'
+                                    };
+                                }
+                                console.log(resp.status + ': ' + resp.data);
+                            }
+                        };
+
+                        request.upload.addEventListener('progress', function(e){
+                             _progress.style.width = Math.ceil(e.loaded/e.total) * 100 + '%';
+                        }, false);
+
+                        request.open('POST', urlUploa);
+                        request.send(fd);
+
+{#                       $.ajax({#}
+{#                          url: urlUploa,#}
+{#                          type: "POST",#}
+{#                          data: fd,#}
+{#                          processData: false,  // tell jQuery not to process the data#}
+{#                          contentType: false,   // tell jQuery not to set contentType#}
+{#                          success: function(response) {#}
+{#                             console.log('Database ');#}
+{#                          }#}
+{#                        });#}
+
+                    });
 
 
                      // ***************** CURSO *****************

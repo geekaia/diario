@@ -24,6 +24,8 @@ urlpatterns = patterns('',
     # Cria varios alunos baseando-se em uma Lista
     url(r'^importarAlunos', 'diarioif.importar.importarAlunos', name='importarAlunos'),
     url(r'^addvarios', 'diarioif.importar.addvarios', name='addvarios'),
+    url(r'^fileupload', 'diarioif.importar.fileupload', name='fileupload'),
+    url(r'^importXlsNotas', 'diarioif.importar.importXlsNotas', name='importXlsNotas'),
 
 
 

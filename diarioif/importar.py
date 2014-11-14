@@ -27,7 +27,8 @@ from unicodedata import normalize
 
 from usuarios import gera_senha
 from usuarios import geraUsuario
-
+from django.forms import *
+from xlrd import open_workbook,cellname
 
 
 @login_required()
@@ -69,6 +70,11 @@ def importarAlunos(request):
 
             nome = smart_unicode(aluno)
             nomestr = smart_str(nome)
+
+            # Se o nome tiver poucos caracteres será ignorado
+            if len(nome) < 6:
+                continue
+
             print "Ok1 nome ", nome
             email = geraUsuario(nomestr)+"@naosei.com"
             print "Ok2"
@@ -127,9 +133,46 @@ def importarAlunos(request):
         return HttpResponse(-1)
 
 
-def importXlsNotas():
+class FileUploadedForm(forms.Form):
+    uploaded_file = forms.FileField(required=False)
+
+def importXlsNotas(request):
+    try:
 
 
+        if request.method == 'POST':
+            form = FileUploadedForm(request.POST, request.FILES)
+            if form.is_valid():
+                file = request.FILES.get('uploaded_file')
+        #
+        # if request.method == 'POST':
+        #     file = request.FILES.get('file')
+
+                f = file.read()
+                book = open_workbook(file_contents=f)
+                sheet = book.sheet_by_name('Resultado')
+
+                print 'Nome', '\t\t\t\tNota 1B', 'Nota 2B', 'Nota 3B', 'Nota 4B', 'PF'
+                for row_index in range(12, 47):
+                    print sheet.cell(row_index,2).value,  sheet.cell(row_index,21).value, sheet.cell(row_index,24).value, sheet.cell(row_index,27).value, sheet.cell(row_index,30).value, sheet.cell(row_index,39).value
+            # file = request.FILES.get('fileToUpload')
+
+                # print "File: ", file.name
+
+                return HttpResponse(1)
 
 
-    return ''
+    except Exception, e:
+
+        print 'Exception %s' % e
+        return HttpResponse(-1)
+
+    # return HttpResponse(1)
+
+
+def fileupload(request):
+    context = {}
+    context['form'] = FileUploadedForm
+
+    return render(request, 'fileupload.html', context)
+
