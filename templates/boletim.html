@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+   <style>
+        .container {
+            width: 500px;
+            margin: 0 auto;
+        }
+        .progress_outer {
+            border: 1px solid #000;
+        }
+        .progress {
+            width: 20%;
+            background: #DEDEDE;
+            height: 20px;
+        }
+    </style>
+
+        <h1>Boletim Escolar</h1>
+        <table border="0">
+        <tr>
+            <td style="padding-bottom: 15px;">
+                <div style='font-size: 14px; font-family: verdana; '>Todos os alunos do Curso deste ano: <input type="checkbox" /> </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <div style='font-size: 13px; font-family: verdana; '>Curso: </div>
+                <div id="curso" name="curso"></div>
+            </td>
+        </tr>
+        </table>
+        <table>
+         <tr>
+
+             <td style="vertical-align: top;">
+                <div style='font-size: 13px; font-family: verdana; '>Períodos: </div>
+                <div id="periodos" name='periodos'> </div>
+            </td>
+             <td style="vertical-align: top;">
+                <div style='font-size: 13px; font-family: verdana; '>Ano: </div>
+                <div id="ano" name='ano' />
+            </td>
+
+
+             <td  style="vertical-align: top;">
+               <div style='font-size: 13px; font-family: verdana; '>Turma: </div>
+               <div id="turma" name="turma" />
+            </td>
+             <td  style="vertical-align: top;">
+               <div style='font-size: 13px; font-family: verdana; '>Bimestre: </div>
+               <div id="bimestre" name="bimestre" />
+            </td>
+             <td  style="vertical-align: center; align-content: center; width: 400px;">
+                 <div style="padding-left: 60px;">
+                     <input type="button" value="Boletim" id="btnBoletim" />
+                 </div>
+            </td>
+        </tr>
+       </table>
+    <b />
+    <b />
+
+
+
+
+
+    <script language="javascript">
+
+                // Global variables iniciais
+                var rowIndex = -1;
+                var rowProfessores = -1;
+                var dataAdapter2;
+                var cursosData = new Array();
+
+                {% for i in cursos %}
+                    cursosData[{{ i.id }}]="{{i.id}}-{{ i.nome }} - {{ i.anoGrade }}";
+                {% endfor %}
+
+                 $(document).ready( function() {
+
+
+
+
+
+                    var urlUploa = '/importXlsNotas';
+
+                   $('#btnUploadf').on('click', function(){
+
+                       _progress = document.getElementById('_progress');
+                       _progress.style.width = '10%';
+
+                       var fd = new FormData(document.getElementById("formplan"));
+
+
+                       fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+                        var request = new XMLHttpRequest();
+                        request.onreadystatechange = function(){
+                            if(request.readyState == 4){
+                                try {
+                                    var resp = JSON.parse(request.response);
+                                } catch (e){
+                                    var resp = {
+                                        status: 'error',
+                                        data: 'Unknown error occurred: [' + request.responseText + ']'
+                                    };
+                                }
+                                console.log(resp.status + ': ' + resp.data);
+                            }
+                        };
+
+                        request.upload.addEventListener('progress', function(e){
+                             _progress.style.width = Math.ceil(e.loaded/e.total) * 100 + '%';
+                        }, false);
+
+                        request.open('POST', urlUploa);
+                        request.send(fd);
+
+{#                       $.ajax({#}
+{#                          url: urlUploa,#}
+{#                          type: "POST",#}
+{#                          data: fd,#}
+{#                          processData: false,  // tell jQuery not to process the data#}
+{#                          contentType: false,   // tell jQuery not to set contentType#}
+{#                          success: function(response) {#}
+{#                             console.log('Database ');#}
+{#                          }#}
+{#                        });#}
+
+                    });
+
+
+                     // ***************** CURSO *****************
+                     // Curso
+                     $("#curso").jqxListBox({source: cursosData, width: '830', height: '200'});
+                      $('#curso').on('select', function (event) {
+                        var args = event.args;
+                        if (args) {
+                              // get quant periodos curso
+                              $.ajax({
+                                url:  "/getPeriodos/"+$("#curso").val().split('-')[0],
+                                cache: false,
+                                type: "GET",
+                                datatype: 'json',
+                                async: false,
+                                success: function(response) {
+
+                                    // Limpando grid
+                                    try {
+                                        $('#gridAlunos').jqxGrid('clear');
+                                        $('#gridatribuicao').jqxGrid('clear');
+                                        $("#turma").jqxDropDownList('clear');
+                                        $("#ano").jqxListBox('clear');
+                                        $("#periodos").jqxDropDownList('clear');
+                                    } catch(err)  {
+                                        console.log('Ainda não foi construído'+ err);
+                                    }
+
+                                    // remove todos elementos
+                                    var dataN = new Array();
+                                    $("#periodos").off('change');
+                                    $("#periodos").val('');
+
+                                    for ( var i = 1; i <= parseInt(response.periodos); i++ ) {
+                                       dataN.push( i );
+                                    }
+
+                                    $("#periodos").jqxListBox({source: dataN, width: '70', height: '250'});
+                                    $('#periodos').on('change', function (event){
+                                        // Limpando grid
+                                        try {
+                                            $('#gridAlunos').jqxGrid('clear');
+                                            $('#gridatribuicao').jqxGrid('clear');
+                                            $("#turma").jqxListBox('clear');
+                                            $("#ano").jqxListBox('clear');
+                                        } catch(err)  {
+                                            console.log('Ainda não foi construído'+ err);
+                                        }
+
+                                        anoListener();
+                                    });
+                                }
+                                });
+                        }
+                    });
+
+
+                    // *************** ANO ***************
+                    function anoListener()
+                    {
+                        var data = new Date();
+                        var itens = new Array();
+
+                        // Adicionando anos com mais de 30 abaixo
+                        for (var i=data.getFullYear()-30; i<=data.getFullYear()+1;i++) {
+                            itens.push( i );
+                        }
+
+                        // Listener
+
+                        $("#ano").off('change');
+                        $("#ano").jqxListBox('clear');
+                        $("#ano").jqxListBox({ source: itens,  width: '70px', height: '250px' });
+
+                        $("#ano").on('change', function() {
+                          // Limpando grid
+                          try {
+                              $('#gridAlunos').jqxGrid('clear');
+                              $('#gridatribuicao').jqxGrid('clear');
+                              $("#turma").jqxListBox('clear');
+                          } catch(err)  {
+                              console.log('Ainda não foi construído'+ err);
+                          }
+                          fillTurmas();
+                        });
+
+                        // Set current Year
+                        $("#ano").jqxListBox('val',data.getFullYear());
+                    }
+
+                     function fillTurmas()
+                     {
+                         $.ajax({
+                            url:  "/getTurmas/"+$("#curso").val().split('-')[0]+'/'+$("#periodos").val()+"/"+$("#ano").val(),
+                            cache: false,
+                            type: "GET",
+                            datatype: 'json',
+                            async: false,
+                            success: function(response) {
+                                // remove todos elementos
+                                var dataN = new Array();
+                                for ( var i = 0; i < response.length; i++ ) {
+                                   dataN.push(response[i].id+'-'+response[i].nome);
+                                }
+
+                                $("#turma").off('select');
+                                $("#turma").jqxListBox({source: dataN, width: '70', height: '250'});
+                                $('#turma').on('select', function (event) {
+                                    // Limpando grid
+                                    try {
+                                        $('#gridAlunos').jqxGrid('clear');
+                                        $('#gridatribuicao').jqxGrid('clear');
+                                        $("#myNav").jqxNavigationBar('expandAt', 0);
+                                    } catch(err)  {
+                                        console.log('Ainda não foi construído'+ err);
+                                    }
+
+                                    // get quantidade de bimestres
+                                    $.ajax({
+                                        url:  "/quantBimestre",
+                                        data: {
+                                            "idturma": $("#turma").val().split('-')[0],
+                                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                                        },
+                                        cache: false,
+                                        type: "POST",
+                                        datatype: 'json',
+                                        async: false,
+                                        success: function(response) {
+                                            var respint = parseInt( response );
+                                            var quantBi = new Array();
+
+                                            for( var i=1; i<=respint; i++) {
+                                                quantBi.push( i );
+                                            }
+                                            quantBi.push('ALL');
+
+                                            $("#bimestre").jqxListBox({source: quantBi, width: '50', height: '250'});
+                                    }
+                                });
+                                });
+                            }
+                        });
+                     }
+
+                    $("#btnBoletim").jqxButton({width: 100, height: 50});
+
+                 });
+
+    </script>
+
+{% endblock %}
