@@ -101,7 +101,7 @@ class BoletimLayout:
         canvas.restoreState()
 
 
-    def print_users(self, idturma):
+    def print_users(self, lista):
         styles = getSampleStyleSheet()
 
         buffer = self.buffer
@@ -164,19 +164,19 @@ class BoletimLayout:
         # Draw things on the PDF. Here's where the PDF generation happens.
         # See the ReportLab documentation for the full list of functionality
 
-        turma = Turma.objects.get(pk=idturma)
-        data = Notafalta.objects.values_list('aluno').filter(turma=turma).distinct()
 
-        for i in data:
-            prof = ProfileUser.objects.get(pk=int(i[0])) # i[0] é o id do usuario
+        for aluno in lista:
             # aluno['id'] = int(i[0])
             # aluno['nome'] = prof.nome
             # alunos.append(aluno)
 
 
             elements.append(Paragraph("<b>BOLETIM</b>", styles['titutulo1']))
-            elements.append(Paragraph("<br /><br />NOME: "+prof.nome.upper(), styles['leftName']))
-            elements.append(Paragraph("CURSO: "+turma.curso.nome.upper()+" Ano: "+str(turma.anosemestre)+" Turma: "+turma.nome+"<br/><br/>", styles['leftName']))
+            elements.append(Paragraph("<br /><br />NOME: "+aluno['nome'], styles['leftName']))
+            elements.append(Paragraph("CURSO: "+aluno['curso']+" Ano: "+str(+aluno['anosemestre'])+" Turma: "+aluno['turma.nome']+"<br/><br/>", styles['leftName']))
+
+
+
 
             cabecalhoT = []
             cabecalhoT.append(Paragraph('DISCIPLINA', styles['stTituloName']))
@@ -197,42 +197,25 @@ class BoletimLayout:
             data = []
             data.append(cabecalhoT)
 
-            dicsL = Disciplina.objects.filter(curso=turma.curso, periodo=turma.anosemestre)
 
-            def testNone(val):
+            for al in aluno['disciplinas']:
+                row = []
+                row.append(Paragraph(str(al['nome']), styles['sNomeEsq']))
+                row.append(Paragraph(str(al['nota1b']), styles['stBodyBoletim']))
+                row.append(Paragraph(str(al['falta1b']), styles['stBodyBoletim']))
+                row.append(Paragraph(str(al['nota2b']), styles['stBodyBoletim']))
+                row.append(Paragraph(str(al['falta2b']), styles['stBodyBoletim']))
+                row.append(Paragraph(str(al['nota3b']), styles['stBodyBoletim']))
+                row.append(Paragraph(str(al['falta3b']), styles['stBodyBoletim']))
+                row.append(Paragraph(str(al['nota4b']), styles['stBodyBoletim']))
+                row.append(Paragraph(str(al['falta4b']), styles['stBodyBoletim']))
+                row.append(Paragraph(str(al['mediaanual']), styles['stBodyBoletim']))
+                row.append(Paragraph(str(al['recuperacao']), styles['stBodyBoletim']))
+                row.append(Paragraph(str(al['mediapospf']), styles['stBodyBoletim']))
+                row.append(Paragraph(str(al['mediapospf']), styles['stBodyBoletim']))
+                row.append(Paragraph(str(al['situacaofinal']), styles['stBodyBoletim']))
 
-                if val=='None':
-                    return ''
-                else:
-                    return ''
-
-
-            for i in dicsL:
-                atrib = AtribAula.objects.filter(disciplina=i, turma=turma)
-
-                for at in atrib:
-
-                    notasAno = Notafalta.objects.filter(turma=turma, disciplina=at.disciplina,aluno=prof)[0]
-
-
-                    row = []
-                    row.append(Paragraph(at.disciplina.nome, styles['sNomeEsq']))
-                    row.append(Paragraph(str(notasAno.nota1b if type(notasAno.nota1b)!=type(None) else ''), styles['stBodyBoletim']))
-                    row.append(Paragraph(str(notasAno.falta1b), styles['stBodyBoletim']))
-                    row.append(Paragraph(str(notasAno.nota2b if type(notasAno.nota2b)!=type(None) else ''), styles['stBodyBoletim']))
-                    row.append(Paragraph(str(notasAno.falta2b), styles['stBodyBoletim']))
-                    row.append(Paragraph(str(notasAno.nota3b if type(notasAno.nota3b)!=type(None) else ''), styles['stBodyBoletim']))
-                    row.append(Paragraph(str(notasAno.falta3b), styles['stBodyBoletim']))
-                    row.append(Paragraph(str(notasAno.nota4b if type(notasAno.nota4b)!=type(None) else ''), styles['stBodyBoletim']))
-                    row.append(Paragraph(str(notasAno.falta4b), styles['stBodyBoletim']))
-                    row.append(Paragraph(str(notasAno.mediaanual if type(notasAno.mediaanual)!=type(None) else ''), styles['stBodyBoletim']))
-                    row.append(Paragraph(str(notasAno.recuperacao if type(notasAno.recuperacao)!=type(None) else ''), styles['stBodyBoletim']))
-                    row.append(Paragraph(str(notasAno.mediapospf if type(notasAno.mediapospf)!=type(None) else ''), styles['stBodyBoletim']))
-                    row.append(Paragraph(str(notasAno.mediapospf if type(notasAno.mediapospf)!=type(None) else ''), styles['stBodyBoletim']))
-                    row.append(Paragraph(str(notasAno.situacaofinal if type(notasAno.situacaofinal)!=type(None) else ''), styles['stBodyBoletim']))
-
-                    data.append(row)
-
+                data.append(row)
 
             tableNotas=Table(data,
                              colWidths=[250, 43, 35,44,35,43,35,43,35,43,33,53,35,50],
@@ -246,13 +229,8 @@ class BoletimLayout:
                                     ]
             )
 
-
             elements.append(tableNotas)
             elements.append(PageBreak())
-
-
-            # for user in users:
-            #     elements.append(Paragraph(user.username, styles['centered']))
 
 
         doc.build(elements, onFirstPage=self.__header_footer, onLaterPages=self.__header_footer)
@@ -266,50 +244,82 @@ class BoletimLayout:
 from django.contrib.auth.decorators import login_required
 from io import BytesIO
 # @login_required()
-def gemPdf(request):
+def gemPdf(request, idcurso=None, idturma=None, ano=None, periodo=None, idaluno=None):
     # curso=None, ano bimestre=None, turma=None
     # Para o ano
 
+
+    print "Argumento  idcurso: ", idcurso, " idturma: ", idturma, " ano: ", ano, " periodo: ", periodo, ' idaluno: ', idaluno
+
     lista = []
 
-    idturma = 24
-    # turma = Turma.objects.get(pk=idturma)
-    # data = Notafalta.objects.values_list('aluno').filter(turma=turma).distinct()
-    # for i in data:
-    #
-    #         aluno = {}
-    #         prof = ProfileUser.objects.get(pk=int(i[0])) # i[0] é o id do usuario
-    #         dicsL = Disciplina.objects.filter(curso=turma.curso, periodo=turma.anosemestre)
-    #         aluno['nome'] = prof.nome.upper()
-    #         aluno['curso'] = prof.nome.upper()
-    #
-    #         disciplinas = []
-    #
-    #         for i in dicsL:
-    #             atrib = AtribAula.objects.filter(disciplina=i, turma=turma)
-    #
-    #             for at in atrib:
-    #                 disciplina = {}
-    #                 notasAno = Notafalta.objects.filter(turma=turma, disciplina=at.disciplina,aluno=prof)[0]
-    #                 disciplina['nome'] = notasAno.disciplina.nome.upper()
-    #                 disciplina['nota1b'] = notasAno.disciplina.nome.upper()
+    # Pesquisa com os argumentos curso, periodo e ano
+
+    if ano != None and periodo != None and idcurso!=None:
+        print "Boletim por curso "
+        curso = Curso.objects.get(pk=idcurso)
+        turmasL = Turma.objects.filter(curso=curso, anosemestre=periodo, anoturma=ano) # Aqui dará somente uma linha
+    else:
+        print "Boletim por turma"
+        # Para o caso de for por turma
+        turmasL = Turma.objects.filter(pk=idturma)
 
 
-    # com todos os dados do usuários da turma, grupo ou de um único usuário
+    for turma in turmasL:
+        data = Notafalta.objects.values_list('aluno').filter(turma=turma).distinct()
+        for i in data:
+
+                aluno = {}
+                prof = ProfileUser.objects.get(pk=int(i[0])) # i[0] é o id do usuario
+
+                # Aqui eu poderei pegar o boletim de um aluno em específico como ID
+                if idaluno != None and idturma != None and prof.user.id != int(idaluno):
+                    continue
+
+                dicsL = Disciplina.objects.filter(curso=turma.curso, periodo=turma.anosemestre)
+                aluno['nome'] = prof.nome.upper()
+                aluno['curso'] = prof.nome.upper()
+                aluno['anosemestre'] = turma.anosemestre
+                aluno['turma.nome'] = turma.nome
+
+                disciplinas = []
+                for i in dicsL:
+                    atrib = AtribAula.objects.filter(disciplina=i, turma=turma)
+
+                    for at in atrib:
+                        disciplina = {}
+                        notasAno = Notafalta.objects.filter(turma=turma, disciplina=at.disciplina,aluno=prof)[0]
+                        disciplina['nome'] = notasAno.disciplina.nome.upper().encode('utf-8')
+                        disciplina['nota1b'] = str(notasAno.nota1b if type(notasAno.nota1b)!=type(None) else '')
+                        disciplina['falta1b'] = str(notasAno.falta1b if type(notasAno.falta1b)!=type(None) else '')
+                        # disciplina['falta1b'] = str(notasAno.nota1b if type(notasAno.nota1b)!=type(None) else '')
+                        disciplina['nota2b'] = str(notasAno.nota2b if type(notasAno.nota2b)!=type(None) else '')
+                        disciplina['falta2b'] = str(notasAno.falta2b if type(notasAno.falta2b)!=type(None) else '')
+                        disciplina['nota3b'] = str(notasAno.nota3b if type(notasAno.nota3b)!=type(None) else '')
+                        disciplina['falta3b'] = str(notasAno.falta3b if type(notasAno.falta3b)!=type(None) else '')
+                        disciplina['nota4b'] = str(notasAno.nota4b if type(notasAno.nota4b)!=type(None) else '')
+                        disciplina['falta4b'] = str(notasAno.falta4b if type(notasAno.falta4b)!=type(None) else '')
+                        disciplina['mediaanual'] = str(notasAno.mediaanual if type(notasAno.mediaanual)!=type(None) else '')
+                        disciplina['recuperacao'] = str(notasAno.recuperacao if type(notasAno.recuperacao)!=type(None) else '')
+                        disciplina['mediapospf'] = str(notasAno.mediapospf if type(notasAno.mediapospf)!=type(None) else '')
+                        disciplina['situacaofinal'] = str(notasAno.situacaofinal if type(notasAno.situacaofinal)!=type(None) else '')
+
+                        disciplinas.append(disciplina)
+
+                aluno['disciplinas'] = disciplinas
+                lista.append(aluno)
+
+        for i in lista:
+            print i['nome']
+            for d in i['disciplinas']:
+                print d['nome']
 
 
-
-
-
-
-
-
-    # if bimestre == None and turma == None:
 
     response = HttpResponse(content_type='application/pdf')
     buffer = BytesIO()
     report = BoletimLayout(buffer)
-    pdf = report.print_users(24)
+    pdf = report.print_users(lista)
     response.write(pdf)
 
     return response

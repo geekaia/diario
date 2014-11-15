@@ -21,7 +21,7 @@
         <table border="0">
         <tr>
             <td style="padding-bottom: 15px;">
-                <div style='font-size: 14px; font-family: verdana; '>Todos os alunos do Curso deste ano: <input type="checkbox" /> </div>
+                <div style='font-size: 14px; font-family: verdana; '>Todos os alunos do Curso deste ano: <div id="reportCursoid"></div></div>
             </td>
         </tr>
 
@@ -44,14 +44,9 @@
                 <div id="ano" name='ano' />
             </td>
 
-
              <td  style="vertical-align: top;">
                <div style='font-size: 13px; font-family: verdana; '>Turma: </div>
                <div id="turma" name="turma" />
-            </td>
-             <td  style="vertical-align: top;">
-               <div style='font-size: 13px; font-family: verdana; '>Bimestre: </div>
-               <div id="bimestre" name="bimestre" />
             </td>
              <td  style="vertical-align: center; align-content: center; width: 400px;">
                  <div style="padding-left: 60px;">
@@ -62,8 +57,6 @@
        </table>
     <b />
     <b />
-
-
 
 
 
@@ -79,11 +72,17 @@
                     cursosData[{{ i.id }}]="{{i.id}}-{{ i.nome }} - {{ i.anoGrade }}";
                 {% endfor %}
 
+                $("#btnBoletim").on('click', function(){
+                    if($("#reportCursoid").jqxCheckBox('checked')) {
+                        window.open("/ReportBoletimCurso/"+$("#curso").val().split('-')[0]+'/'+$("#ano").val()+"/"+$("#periodos").val());
+                    } else {
+                        window.open("/ReportBoletim/"+$("#turma").val().split('-')[0]);
+                    }
+                });
+
                  $(document).ready( function() {
 
-
-
-
+                     $("#reportCursoid").jqxCheckBox({ width: 50, height: 25 });
 
                     var urlUploa = '/importXlsNotas';
 
@@ -247,30 +246,6 @@
                                     } catch(err)  {
                                         console.log('Ainda não foi construído'+ err);
                                     }
-
-                                    // get quantidade de bimestres
-                                    $.ajax({
-                                        url:  "/quantBimestre",
-                                        data: {
-                                            "idturma": $("#turma").val().split('-')[0],
-                                            csrfmiddlewaretoken: '{{ csrf_token }}'
-                                        },
-                                        cache: false,
-                                        type: "POST",
-                                        datatype: 'json',
-                                        async: false,
-                                        success: function(response) {
-                                            var respint = parseInt( response );
-                                            var quantBi = new Array();
-
-                                            for( var i=1; i<=respint; i++) {
-                                                quantBi.push( i );
-                                            }
-                                            quantBi.push('ALL');
-
-                                            $("#bimestre").jqxListBox({source: quantBi, width: '50', height: '250'});
-                                    }
-                                });
                                 });
                             }
                         });

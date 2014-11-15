@@ -132,7 +132,7 @@
                             <br />
                             <table border="0">
                                 <tr>
-                                    <td></td>
+                                    <td><input type="button" id="btnBoletim" value="Boletim" /></td>
                                     <td>
                                         <table>
                                             <tr>
@@ -232,6 +232,7 @@
         {% endfor %}
 
         var situacaoMatricula = ['Matriculado', 'Transferido', 'Desistente', 'Trancado', 'Concluido'];
+        var turmaAluno = -1;
 
         var rowIndex = -1;
         var idedit = '';
@@ -255,6 +256,13 @@
 
                 $("#submit").jqxButton();
                 $("#btnMudanca").jqxButton();
+                $("#btnBoletim").jqxButton();
+
+                $("#btnBoletim").on("click", function() {
+                    window.open("/alunoBoletim/"+turmaAluno+"/"+$("#idaluno").val());
+                });
+
+
                 $("#nome").jqxInput({  width: '400px', height: '20px' });
                 $("#mae").jqxInput({  width: '400px', height: '20px' });
                 $("#pai").jqxInput({  width: '400px', height: '20px' });
@@ -311,6 +319,8 @@
                 contatipo['secretaria'] = 'Secretaria';
                 contatipo['Professor'] = 'Professor';
                 $("#tipo").jqxDropDownList({source: contatipo, width: '150', theme: 'energyblue', height: '25'});
+
+
 
 
                 function setEstado() {
@@ -637,8 +647,15 @@
                 }
             );
             $('#turmasaluno').jqxGrid('hidecolumn', 'id');
-        }
 
+
+
+            $('#turmasaluno').on('rowselect', function (event)
+            {
+                turmaAluno = $('#turmasaluno').jqxGrid('getcelltextbyid',  event.args.rowindex, "id");
+
+            });
+        }
 
         function fillSituacaoMatricula()
         {

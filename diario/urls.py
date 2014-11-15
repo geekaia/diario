@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.conf.urls import patterns, include, url
 
 from django.contrib import admin
@@ -26,10 +27,16 @@ urlpatterns = patterns('',
     url(r'^addvarios', 'diarioif.importar.addvarios', name='addvarios'),
     url(r'^fileupload', 'diarioif.importar.fileupload', name='fileupload'),
     url(r'^importXlsNotas', 'diarioif.importar.importXlsNotas', name='importXlsNotas'),
+
+
+    # Boletim do Aluno
     url(r'^boletim', 'diarioif.boletim.boletim', name='boletim'),
-    url(r'^gemPdf', 'diarioif.testboletim.gemPdf', name='gemPdf'),
-
-
+    # Boletim de uma turma
+    url(r'^ReportBoletim/(?P<idturma>\d[^/]*)$', 'diarioif.testboletim.gemPdf', name='ReportBoletim'),
+    # boletim de um curso
+    url(r'^ReportBoletimCurso/(?P<idcurso>\d[^/]*)/(?P<ano>\d[^/]*)/(?P<periodo>\d[^/]*)$', 'diarioif.testboletim.gemPdf', name='ReportBoletimCurso'),
+    # Boletim de um aluno em específico
+    url(r'^alunoBoletim/(?P<idturma>\d[^/]*)/(?P<idaluno>\d[^/]*)$', 'diarioif.testboletim.gemPdf', name='alunoBoletim'),
 
 
     # Cursos
