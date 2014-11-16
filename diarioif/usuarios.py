@@ -503,6 +503,7 @@ def turmasCursoAluno(request):
     try:
         idusuario = request.POST['id']
         idcurso = request.POST['idcurso']
+        user = User.objects.get(pk=idusuario)
 
         curso = Curso.objects.get(pk=idcurso)
 
@@ -510,7 +511,9 @@ def turmasCursoAluno(request):
         turmasCurso = Turma.objects.filter(curso=curso)
 
         for tm in turmasCurso:
-            notasF = Notafalta.objects.filter(turma=tm)[:4]
+
+            profuser = ProfileUser.objects.get(user=user)
+            notasF = Notafalta.objects.filter(turma=tm, aluno=profuser)[:4]
             turma = {}
 
             if len(notasF) > 0:

@@ -104,7 +104,7 @@ def importarAlunos(request):
             matri.curso = turma.curso
             matri.atual = True
             matri.dataMatricula = datetime.now()
-            matri.user = user
+            matri.user = profuser.user
             matri.save()
 
             sitMat = SituacaoMatricula()
