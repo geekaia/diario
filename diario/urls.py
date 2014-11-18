@@ -30,7 +30,7 @@ urlpatterns = patterns('',
 
 
     # Boletim do Aluno
-    url(r'^boletim', 'diarioif.boletim.boletim', name='boletim'),
+    url(r'^boletim$', 'diarioif.boletim.boletim', name='boletim'),
     # Boletim de uma turma
     url(r'^ReportBoletim/(?P<idturma>\d[^/]*)$', 'diarioif.testboletim.gemPdf', name='ReportBoletim'),
     # boletim de um curso
@@ -40,7 +40,7 @@ urlpatterns = patterns('',
 
 
     # Cursos
-    url(r'^listCourses', 'diarioif.views.listCourses', name='listCourses'),
+    url(r'^listCourses$', 'diarioif.views.listCourses', name='listCourses'),
     url(r'^cursocad/$', 'diarioif.views.cursocad', name='cursocad'),
     url(r'^cursocad/(?P<id>\d[^/]*)$', 'diarioif.views.cursocad', name='cursocad'),
 
@@ -51,28 +51,38 @@ urlpatterns = patterns('',
 
 
     # Disciplinas
-    url(r'^disciplinas', 'diarioif.views.disciplinas', name='disciplinas'),
-    url(r'^cadDisciplinas', 'diarioif.views.cadDisciplinas', name='cadDisciplinas'),
+    url(r'^disciplinas$', 'diarioif.views.disciplinas', name='disciplinas'),
+    url(r'^cadDisciplinas$', 'diarioif.views.cadDisciplinas', name='cadDisciplinas'),
     url(r'^getPeriodos/(?P<idcurso>\d[^/]*)$', 'diarioif.views.getPeriodos', name='getPeriodos'),
     url(r'^removerDisc/(?P<idrem>\d[^/]*)$', 'diarioif.views.removerDisc', name='removerDisc'),
     url(r'^getDisciplinas/(?P<idcurso>\d[^/]*)/(?P<numperiodo>\d[^/]*)$', 'diarioif.views.getDisciplinas', name='getDisciplinas'),
 
     # Turmas
-    url(r'^turmas', 'diarioif.views.turmas', name='turmas'),
-    url(r'^cadturmas', 'diarioif.views.cadturmas', name='cadturmas'),
-    url(r'^delturma', 'diarioif.views.delturma', name='delturma'),
-    url(r'^getAlunosCurso', 'diarioif.views.getAlunosCurso', name='getAlunosCurso'),
-    url(r'^listAlunosTurma', 'diarioif.views.listAlunosTurma', name='listAlunosTurma'),
-    url(r'^listDiscTurma', 'diarioif.views.listDiscTurma', name='listDiscTurma'),
-    url(r'^changeAtrib', 'diarioif.views.changeAtrib', name='changeAtrib'),
+    url(r'^turmas$', 'diarioif.views.turmas', name='turmas'),
+    url(r'^cadturmas$', 'diarioif.views.cadturmas', name='cadturmas'),
+    url(r'^delturma$', 'diarioif.views.delturma', name='delturma'),
+    url(r'^getAlunosCurso$', 'diarioif.views.getAlunosCurso', name='getAlunosCurso'),
+    url(r'^listAlunosTurma$', 'diarioif.views.listAlunosTurma', name='listAlunosTurma'),
+    url(r'^listDiscTurma$', 'diarioif.views.listDiscTurma', name='listDiscTurma'),
+    url(r'^changeAtrib$', 'diarioif.views.changeAtrib', name='changeAtrib'),
     url(r'^getTurmas/(?P<idcurso>\d[^/]*)/(?P<periodo>\d[^/]*)/(?P<ano>\d[^/]*)$', 'diarioif.views.getTurmas', name='getTurmas'),
-    url(r'^cadTurmaAlunosDisc', 'diarioif.views.cadTurmaAlunosDisc', name='cadTurmaAlunosDisc'),
+    url(r'^cadTurmaAlunosDisc$', 'diarioif.views.cadTurmaAlunosDisc', name='cadTurmaAlunosDisc'),
 
     # Lancar notas
-    url(r'^lancarnotas', 'diarioif.lancarnotas.notas', name='lancarnotas'),
-    url(r'^notasAlunosTurma', 'diarioif.lancarnotas.notasAlunosTurma', name='notasAlunosTurma'),
-    url(r'^quantBimestre', 'diarioif.lancarnotas.quantBimestre', name='quantBimestre'),
-    url(r'^saveNotas', 'diarioif.lancarnotas.saveNotas', name='saveNotas'),
+    url(r'^lancarnotas$', 'diarioif.lancarnotas.notas', name='lancarnotas'),
+    url(r'^notasAlunosTurma$', 'diarioif.lancarnotas.notasAlunosTurma', name='notasAlunosTurma'),
+    url(r'^quantBimestre$', 'diarioif.lancarnotas.quantBimestre', name='quantBimestre'),
+    url(r'^saveNotas$', 'diarioif.lancarnotas.saveNotas', name='saveNotas'),
+
+
+    # Chamada
+    url(r'^chamada$', 'diarioif.chamada.chamada', name='chamada'),
+    url(r'^chamadaDisc$', 'diarioif.chamada.chamadaDisc', name='chamadaDisc'),
+    url(r'^addDia$', 'diarioif.chamada.addDia', name='addDia'),
+    url(r'^getActualBimestre$', 'diarioif.chamada.getActualBimestre', name='getActualBimestre'),
+    url(r'^getDiasBimestre$', 'diarioif.chamada.getDiasBimestre', name='getDiasBimestre'),
+    url(r'^getContent$', 'diarioif.chamada.getContent', name='getContent'),
+    url(r'^saveContent$', 'diarioif.chamada.saveContent', name='saveContent'),
 
 
 
@@ -82,9 +92,9 @@ urlpatterns = patterns('',
     # Json services provided by the system
     url(r'^cities$', 'diarioif.views.getCities', name='cities'),
     url(r'^bairros$', 'diarioif.views.getBairros', name='bairros'),
-    url(r'^ruas', 'diarioif.views.getRuas', name='ruas'),
-    url(r'^cep', 'diarioif.views.getCep', name='cep'),
-    url(r'^geCourses', 'diarioif.views.geCourses', name='geCourses'),
+    url(r'^ruas$', 'diarioif.views.getRuas', name='ruas'),
+    url(r'^cep$', 'diarioif.views.getCep', name='cep'),
+    url(r'^geCourses$', 'diarioif.views.geCourses', name='geCourses'),
     url(r'^geBimestres/(?P<ano>\d[^/]*)$', 'diarioif.views.geBimestres', name='geBimestres'),
 
     # url(r'^blog/', include('blog.urls')),

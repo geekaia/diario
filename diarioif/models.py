@@ -81,13 +81,6 @@ class Bimestre(models.Model):
     dataFim = models.DateField()
 
 
-class Presenca(models.Model):
-    data = models.DateField()
-    aluno = models.ForeignKey(User)
-    turma = models.ForeignKey(Turma)
-    presencafalta = models.BooleanField()
-
-
 class AtribAula(models.Model):
     disciplina = models.ForeignKey(Disciplina)
     turma = models.ForeignKey(Turma)
@@ -141,18 +134,17 @@ class Notafalta(models.Model):
 
 
 class Dia(models.Model):
-    disciplina = models.ForeignKey(Disciplina)
-    turma = models.ForeignKey(Turma)
+    atrib = models.ForeignKey(AtribAula)
     data = models.DateField()
 
 class Conteudo(models.Model):
     conteudo = models.TextField()
     dia = models.ForeignKey(Dia)
 
-class Chamada(models.Model):
-    presenca = models.BooleanField(default=True)
+class Presenca(models.Model):
     dia = models.ForeignKey(Dia)
-    numero = models.IntegerField() # id da aula. Para 4 aulas temos 1, 2, 3, 4 ....
+    aluno = models.ForeignKey(ProfileUser)
+    presente = models.BooleanField(default=True)
 
 
 # Tenho que pensar em uma atividade avlaiativa

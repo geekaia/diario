@@ -42,7 +42,6 @@ def notas(request):
     context['profs'] = profs
     context['form'] = FileUploadedForm
 
-
     return render(request, 'lancarnotas.html', context)
 
 # Necessário para serializar Decimal
@@ -125,7 +124,14 @@ def saveNotas(request):
 @login_required()
 def quantBimestre(request):
     try:
-        turma = Turma.objects.get(pk=request.POST['idturma'])
+        # Byidturma
+        try:
+            turma = Turma.objects.get(pk=request.POST['idturma'])
+            print 'By idturma'
+        except:
+            print 'By idatrib'
+            atrib = AtribAula.objects.get(pk=int(request.POST['idatrib']))
+            turma = atrib.turma
 
         quantP = 0
         if turma.curso.periodo == 'Ano' and turma.curso.avaliacaopor == 'Bimestre':
@@ -140,5 +146,5 @@ def quantBimestre(request):
 
         return HttpResponse(quantP)
     except:
-        return HttpResponse(1)
+        return HttpResponse(-1)
 

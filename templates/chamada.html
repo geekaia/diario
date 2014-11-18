@@ -1,0 +1,312 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Chamada</h1>
+     <div id='chamadaacord'>
+        <div>
+            Disciplinas e turmas
+        </div>
+        <div>
+            <table border="0">
+                <tr>
+                    <td style="width: 72px;">Selecione um ano:</td>
+                    <td>Disciplina</td>
+                </tr>
+                <tr>
+                    <td><div id="ano"></div></td>
+                    <td><div id="turma"></div></td>
+                    <td style="padding-left: 20px;"><input type="button" value="Chamada" id="btnchamada" /> </td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            Dias
+        </div>
+        <div>
+            <center>
+                <h1><div id="disciplinasel"></div></h1>
+
+           <table>
+               <tr>
+                   <td style="vertical-align: top;">
+                       <table>
+                           <tr>
+                               <td style="vertical-align: bottom">
+
+                                   <fieldset>
+                                       <legend>Adicionar um dia:</legend>
+                                   <table>
+                                       <tr>
+                                           <td style="vertical-align: bottom;">Dia:<div id="dia"></div></td>
+                                           <td style="vertical-align: bottom;">Quant.:  <div id="quantDias"></div></td>
+                                           <td style="vertical-align: bottom;"><input type="button" id="btnAddDay" value="Adicionar"/></td>
+                                       </tr>
+                                   </table>
+                               </fieldset>
+                               </td>
+                           </tr>
+                           <tr>
+                               <td colspan="3"><br /></td>
+                           </tr>
+                           <tr>
+                               <td colspan="3">
+                                <fieldset>
+                                  <legend>Ações:</legend>
+                                  <input type="button" id="btnChamada" value="Chamada"/>
+                                  <input type="button" id="btnConteúdo" value="Conteúdo"/>
+                                  <input type="button" id="btnEditContent" value="Editar"/>
+                               </fieldset>
+                               </td>
+                           </tr>
+                           <tr >
+                               <td colspan="3" style="padding-top: 15px;"><div id="diasgrid"></div></td>
+                           </tr>
+                       </table>
+
+                   </td>
+               </tr>
+
+           </table>
+          </center>
+        </div>
+
+
+
+        <div>
+            Conteúdo
+        </div>
+        <div style="padding: 15px;">
+            <input type="button" id="btnSaveContent" value="Salvar" />
+            <br />
+            <br />
+            <textarea id="conteudodia" name='conteudodia'></textarea>
+            <br />
+            Conteúdo de: <div id="DataContent">DATA</div>
+        </div>
+    </div>
+
+
+    <script language="javascript">
+        var anos = new Array();
+            var data = new Date();
+
+            for(var i=data.getFullYear()-10; i<=data.getFullYear(); i++)
+            {
+                anos.push(i);
+            }
+
+            var rowAtrib = -1;
+            var rowDia = -1;
+
+            var IDdia = -1;
+
+        $(document).ready(function() {
+            $("#conteudodia").jqxInput({  width: '800px', height: '200px' });
+            $("#DataContent").show();
+            $("#btnSaveContent").jqxButton();
+
+            $("#btnConteúdo").on('click', function() {
+                $("#conteudodia").val('');
+                IDdia = $('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "id");
+
+                 $.ajax({
+                    url:  "/getContent",
+                    cache: false,
+                    data: {
+                        'id': IDdia,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: "POST",
+                    datatype: 'json',
+                    async: false,
+                    success: function(response) {
+                        $("#conteudodia").val(response[0].content);
+                        //console.log("Responsta: "+response[0].content);
+                    }
+                });
+
+                $("#DataContent").html($('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "data"));
+                $("#chamadaacord").jqxNavigationBar('expandAt', 2);
+            });
+
+            $("#btnSaveContent").on('click', function(ev){
+                 $.ajax({
+                    url:  "/saveContent",
+                    cache: false,
+                    data: {
+                        'id': IDdia,
+                        'content': $("#conteudodia").val(),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: "POST",
+                    datatype: 'json',
+                    async: false,
+                    success: function(response) {
+                        var respint = parseInt(response);
+                        if(respint == 1) {
+                             $("#chamadaacord").jqxNavigationBar('expandAt', 1);
+                        } else {
+                            alert('Erro ao atualizar o conteúdo!');
+                        }
+
+                        //console.log("Responsta: "+response[0].content);
+                    }
+                });
+
+                $("#DataContent").html($('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "data"));
+                $("#chamadaacord").jqxNavigationBar('expandAt', 2);
+            });
+
+
+            var quantidiasArr = [1, 2, 3, 4, 5, 6, 7, 8];
+            $("#quantDias").jqxDropDownList({source: quantidiasArr, width: '70', height: '25'});
+            $("#quantDias").val(2);
+
+            $("#btnAddDay").jqxButton();
+
+            $("#btnAddDay").on('click', function(event) {
+                 $.ajax({
+                    url:  "/addDia",
+                    cache: false,
+                    data: {
+                        'id': $('#turma').jqxGrid('getcelltextbyid', rowAtrib, "id"),
+                        'dia': $("#dia").val(),
+                        'quantidade': $("#quantDias").val(),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: "POST",
+                    datatype: 'json',
+                    async: false,
+                    success: function(response) {
+                        var respint = parseInt(response);
+                        if(respint == 1) {
+                            fillDiasGrid();
+
+                        } else {
+                            console.log('Houve erro ao salvar os dados');
+                        }
+                    }
+                });
+
+            });
+
+
+            function fillDiasGrid()
+            {
+                var url = "/getDiasBimestre";
+                // prepare the data
+                var source2 =
+                {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'id'},
+                        { name: 'id2'},
+                        { name: 'quant'},
+                        { name: 'data', type: 'string'},
+                    ],
+                    data: {
+                        'id': $('#turma').jqxGrid('getcelltextbyid', rowAtrib, "id"),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: 'POST',
+                    url: url,
+                    async: false
+                };
+                var dataAdapter2 = new $.jqx.dataAdapter(source2);
+
+
+
+                $("#diasgrid").jqxGrid(
+                {
+                    width: 500,
+                    height: 350,
+                    source: dataAdapter2,
+                    columns: [
+                        { text: 'ID', datafield: 'id', width: 0, hidden: true },
+                        { text: 'Data', datafield: 'data', width: 400 },
+                        { text: 'Quant', datafield: 'quant', width: 60 },
+                    ]
+                });
+
+                $('#diasgrid').jqxGrid('hidecolumn', 'id');
+                $('#diasgrid').on('rowselect', function (event){
+                    rowDia = event.args.rowindex;
+                });
+
+            }
+
+
+
+            $("#dia").jqxDateTimeInput({ width: '250px', height: '25px' });
+
+            $("#ano").jqxListBox({source: anos, width: '70', height: '350'});
+            $("#chamadaacord").jqxNavigationBar({ width: 900, height: 700});
+
+
+            $("#btnChamada").jqxButton();
+            $("#btnConteúdo").jqxButton();
+            $("#btnEditContent").jqxButton();
+
+            $("#btnchamada").on('click', function(event) {
+                 $("#chamadaacord").jqxNavigationBar('expandAt', 1);
+                 $("#disciplinasel").html($('#turma').jqxGrid('getcelltextbyid', rowAtrib, "nome"));
+                 fillDiasGrid();
+            });
+
+
+            function filAtribuicoes()
+            {
+                var url = "/chamadaDisc";
+                // prepare the data
+                var source2 =
+                {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'id'},
+                        { name: 'nome', type: 'string'},
+                        { name: 'turma', type: 'string'},
+                        { name: 'ano', type: 'string'},
+                    ],
+                    data: {
+                        'ano': $("#ano").val(),
+                        'idprof': 6,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: 'POST',
+                    url: url,
+                    async: false
+                };
+                var dataAdapter2 = new $.jqx.dataAdapter(source2);
+
+
+                $("#turma").jqxGrid(
+                {
+                    width: 500,
+                    height: 350,
+                    source: dataAdapter2,
+                    columns: [
+                        { text: 'ID', datafield: 'id', width: 0, hidden: true },
+                        { text: 'Name', datafield: 'nome', width: 400 },
+                        { text: 'Turma', datafield: 'turma', width: 50 },
+                        { text: 'Ano', datafield: 'ano', width: 50 },
+                    ]
+                });
+
+                $('#turma').jqxGrid('hidecolumn', 'id');
+                $('#turma').on('rowselect', function (event){
+                    rowAtrib = event.args.rowindex;
+                });
+            }
+
+            $("#ano").on('change', function(evt){
+                filAtribuicoes();
+            });
+            $("#btnchamada").jqxButton({width: 100, height: 50});
+
+            // Seta como o ano atual
+            $("#ano").val(data.getFullYear());
+        });
+    </script>
+
+
+{% endblock %}

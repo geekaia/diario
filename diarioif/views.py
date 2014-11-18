@@ -510,7 +510,7 @@ def listAlunosTurma(request):
         for i in data:
             print "Inteiro: ",  int(i[0])
             aluno = {}
-            prof =  ProfileUser.objects.get(pk=int(i[0]))
+            prof = ProfileUser.objects.get(pk=int(i[0]))
             aluno['id'] = int(i[0])
             aluno['nome'] = prof.nome
             alunos.append(aluno)
