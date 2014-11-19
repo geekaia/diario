@@ -35,6 +35,7 @@ def chamada(request):
 
     return render(request, 'chamada.html', context)
 
+
 @login_required()
 def chamadaDisc(request):
 
@@ -51,7 +52,8 @@ def chamadaDisc(request):
             disc['id'] =atrib.id
             disc['nome'] =atrib.disciplina.nome
             disc['turma'] =atrib.turma.nome
-            disc['ano'] =atrib.periodoInicio.year
+            disc['curso'] =atrib.turma.curso.nome
+
 
             disciplinas.append(disc)
 
@@ -113,10 +115,7 @@ def getActualBimestre(request):
 
     try:
         idatrib = request.POST['id']
-
         atrib = AtribAula.objects.get(pk=idatrib)
-
-
         ano = atrib.turma.anoturma
 
         data = datetime.now()

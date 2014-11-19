@@ -152,10 +152,11 @@ class Atividade(models.Model):
         Cadastra as atividades avaliativas de um bimestre
     """
     descricao = models.TextField(blank=True, null=True)
-    dataInicio = models.DateField()
-    dataFim = models.DateField()
-    bimestre = models.ForeignKey(Bimestre) # ignorar
+    dataInicio = models.DateField() # periodo que pode ser entregue a atividade
+    dataFim = models.DateField() # é igual ao início quando a atividade no início
+    bimestre = models.ForeignKey(Bimestre) # ignorar quando é semestral e quando há datas iguais.
     disciplina = models.ForeignKey(Disciplina)
+    calculo = models.CharField(max_length=10) # Soma ou Média
     turma = models.ForeignKey(Turma)
 
     # atitudinal, prova, trabalho, lista de exercicios, prova final, recuperação bimestral
@@ -165,7 +166,7 @@ class NotaAtividade(models.Model):
     aluno = models.ForeignKey(ProfileUser)
     atividade = models.ForeignKey(Atividade)
     nota0 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
-    not1 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
-    not2 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
-    not3 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
-    not4 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    nota1 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    nota2 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    nota3 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    nota4 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)

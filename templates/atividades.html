@@ -32,21 +32,14 @@
 
            <table>
                <tr>
+                   <td><fieldset>
+                                       <legend>Bimestre</legend><div id="bimestre"></div>
+                   </fieldset>
+                   </td>
                    <td style="vertical-align: top;">
                        <table>
                            <tr>
                                <td style="vertical-align: bottom">
-
-                                   <fieldset>
-                                       <legend>Adicionar um dia:</legend>
-                                   <table>
-                                       <tr>
-                                           <td style="vertical-align: bottom;">Dia:<div id="dia"></div></td>
-                                           <td style="vertical-align: bottom;">Quant.:  <div id="quantDias"></div></td>
-                                           <td style="vertical-align: bottom;"><input type="button" id="btnAddDay" value="Adicionar"/></td>
-                                       </tr>
-                                   </table>
-                               </fieldset>
                                </td>
                            </tr>
                            <tr>
@@ -56,6 +49,7 @@
                                <td colspan="3">
                                 <fieldset>
                                   <legend>Ações:</legend>
+                                  <input type="button" id="btnNewAtividade" value="Nova Atividade"/>
                                   <input type="button" id="btnChamada" value="Chamada"/>
                                   <input type="button" id="btnConteúdo" value="Conteúdo"/>
                                   <input type="button" id="btnRemover" value="Remover"/>
@@ -120,8 +114,51 @@
       </div>
 
 
+       <div id="AddAtividadeW">
+         <div id="windowHeader">
+             <span>
+                Adicionar uma Atividade avaliativa
+             </span>
+         </div>
 
+         <div style="overflow: hidden; padding: 15px;" id="windowContent">
 
+             <table>
+                 <tr>
+                     <td>Tipo da atividade:</td>
+                     <td><div id="tipo"></div></td>
+                 </tr>
+                 <tr>
+                     <td>Forma de calcular:</td>
+                     <td><div id="calculo"></div></td>
+                 </tr>
+                 <tr>
+                     <td>Bimestre:</td>
+                     <td><div id="bimestreAtiv"></div></td>
+                 </tr>
+                 <tr>
+                     <td>Descricao da atividade:</td>
+                     <td><input type="text" id="descricao" name="descricao" /></td>
+                 </tr>
+                 <tr>
+                     <td>Data:</td>
+                     <td><div id="dataInicio"></div> </td>
+                 </tr>
+                 <tr id="ldatafim">
+                     <td>Entregar até o dia:</td>
+                     <td><div id="dataFim"></div> </td>
+                 </tr>
+                 <tr >
+                     <td></td>
+                     <td style="padding-top: 10px;"><input type="button" id="addAtividade" value="Adicionar Atividade" /> </td>
+                 </tr>
+                 <tr>
+                     <td></td>
+                     <td> <div id="imgloading"> Criando... <img src="/static/images/ajax-loader.gif"  /> </div> </td>
+                 </tr>
+             </table>
+         </div>
+      </div>
 
     <script language="javascript">
         var anos = new Array();
@@ -141,13 +178,93 @@
             var rowStChamada= -1;
 
         $(document).ready(function() {
+
+            var tipoArr = ['Prova',  'Trabalho', 'Recuperação Bimestral', 'Prova Final', 'Atitudinal', 'Outra'];
+            $("#tipo").jqxDropDownList({source: tipoArr, width: '200', height: '25'});
+
+            var calculoArr = ['Média', 'Soma'];
+            $("#calculo").jqxDropDownList({source: calculoArr, width: '70', height: '25'});
+
+            var bimestreAtivarr = ['1', '2', '3', '4', 'PF'];
+            $("#bimestreAtiv").jqxDropDownList({source: bimestreAtivarr, width: '70', height: '25'});
+
+            $("#addAtividade").jqxButton();
+            $("#btnNewAtividade").jqxButton();
+            $("#btnNewAtividade").on('click', function(){
+                    $("#imgloading").hide();
+                    $("#AddAtividadeW").jqxWindow('open');
+                    $("#ldatafim").hide();
+            });
+
+            $("#tipo").on('change', function (event) {
+
+                if($("#tipo").val()=='Trabalho' ) {
+                    $("#ldatafim").show();
+                } else{
+                    $("#ldatafim").hide();
+                }
+            });
+
+
+            $("#addAtividade").on('click', function(){
+                $("#imgloading").show();
+
+                $.ajax({
+                    url:  "/criarAtividade",
+                    cache: false,
+                    data:{
+                        'idatirb': '',
+                        'descricao': '',
+                        'dataInicio': '',
+                        'dataFim': '',
+                        'bimestre': '',
+                        'disciplina': '',
+                        'disciplina': '',
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    } ,
+                    type: "POST",
+                    datatype: 'json',
+                    success: function(response) {
+                        var respint = parseInt(response);
+
+                        if(respint == 1) {
+
+                        } else {
+                            console.log('Erro ao cadastrar aluno');
+
+                        }
+                   }
+                });
+            });
+
+
+
+
+
+            });
+
+
+            $("#descricao").jqxInput({  width: '300px', height: '20px' });
+            $("#dataInicio").jqxDateTimeInput({ width: '250px', height: '25px' });
+            $("#dataFim").jqxDateTimeInput({ width: '250px', height: '25px' });
+
+
             $("#conteudodia").jqxInput({  width: '800px', height: '200px' });
             $("#DataContent").show();
             $("#btnSaveContent").jqxButton();
             $("#btnPresente").jqxButton();
 
+
+
+            $("#AddAtividadeW").hide();
+            $("#AddAtividadeW").jqxWindow({ width: 450, height: 350 });
+
+
             // Janela para remover um dia!!!
-            $("#changesit").hide();
+            $("#changesit").hide()
+
+
+            ;
             $("#changesit").jqxWindow({ width: 500, height: 200 });
             $("#btnSim").jqxButton();
             $("#btnSim").on('click', function(ev){
@@ -290,225 +407,22 @@
                 console.log((selectedrowindexes));
             });
 
-            $("#btnPresente").on('click', function() {
-
-                var selectedrowindexes = $('#gridchamada').jqxGrid('selectedrowindexes');
-                for (var j = 0; j < selectedrowindexes.length; j++) {
-                    for (var i = 0; i < quanti; i++) {
-                        $("#gridchamada").jqxGrid('setcellvaluebyid', selectedrowindexes[j], i, true);
-                    }
-                }
-                console.log((selectedrowindexes));
-            });
-
-
-
-
-            function fillChamada()
-            {
-                IDdia = $('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "id");
-
-                quanti = parseInt($('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "quant"));
-
-                var colsArr = new Array();
-
-                var fields = new Array();
-
-                var sourcef = new Array();
-                sourcef.push({ name: 'id'});
-                sourcef.push({ name: 'nome'});
-
-                var arr = {};
-                arr['text'] = 'ID';
-                arr['datafield'] = 'id';
-                arr['hidden'] = true;
-                colsArr.push(arr);
-
-                arr = {};
-                arr['text'] = 'Nome';
-                arr['datafield'] = 'nome';
-                arr['editable'] = false;
-                colsArr.push(arr);
-
-
-                for(var i=0; i<quanti; i++){
-                    console.log(i);
-                    // conteudo
-                    var arr = {};
-                    arr['text'] = 'Aula'+ (i+1);
-                    arr['datafield'] = i.toString();
-                    arr['columntype'] = 'checkbox';
-                    arr['width'] = '50';
-                    arr['editable'] = true;
-                    colsArr.push(arr);
-
-                    // idsfaltas
-                    arr = {};
-                    arr['text'] = i.toString()+'id';
-                    arr['datafield'] = i.toString()+'id';
-                    arr['hidden'] = true;
-                    colsArr.push(arr);
-
-
-                    sourcef.push({ name: i.toString()});
-                    sourcef.push({ name: i.toString()+'id'});
-
-                }
-                console.log('Data: '+colsArr);
-
-                 var url = "/getChamadaList";
-                // prepare the data
-                var source2 =
-                {
-                    datatype: "json",
-                    datafields: sourcef,
-                    data: {
-                        'id': IDdia,
-                        csrfmiddlewaretoken: '{{ csrf_token }}'
-                    },
-                    type: 'POST',
-                    url: url,
-                    async: false
-                };
-                var dataAdapter2 = new $.jqx.dataAdapter(source2);
-
-
-                $("#gridchamada").jqxGrid(
-                {
-                    width: 895,
-                    height: 500,
-                    editable: true,
-                    source: dataAdapter2,
-                    columns: colsArr,
-                    selectionmode: 'multiplerowsextended',
-                });
-
-                $('#gridchamada').jqxGrid('hidecolumn', 'id');
-
-                $('#gridchamada').on('rowselect', function (event){
-                    rowStChamada = event.args.rowindex;
-                });
-            }
-
+           
 
 
             $("#btnChamada").on('click', function(){
-                $("#saveprogress").jqxProgressBar({ value: 0});
-                fillChamada();
                 $("#chamadaacord").jqxNavigationBar('expandAt', 3);
                 getContent();
             });
 
 
-            $("#btnSaveContent").on('click', function(ev){
-                 $.ajax({
-                    url:  "/saveContent",
-                    cache: false,
-                    data: {
-                        'id': IDdia,
-                        'content': $("#conteudodia").val(),
-                        csrfmiddlewaretoken: '{{ csrf_token }}'
-                    },
-                    type: "POST",
-                    datatype: 'json',
-                    async: false,
-                    success: function(response) {
-                        var respint = parseInt(response);
-                        if(respint == 1) {
-                             $("#chamadaacord").jqxNavigationBar('expandAt', 1);
-                        } else {
-                             alert('Erro ao atualizar o conteúdo!');
-                        }
-                        //console.log("Responsta: "+response[0].content);
-                    }
-                });
-
-                $("#DataContent").html($('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "data"));
-                $("#chamadaacord").jqxNavigationBar('expandAt', 2);
-            });
-
-
-            var quantidiasArr = [1, 2, 3, 4, 5, 6, 7, 8];
-            $("#quantDias").jqxDropDownList({source: quantidiasArr, width: '70', height: '25'});
-            $("#quantDias").val(2);
-
-            $("#btnAddDay").jqxButton();
-            $("#btnSalvarChamada").jqxButton();
-            $("#btnFaltou").jqxButton();
-
-
-            $("#btnAddDay").on('click', function(event) {
-                 $.ajax({
-                    url:  "/addDia",
-                    cache: false,
-                    data: {
-                        'id': $('#turma').jqxGrid('getcelltextbyid', rowAtrib, "id"),
-                        'dia': $("#dia").val(),
-                        'quantidade': $("#quantDias").val(),
-                        csrfmiddlewaretoken: '{{ csrf_token }}'
-                    },
-                    type: "POST",
-                    datatype: 'json',
-                    async: false,
-                    success: function(response) {
-                        var respint = parseInt(response);
-                        if(respint == 1) {
-                            fillDiasGrid();
-
-                        } else {
-                            console.log('Houve erro ao salvar os dados');
-                        }
-                    }
-                });
-
-            });
-
-
-            function fillDiasGrid()
-            {
-                var url = "/getDiasBimestre";
-                // prepare the data
-                var source2 =
-                {
-                    datatype: "json",
-                    datafields: [
-                        { name: 'id'},
-                        { name: 'id2'},
-                        { name: 'quant'},
-                        { name: 'data', type: 'string'},
-                    ],
-                    data: {
-                        'id': $('#turma').jqxGrid('getcelltextbyid', rowAtrib, "id"),
-                        csrfmiddlewaretoken: '{{ csrf_token }}'
-                    },
-                    type: 'POST',
-                    url: url,
-                    async: false
-                };
-                var dataAdapter2 = new $.jqx.dataAdapter(source2);
-
-                $("#diasgrid").jqxGrid(
-                {
-                    width: 500,
-                    height: 300,
-                    source: dataAdapter2,
-                    columns: [
-                        { text: 'ID', datafield: 'id', width: 0, hidden: true },
-                        { text: 'Data', datafield: 'data', width: 400 },
-                        { text: 'Quant', datafield: 'quant', width: 60 },
-                    ]
-                });
-
-                $('#diasgrid').jqxGrid('hidecolumn', 'id');
-                $('#diasgrid').on('rowselect', function (event){
-                    rowDia = event.args.rowindex;
-                });
-
-            }
 
 
 
-            $("#dia").jqxDateTimeInput({ width: '250px', height: '25px' });
+
+
+
+
 
             $("#ano").jqxListBox({source: anos, width: '70', height: '350'});
             $("#chamadaacord").jqxNavigationBar({ width: 900, height: 700});
@@ -521,6 +435,30 @@
                  $("#chamadaacord").jqxNavigationBar('expandAt', 1);
                  $("#disciplinasel").html($('#turma').jqxGrid('getcelltextbyid', rowAtrib, "nome"));
                  fillDiasGrid();
+
+                  // get quantidade de bimestres
+                  $.ajax({
+                      url:  "/quantBimestre",
+                      data: {
+                          "idatrib": $('#turma').jqxGrid('getcelltextbyid', rowAtrib, "id"),
+                          csrfmiddlewaretoken: '{{ csrf_token }}'
+                      },
+                      cache: false,
+                      type: "POST",
+                      datatype: 'json',
+                      async: false,
+                      success: function(response) {
+                          var respint = parseInt( response );
+                          var quantBi = new Array();
+
+                          for( var i=1; i<=respint; i++) {
+                              quantBi.push( i );
+                          }
+                          quantBi.push('PF');
+
+                          $("#bimestre").jqxListBox({source: quantBi, width: '150', height: '250'});
+                    }
+                });
             });
 
 
@@ -535,7 +473,7 @@
                         { name: 'id'},
                         { name: 'nome', type: 'string'},
                         { name: 'turma', type: 'string'},
-                        { name: 'ano', type: 'string'},
+                        { name: 'curso', type: 'string'},
                     ],
                     data: {
                         'ano': $("#ano").val(),
@@ -551,14 +489,14 @@
 
                 $("#turma").jqxGrid(
                 {
-                    width: 500,
+                    width: 700,
                     height: 350,
                     source: dataAdapter2,
                     columns: [
                         { text: 'ID', datafield: 'id', width: 0, hidden: true },
-                        { text: 'Name', datafield: 'nome', width: 400 },
+                        { text: 'Name', datafield: 'nome', width: 250 },
                         { text: 'Turma', datafield: 'turma', width: 50 },
-                        { text: 'Ano', datafield: 'ano', width: 50 },
+                        { text: 'Curso', datafield: 'curso', width: 400 },
                     ]
                 });
 
@@ -571,7 +509,7 @@
             $("#ano").on('change', function(evt){
                 filAtribuicoes();
             });
-            $("#btnchamada").jqxButton({width: 100, height: 50});
+            $("#btnchamada").jqxButton({ height: 50});
 
             // Seta como o ano atual
             $("#ano").val(data.getFullYear());

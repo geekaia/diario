@@ -88,9 +88,10 @@ urlpatterns = patterns('',
     url(r'^removerDia$', 'diarioif.chamada.removerDia', name='removerDia'),
 
 
-    # Atividades avaliativas
-    url(r'^atividades$', 'diarioif.chamada.atividades', name='atividades'),
 
+    # Atividades avaliativas
+    url(r'^atividades$', 'diarioif.atividades.atividades', name='atividades'),
+    url(r'^criarAtividade$', 'diarioif.atividades.criarAtividade', name='criarAtividade'),
 
 
 
