@@ -83,6 +83,15 @@ urlpatterns = patterns('',
     url(r'^getDiasBimestre$', 'diarioif.chamada.getDiasBimestre', name='getDiasBimestre'),
     url(r'^getContent$', 'diarioif.chamada.getContent', name='getContent'),
     url(r'^saveContent$', 'diarioif.chamada.saveContent', name='saveContent'),
+    url(r'^getChamadaList$', 'diarioif.chamada.getChamadaList', name='getChamadaList'),
+    url(r'^salvarChamada$', 'diarioif.chamada.salvarChamada', name='salvarChamada'),
+    url(r'^removerDia$', 'diarioif.chamada.removerDia', name='removerDia'),
+
+
+    # Atividades avaliativas
+    url(r'^atividades$', 'diarioif.chamada.atividades', name='atividades'),
+
+
 
 
 

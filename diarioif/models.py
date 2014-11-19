@@ -147,8 +147,25 @@ class Presenca(models.Model):
     presente = models.BooleanField(default=True)
 
 
-# Tenho que pensar em uma atividade avlaiativa
-# Como criar com exercícios randômicos
-# Pensar em como criar classes de forma randômica
-# Tenho que verificar a segurança de aocrdo com os níveis dos usuários
+class Atividade(models.Model):
+    """
+        Cadastra as atividades avaliativas de um bimestre
+    """
+    descricao = models.TextField(blank=True, null=True)
+    dataInicio = models.DateField()
+    dataFim = models.DateField()
+    bimestre = models.ForeignKey(Bimestre) # ignorar
+    disciplina = models.ForeignKey(Disciplina)
+    turma = models.ForeignKey(Turma)
 
+    # atitudinal, prova, trabalho, lista de exercicios, prova final, recuperação bimestral
+    tipo = models.CharField(max_length=255)
+
+class NotaAtividade(models.Model):
+    aluno = models.ForeignKey(ProfileUser)
+    atividade = models.ForeignKey(Atividade)
+    nota0 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    not1 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    not2 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    not3 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    not4 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)

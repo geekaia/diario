@@ -55,8 +55,8 @@ def chamadaDisc(request):
 
             disciplinas.append(disc)
 
-
     return HttpResponse(json.dumps(disciplinas), content_type="application/json")
+
 
 @login_required()
 def addDia(request):
@@ -126,7 +126,7 @@ def getActualBimestre(request):
     except:
         return HttpResponse(-1)
 
-
+@login_required()
 def getDiasBimestre(request):
     datas = []
 
@@ -151,7 +151,7 @@ def getDiasBimestre(request):
 
     return HttpResponse(json.dumps(datas), content_type="application/json")
 
-
+@login_required()
 def getContent(request):
     content = []
     try:
@@ -169,7 +169,7 @@ def getContent(request):
     return HttpResponse(json.dumps(content), content_type="application/json")
 
 
-
+@login_required()
 def saveContent(request):
 
     try:
@@ -186,4 +186,72 @@ def saveContent(request):
         print "Err: %s " % e
 
     return HttpResponse(-1)
+
+@login_required()
+def getChamadaList(request):
+    lista = []
+
+    try:
+        id=request.POST['id']
+        dia = Dia.objects.get(pk=id)
+
+        first = Presenca.objects.filter(dia=dia)[:1][0]
+        quant = len(Presenca.objects.filter(dia=dia, aluno=first.aluno))
+
+        # Pega todos os alunos da turma
+
+        alunos = Notafalta.objects.values_list('aluno').filter(turma=dia.atrib.turma).distinct()
+
+        for i in alunos:
+
+            aluno = {}
+            prof = ProfileUser.objects.get(pk=int(i[0]))
+            aluno['id'] = int(i[0])
+            aluno['nome'] = prof.nome
+
+            # Pega todas as presenças aluno
+            presenca = Presenca.objects.filter(dia=dia, aluno=prof)
+
+            for i in range(0, quant):
+                aluno[str(i)] = presenca[i].presente
+                aluno[str(i)+'id'] = presenca[i].id
+
+            lista.append(aluno)
+    except:
+        print 'err'
+
+
+    return HttpResponse(json.dumps(lista), content_type="application/json")
+
+@login_required()
+def salvarChamada(request):
+    try:
+        # quant aulas
+        quant = request.POST['quant']
+
+        for i in range(0, int(quant)):
+            id = request.POST[str(i)+'id']
+            value = request.POST[str(i)]
+            presenca = Presenca.objects.get(pk=id)
+            presenca.presente = True if value=='true' else False
+            presenca.save()
+
+        return HttpResponse(1)
+    except:
+        return HttpResponse(-1)
+
+@login_required()
+def removerDia(request):
+    try:
+
+        iddia = request.POST['id']
+        dia = Dia.objects.get(pk=iddia)
+        dia.delete()
+
+        return HttpResponse(1)
+    except:
+        return HttpResponse(-1)
+
+
+
 

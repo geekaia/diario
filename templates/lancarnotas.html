@@ -84,9 +84,6 @@
         </div>
     </div>
 
-
-
-
     <div id="winupload">
         <div id="windowHeader">
             <span>
@@ -103,7 +100,6 @@
             <div class='progress_outer'>
                 <div id='_progress' class='progress'></div>
             </div>
-
         </div>
     </div>
 
@@ -119,10 +115,7 @@
         </div>
     </div>
 
-
-
-
-    <script language="javascript">
+     <script language="javascript">
 
                 // Global variables iniciais
                 var rowIndex = -1;
@@ -136,6 +129,8 @@
                 {% endfor %}
 
                  $(document).ready( function() {
+
+                     $("#winInporConfirm").hide();
 
                      $('#winupload').jqxWindow({
                          maxHeight: 400,
