@@ -32,10 +32,12 @@
 
            <table>
                <tr>
-                   <td><fieldset>
-                                       <legend>Bimestre</legend><div id="bimestre"></div>
-                   </fieldset>
-                   </td>
+{#                   <td>#}
+{#                       <fieldset>#}
+{#                           <legend>Bimestre</legend>#}
+{#                           <div id="bimestre"></div>#}
+{#                   </fieldset>#}
+{#                   </td>#}
                    <td style="vertical-align: top;">
                        <table>
                            <tr>
@@ -50,17 +52,16 @@
                                 <fieldset>
                                   <legend>Ações:</legend>
                                   <input type="button" id="btnNewAtividade" value="Nova Atividade"/>
-                                  <input type="button" id="btnChamada" value="Chamada"/>
-                                  <input type="button" id="btnConteúdo" value="Conteúdo"/>
+                                  <input type="button" id="btnEdit" value="Editar"/>
+                                  <input type="button" id="btnNotas" value="Notas"/>
                                   <input type="button" id="btnRemover" value="Remover"/>
                                </fieldset>
                                </td>
                            </tr>
                            <tr >
-                               <td colspan="3" style="padding-top: 15px;"><div id="diasgrid"></div></td>
+                               <td colspan="3" style="padding-top: 15px;"><div id="atividadesgrid"></div></td>
                            </tr>
                        </table>
-
                    </td>
                </tr>
 
@@ -99,15 +100,15 @@
         </div>
     </div>
 
-        <div id="changesit">
+        <div id="removerAtiv">
          <div id="windowHeader">
              <span>
-                Remover um dia e todas as chamadas e conteúdos.
+                Remover uma atividade e todas as notas inseridas.
              </span>
          </div>
 
          <div style="overflow: hidden; padding: 15px;" id="windowContent">
-             <h4>Você deseja remover <div id="diatoremove"></div> do seu diário?</h4>
+             <h4>Você deseja remover a atividade <div id="atividaderemove"></div> do seu diário?</h4>
             <input  type="button" id="btnSim" value="Sim" /> <input  type="button" id="btnNao" value="Não" />
              <br />
          </div>
@@ -154,7 +155,7 @@
                  </tr>
                  <tr>
                      <td></td>
-                     <td> <div id="imgloading"> Criando... <img src="/static/images/ajax-loader.gif"  /> </div> </td>
+                     <td> <div id="imgloading"> Salvando... <img src="/static/images/ajax-loader.gif"  /> </div> <div id="mensagemextra"></div> </td>
                  </tr>
              </table>
          </div>
@@ -162,20 +163,26 @@
 
     <script language="javascript">
         var anos = new Array();
-            var data = new Date();
+        var data = new Date();
 
-            for(var i=data.getFullYear()-10; i<=data.getFullYear(); i++)
-            {
-                anos.push(i);
-            }
+        for(var i=data.getFullYear()-10; i<=data.getFullYear(); i++)
+        {
+            anos.push(i);
+        }
 
-            var rowAtrib = -1;
-            var rowDia = -1;
+        var rowAtrib = -1;
+        var rowDia = -1;
+        var idAtrib = -1;
 
-            var IDdia = -1;
-            var quanti = -1;
+        var IDdia = -1;
+        var quanti = -1;
 
-            var rowStChamada= -1;
+        var rowStChamada= -1;
+        var rowAtividades = -1;
+
+        var idAtividadeEdit = -1;
+
+
 
         $(document).ready(function() {
 
@@ -185,6 +192,8 @@
             var calculoArr = ['Média', 'Soma'];
             $("#calculo").jqxDropDownList({source: calculoArr, width: '70', height: '25'});
 
+            $("#mensagemextra").hide();
+
             var bimestreAtivarr = ['1', '2', '3', '4', 'PF'];
             $("#bimestreAtiv").jqxDropDownList({source: bimestreAtivarr, width: '70', height: '25'});
 
@@ -193,7 +202,13 @@
             $("#btnNewAtividade").on('click', function(){
                     $("#imgloading").hide();
                     $("#AddAtividadeW").jqxWindow('open');
+                    $("#calculo").jqxDropDownList('val', 'Média');
+                    $("#bimestreAtiv").jqxDropDownList('val', 1);
+                    $("#tipo").jqxDropDownList('val', 'Prova');
+                    $("#descricao").val('');
                     $("#ldatafim").hide();
+                    $("#addAtividade").val('Adicionar Atividade');
+                    idAtividadeEdit = -1;
             });
 
             $("#tipo").on('change', function (event) {
@@ -206,6 +221,57 @@
             });
 
 
+            function fillAtivis()
+            {
+
+                var url = "/listAtividades";
+                // prepare the data
+                var source2 =
+                {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'id'},
+                        { name: 'descricao'},
+                        { name: 'tipo'},
+                        { name: 'dataInicio'},
+                        { name: 'dataFim'},
+                        { name: 'calculo'},
+                        { name: 'bimestre'},
+                    ],
+                    data: {
+                        'idAtrib': idAtrib,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: 'POST',
+                    url: url,
+                    async: false
+                };
+                var dataAdapter2 = new $.jqx.dataAdapter(source2);
+
+                $("#atividadesgrid").jqxGrid(
+                {
+                    width: 885,
+                    height: 400,
+                    source: dataAdapter2,
+                    columns: [
+                        { text: 'ID', datafield: 'id', width: 0, hidden: true },
+                        { text: 'Descricao', datafield: 'descricao', width: 385 },
+                        { text: 'Bimestre', datafield: 'bimestre', width: 80 },
+                        { text: 'Tipo', datafield: 'tipo', width: 170 },
+                        { text: 'Dt. Inicio', datafield: 'dataInicio', width: 90 },
+                        { text: 'Dta. Fim', datafield: 'dataFim', width: 90 },
+                        { text: 'Calculo', datafield: 'calculo', width: 60 },
+                    ]
+                });
+
+                $('#atividadesgrid').jqxGrid('hidecolumn', 'id');
+
+                $('#atividadesgrid').on('rowselect', function (event){
+                    rowAtividades = event.args.rowindex;
+                });
+            }
+
+
             $("#addAtividade").on('click', function(){
                 $("#imgloading").show();
 
@@ -213,13 +279,14 @@
                     url:  "/criarAtividade",
                     cache: false,
                     data:{
-                        'idatirb': '',
-                        'descricao': '',
-                        'dataInicio': '',
-                        'dataFim': '',
-                        'bimestre': '',
-                        'disciplina': '',
-                        'disciplina': '',
+                        'idAtrib': idAtrib,
+                        'idAtividadeEdit': idAtividadeEdit,
+                        'descricao': $("#descricao").val(),
+                        'calculo': $("#calculo").val(),
+                        'dataInicio': $("#dataInicio").val(),
+                        'dataFim': $("#dataFim").val(),
+                        'bimestre': $("#bimestreAtiv").val(),
+                        'tipo': $("#tipo").val(),
                         csrfmiddlewaretoken: '{{ csrf_token }}'
                     } ,
                     type: "POST",
@@ -228,20 +295,32 @@
                         var respint = parseInt(response);
 
                         if(respint == 1) {
-
+                            console.log('Aluno cadastrado com sucesso!');
+                            $("#mensagemextra").html('<h3>Atividade salva com sucesso!!!</h3>');
+                            $("#mensagemextra").show();
+                            fillAtivis();
+                            setTimeout(function(){
+                                   $("#AddAtividadeW").jqxWindow('close');
+                                   $("#mensagemextra").html('');
+                                   $("#mensagemextra").hide();
+                             }, 3000);
                         } else {
-                            console.log('Erro ao cadastrar aluno');
 
+                            $("#mensagemextra").html('<h3>Erro do salvar a atividade!!!</h3>');
+                            $("#mensagemextra").show();
+
+                            setTimeout(function(){
+                                   $("#AddAtividadeW").jqxWindow('close');
+                                   $("#mensagemextra").html('');
+                                   $("#mensagemextra").hide();
+                             }, 3000);
+
+                            console.log('Erro ao cadastrar aluno');
                         }
                    }
                 });
             });
 
-
-
-
-
-            });
 
 
             $("#descricao").jqxInput({  width: '300px', height: '20px' });
@@ -254,187 +333,93 @@
             $("#btnSaveContent").jqxButton();
             $("#btnPresente").jqxButton();
 
-
-
-            $("#AddAtividadeW").hide();
-            $("#AddAtividadeW").jqxWindow({ width: 450, height: 350 });
-
-
-            // Janela para remover um dia!!!
-            $("#changesit").hide()
-
-
-            ;
-            $("#changesit").jqxWindow({ width: 500, height: 200 });
+            $("#btnRemover").jqxButton();
             $("#btnSim").jqxButton();
-            $("#btnSim").on('click', function(ev){
-                console.log('Removendo');
+            $("#btnNao").jqxButton();
+            $("#btnEdit").jqxButton();
+            $("#btnEdit").on('click', function(){
+                idAtividadeEdit = $('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "id");
+                $("#descricao").val($('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "descricao"));
+                $("#tipo").val($('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "tipo"));
+                var data = $('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "dataInicio");
+
+                var newData = data.split('/')[1]+'/'+data.split('/')[0]+'/'+data.split('/')[2];
+
+                $("#dataInicio").val(newData);
+
+                if($("#tipo").val() == 'Trabalho') {
+                    var dataf = $('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "dataFim");
+                    var newDataf = dataf.split('/')[1]+'/'+dataf.split('/')[0]+'/'+dataf.split('/')[2];
+                    console.log('Nova datafim: '+ newDataf);
+                    $("#dataFim").val(newDataf);
+                    $("#ldatafim").show();
+                } else {
+                    $("#dataFim").val(newData);
+                }
+                $("#calculo").val($('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "calculo"))
+                $("#bimestreAtiv").val($('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "bimestre"))
+
+                $("#imgloading").hide();
+                $("#AddAtividadeW").jqxWindow('open');
+                $("#addAtividade").val('Salvar Atividade');
+
+            });
+
+
+
+            $("#btnNotas").jqxButton();
+
+            $("#btnRemover").on('click', function(){
+                $("#atividaderemove").html('Descrição: '+$('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "descricao")+'<br /> tipo: '+$('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "tipo")+"<br />Data Inicio "+$('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "dataInicio")+"<br />Bimestre: "+$('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "bimestre"));
+                $("#removerAtiv").jqxWindow('open');
+            });
+
+            $("#btnNao").on('click', function(){
+                $("#removerAtiv").jqxWindow('close');
+            });
+
+
+            $("#btnSim").on('click', function() {
                 $.ajax({
-                    url:  "/removerDia",
+                    url:  "/removeAtiv",
                     cache: false,
                     data:{
-                        'id': $('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "id"),
+                        'idativ': $('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "id"),
                         csrfmiddlewaretoken: '{{ csrf_token }}'
                     } ,
                     type: "POST",
                     datatype: 'json',
                     success: function(response) {
-
                         var respint = parseInt(response);
 
                         if(respint == 1) {
-                            $("#savemessage").html('<h4>Dia removido com sucesso!</h4>');
-                            setTimeout(function(){
-                                   $("#savemessage").html('');
-                             }, 2000);
-                            fillDiasGrid();
-                            $("#changesit").jqxWindow("close");
-                            $('#changesit').jqxWindow({ isModal: false });
+                            fillAtivis();
+                            $("#removerAtiv").jqxWindow('close');
                         } else {
-                            $("#savemessage").html('<h4>Erro ao remover o dia!</h4>');
-                            setTimeout(function(){
-                                   $("#savemessage").html('');
-                             }, 2000);
+                           alert('Erro ao remover este registro!');
                         }
                    }
                 });
-            });
-
-            $("#btnNao").jqxButton();
-            $("#btnNao").on('click', function(ev){
-                $("#changesit").jqxWindow("close");
-                $('#changesit').jqxWindow({ isModal: false });
-            });
-
-            $("#btnRemover").on('click', function(){
-                $('#changesit').jqxWindow({ isModal: true });
-                $("#changesit").jqxWindow("open");
-               $("#diatoremove").html($('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "data"));
 
             });
 
-            $("#btnRemover").jqxButton();
 
+            $("#AddAtividadeW").hide();
+            $("#AddAtividadeW").jqxWindow({ width: 500, height: 400 });
 
-            $("#btnConteúdo").on('click', function() {
-                $("#saveprogress").jqxProgressBar({ value: 0});
-                getContent();
-                $("#chamadaacord").jqxNavigationBar('expandAt', 2);
-                fillChamada();
-            });
-
-
-             $("#saveprogress").jqxProgressBar({ width: 250, height: 15, value: 0, showText:true, orientation: 'horizontal'});
-
-
-            $("#btnSalvarChamada").on('click', function(ev) {
-
-                var rows = $('#gridchamada').jqxGrid('getrows');
-
-                var rowpercent = 100/rows.length;
-                var atual = 0;
-                $("#saveprogress").jqxProgressBar({ value: atual});
-                $("#savemessage").html('Salvando....');
-
-                for(var i=0; i<rows.length; i++){
-                    var datareq = {};
-
-                    datareq['quant'] = quanti;
-
-                    for(var j=0; j<quanti; j++) {
-                        datareq[j] = rows[i][j]; // val presente ou faltoso
-                        datareq[j+'id'] = rows[i][j+'id']; // id da falta ou presença
-                    }
-                    datareq['csrfmiddlewaretoken'] = '{{ csrf_token }}';
-
-                    $.ajax({
-                        url:  "/salvarChamada",
-                        cache: false,
-                        data: datareq,
-                        type: "POST",
-                        datatype: 'json',
-                        success: function(response) {
-                           console.log('Presença saved!!!');
-                            atual = atual + rowpercent;
-                            $("#saveprogress").jqxProgressBar({ value: atual});
-                            console.log('Porcentagem: '+$("#saveprogress").val()+"%");
-                            if($("#saveprogress").val()>=100) {
-                                $("#savemessage").html('<h4>Chamada salva com sucesso!!!</h4>');
-
-                                setTimeout(function(){
-                                       $("#savemessage").html('');
-                                       $("#saveprogress").jqxProgressBar({ value: 0});
-                                 }, 2000);
-                            }
-                        }
-                    });
-                }
-                $("#chamadaacord").jqxNavigationBar('expandAt', 1);
-            });
-
-            function getContent()
-            {
-                $("#conteudodia").val('');
-                IDdia = $('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "id");
-
-                 $.ajax({
-                    url:  "/getContent",
-                    cache: false,
-                    data: {
-                        'id': IDdia,
-                        csrfmiddlewaretoken: '{{ csrf_token }}'
-                    },
-                    type: "POST",
-                    datatype: 'json',
-                    async: false,
-                    success: function(response) {
-                        $("#conteudodia").val(response[0].content);
-                        //console.log("Responsta: "+response[0].content);
-                    }
-                });
-
-                $("#DataContent").html($('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "data"));
-            }
-
-            $("#btnFaltou").on('click', function() {
-
-                var selectedrowindexes = $('#gridchamada').jqxGrid('selectedrowindexes');
-                for (var j = 0; j < selectedrowindexes.length; j++) {
-                    for (var i = 0; i < quanti; i++) {
-                        $("#gridchamada").jqxGrid('setcellvaluebyid', selectedrowindexes[j], i, false);
-                    }
-                }
-                console.log((selectedrowindexes));
-            });
-
-           
-
-
-            $("#btnChamada").on('click', function(){
-                $("#chamadaacord").jqxNavigationBar('expandAt', 3);
-                getContent();
-            });
-
-
-
-
-
-
-
-
+            // Janela para remover um dia!!!
+            $("#removerAtiv").hide();
+            $("#removerAtiv").jqxWindow({ width: 500, height: 200 });
 
 
             $("#ano").jqxListBox({source: anos, width: '70', height: '350'});
             $("#chamadaacord").jqxNavigationBar({ width: 900, height: 700});
 
-
-            $("#btnChamada").jqxButton();
-            $("#btnConteúdo").jqxButton();
-
             $("#btnchamada").on('click', function(event) {
                  $("#chamadaacord").jqxNavigationBar('expandAt', 1);
                  $("#disciplinasel").html($('#turma').jqxGrid('getcelltextbyid', rowAtrib, "nome"));
-                 fillDiasGrid();
+
+                idAtrib = $('#turma').jqxGrid('getcelltextbyid', rowAtrib, "id");
 
                   // get quantidade de bimestres
                   $.ajax({
@@ -456,9 +441,11 @@
                           }
                           quantBi.push('PF');
 
-                          $("#bimestre").jqxListBox({source: quantBi, width: '150', height: '250'});
+{#                          $("#bimestre").jqxListBox({source: quantBi, width: '150', height: '250'});#}
+                          $("#bimestreAtiv").jqxDropDownList({source: quantBi, width: '150', height: '25'});
                     }
                 });
+                fillAtivis();
             });
 
 

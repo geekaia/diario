@@ -49,11 +49,10 @@ def chamadaDisc(request):
     for atrib in atribs:
         if atrib.periodoInicio.year == int(ano):
             disc = {}
-            disc['id'] =atrib.id
-            disc['nome'] =atrib.disciplina.nome
-            disc['turma'] =atrib.turma.nome
-            disc['curso'] =atrib.turma.curso.nome
-
+            disc['id'] = atrib.id
+            disc['nome'] = atrib.disciplina.nome
+            disc['turma'] = atrib.turma.nome
+            disc['curso'] = atrib.turma.curso.nome
 
             disciplinas.append(disc)
 

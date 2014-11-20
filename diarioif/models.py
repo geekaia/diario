@@ -154,7 +154,7 @@ class Atividade(models.Model):
     descricao = models.TextField(blank=True, null=True)
     dataInicio = models.DateField() # periodo que pode ser entregue a atividade
     dataFim = models.DateField() # é igual ao início quando a atividade no início
-    bimestre = models.ForeignKey(Bimestre) # ignorar quando é semestral e quando há datas iguais.
+    bimestre = models.IntegerField()
     disciplina = models.ForeignKey(Disciplina)
     calculo = models.CharField(max_length=10) # Soma ou Média
     turma = models.ForeignKey(Turma)

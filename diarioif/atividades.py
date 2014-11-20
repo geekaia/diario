@@ -41,26 +41,40 @@ def atividades(request):
 def criarAtividade(request):
 
     try:
-
         # Cria uma nova atividade avaliativa
-        at = Atividade()
+        idAtividadeEdit = int(request.POST['idAtividadeEdit'])
+
+        if idAtividadeEdit == -1:
+            at = Atividade()
+        else:
+            at = Atividade.objects.get(pk=idAtividadeEdit)
+
         at.descricao = request.POST['descricao']
+
+        idatrib = request.POST['idAtrib']
+        atrib = AtribAula.objects.get(pk=idatrib)
+
+        at.tipo = request.POST['tipo']
+
 
         dataInicio = request.POST['dataInicio']
         at.dataInicio = datetime.strptime(dataInicio, '%d/%m/%Y')
 
         dataFim = request.POST['dataFim']
-        at.dataFim = datetime.strptime(dataFim, '%d/%m/%Y')
+        at.dataFim = datetime.strptime(dataFim, '%d/%m/%Y') if at.tipo == 'Trabalho' else at.dataInicio
 
-        at.bimestre = request.POST['bimestre']
-        at.disciplina = request.POST['disciplina']
+        at.bimestre = int(request.POST['bimestre']) if request.POST['bimestre'] != 'PF' else 7 # CÓDIGO PARA A PF
+        at.disciplina = atrib.disciplina
         at.calculo = request.POST['calculo']
-        at.turma = request.POST['turma']
-        at.tipo = request.POST['tipo']
+        at.turma = atrib.turma
+
         at.save()
 
-        idatrib = request.POST['idatirb']
-        atrib = AtribAula.objects.get(pk=idatrib)
+        if idAtividadeEdit == -1:
+            return HttpResponse(1)
+
+
+
 
         alunosTurma = Notafalta.objects.values_list('aluno').filter(turma=atrib.turma).distinct()
         for aluno in alunosTurma:
@@ -81,3 +95,45 @@ def criarAtividade(request):
 
     return HttpResponse(1)
 
+
+
+def listAtividades(request):
+    atividades = []
+
+    try:
+        idatrib = request.POST['idAtrib']
+        atrib = AtribAula.objects.get(pk=idatrib)
+
+        ativs = Atividade.objects.filter(turma=atrib.turma, disciplina=atrib.disciplina).order_by('-dataFim')
+
+        for atv in ativs:
+            atividade = {}
+            atividade['id'] = atv.id
+            atividade['descricao'] = atv.descricao
+            atividade['tipo'] = atv.tipo
+            atividade['dataInicio'] = atv.dataInicio.strftime("%d/%m/%Y")
+            atividade['dataFim'] = atv.dataFim.strftime("%d/%m/%Y") if atv.tipo == 'Trabalho' else ''
+            atividade['calculo'] = atv.calculo
+            atividade['bimestre'] = atv.bimestre if atv.bimestre != 7  else 'PF'
+
+            atividades.append(atividade)
+    except Exception, e:
+        print "Erro %s " % e
+
+    return HttpResponse(json.dumps(atividades), content_type="application/json")
+
+
+def removeAtiv(request):
+
+    try:
+        idativ = int(request.POST['idativ'])
+        atv = Atividade.objects.get(pk=idativ)
+        atv.delete()
+
+        return  HttpResponse(1)
+    except Exception, e:
+        print "Error %s " % e
+
+
+
+    return  HttpResponse(-1)
