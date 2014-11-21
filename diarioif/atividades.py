@@ -25,6 +25,7 @@ from django.utils.encoding import smart_str, smart_unicode
 
 from unicodedata import normalize
 
+from lancarnotas import defaultencode
 
 @login_required()
 def atividades(request):
@@ -70,13 +71,14 @@ def criarAtividade(request):
 
         at.save()
 
-        if idAtividadeEdit == -1:
+        if idAtividadeEdit != -1:
             return HttpResponse(1)
 
 
-
-
         alunosTurma = Notafalta.objects.values_list('aluno').filter(turma=atrib.turma).distinct()
+
+        print "AlunosTurma: ", alunosTurma, ' Tamanho: ', len(alunosTurma)
+
         for aluno in alunosTurma:
             profileAl = ProfileUser.objects.get(pk=int(aluno[0]))
             ntat = NotaAtividade()
@@ -96,7 +98,7 @@ def criarAtividade(request):
     return HttpResponse(1)
 
 
-
+@login_required()
 def listAtividades(request):
     atividades = []
 
@@ -122,7 +124,7 @@ def listAtividades(request):
 
     return HttpResponse(json.dumps(atividades), content_type="application/json")
 
-
+@login_required()
 def removeAtiv(request):
 
     try:
@@ -134,6 +136,55 @@ def removeAtiv(request):
     except Exception, e:
         print "Error %s " % e
 
-
-
     return  HttpResponse(-1)
+
+@login_required()
+def getAlunosAtivs(request):
+    alunosList = []
+    try:
+
+        idativ = int(request.POST['idativ'])
+        atv = Atividade.objects.get(pk=idativ)
+
+        notasAtvs = NotaAtividade.objects.filter(atividade=atv)
+
+        for AtNt in notasAtvs:
+            print "oi"
+            al = {}
+
+            al['id'] = AtNt.id
+            al['nome'] = AtNt.aluno.nome
+            al['nota0'] = AtNt.nota0
+            al['nota1'] = AtNt.nota1
+            al['nota2'] = AtNt.nota2
+            al['nota3'] = AtNt.nota3
+            al['nota4'] = AtNt.nota4
+
+            alunosList.append(al)
+
+
+    except Exception, e:
+        print "Error %s " % e
+
+    return HttpResponse(json.dumps(alunosList, default=defaultencode), content_type="application/json")
+
+@login_required()
+def salvarNotasAtivs(request):
+    try:
+        id = int(request.POST['id'])
+        ntfa = NotaAtividade.objects.get(pk=id)
+        ntfa.nota0 = request.POST['nota0']
+        ntfa.nota1 = request.POST['nota1']
+        ntfa.nota2 = request.POST['nota2']
+        ntfa.nota3 = request.POST['nota3']
+        ntfa.nota4 = request.POST['nota4']
+
+        ntfa.save()
+
+        return HttpResponse(1)
+    except:
+        print 'err'
+
+
+    return HttpResponse(-1)
+

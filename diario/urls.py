@@ -94,6 +94,9 @@ urlpatterns = patterns('',
     url(r'^criarAtividade$', 'diarioif.atividades.criarAtividade', name='criarAtividade'),
     url(r'^listAtividades$', 'diarioif.atividades.listAtividades', name='listAtividades'),
     url(r'^removeAtiv$', 'diarioif.atividades.removeAtiv', name='removeAtiv'),
+    url(r'^getAlunosAtivs$', 'diarioif.atividades.getAlunosAtivs', name='getAlunosAtivs'),
+    url(r'^salvarNotasAtivs$', 'diarioif.atividades.salvarNotasAtivs', name='salvarNotasAtivs'),
+
 
 
 

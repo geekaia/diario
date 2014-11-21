@@ -4,8 +4,6 @@
     <list default="true" id="09acc1be-3fcf-415f-8622-ea873ce4e75f" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/atividades.html" afterPath="$PROJECT_DIR$/templates/atividades.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/diarioif/atividades.py" afterPath="$PROJECT_DIR$/diarioif/atividades.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/diarioif/chamada.py" afterPath="$PROJECT_DIR$/diarioif/chamada.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/diarioif/models.py" afterPath="$PROJECT_DIR$/diarioif/models.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/diario/urls.py" afterPath="$PROJECT_DIR$/diario/urls.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -33,31 +31,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="profile.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/profile.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="5369" max-vertical-offset="14940">
-              <caret line="326" column="32" selection-start-line="326" selection-start-column="32" selection-end-line="326" selection-end-column="64" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="urls.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/diario/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1284" max-vertical-offset="2106">
-              <caret line="95" column="78" selection-start-line="95" selection-start-column="78" selection-end-line="95" selection-end-column="78" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="usuarios.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/diarioif/usuarios.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2462" max-vertical-offset="10440">
-              <caret line="155" column="146" selection-start-line="155" selection-start-column="126" selection-end-line="155" selection-end-column="146" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1325" max-vertical-offset="2160">
+              <caret line="97" column="28" selection-start-line="97" selection-start-column="11" selection-end-line="97" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -66,8 +44,28 @@
       <file leaf-file-name="atividades.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/diarioif/atividades.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1649" max-vertical-offset="2538">
-              <caret line="46" column="28" selection-start-line="46" selection-start-column="28" selection-end-line="46" selection-end-column="28" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2585" max-vertical-offset="3474">
+              <caret line="171" column="20" selection-start-line="171" selection-start-column="4" selection-end-line="171" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="lancarnotas.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/lancarnotas.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="8339" max-vertical-offset="11286">
+              <caret line="470" column="24" selection-start-line="470" selection-start-column="24" selection-end-line="472" selection-end-column="63" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="lancarnotas.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/diarioif/lancarnotas.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="954" max-vertical-offset="2808">
+              <caret line="53" column="4" selection-start-line="53" selection-start-column="4" selection-end-line="53" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -76,8 +74,18 @@
       <file leaf-file-name="chamada.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/diarioif/chamada.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2052" max-vertical-offset="4644">
+            <state vertical-scroll-proportion="0.0" vertical-offset="2682" max-vertical-offset="4698">
               <caret line="149" column="75" selection-start-line="149" selection-start-column="4" selection-end-line="149" selection-end-column="75" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="chamada.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/chamada.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-1.4814814" vertical-offset="3682" max-vertical-offset="10566">
+              <caret line="209" column="114" selection-start-line="209" selection-start-column="0" selection-end-line="210" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -86,31 +94,21 @@
       <file leaf-file-name="atividades.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/templates/atividades.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.35762483" vertical-offset="2561" max-vertical-offset="9216">
-              <caret line="157" column="56" selection-start-line="157" selection-start-column="56" selection-end-line="157" selection-end-column="56" />
+            <state vertical-scroll-proportion="0.6958525" vertical-offset="3651" max-vertical-offset="11448">
+              <caret line="228" column="44" selection-start-line="228" selection-start-column="44" selection-end-line="228" selection-end-column="44" />
               <folding>
-                <element signature="e#1390#1420#0#HTML" expanded="true" />
-                <element signature="e#4316#4356#0#HTML" expanded="true" />
+                <element signature="e#1440#1470#0#HTML" expanded="true" />
+                <element signature="e#2741#2763#0#HTML" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="chamada.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/chamada.html">
+      <file leaf-file-name="views.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/diarioif/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-10.481482" vertical-offset="2548" max-vertical-offset="10566">
-              <caret line="173" column="63" selection-start-line="173" selection-start-column="63" selection-end-line="173" selection-end-column="63" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="base.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/base.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="3906">
-              <caret line="46" column="82" selection-start-line="46" selection-start-column="35" selection-end-line="46" selection-end-column="82" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="9342" max-vertical-offset="13392">
+              <caret line="519" column="57" selection-start-line="519" selection-start-column="57" selection-end-line="519" selection-end-column="57" />
               <folding />
             </state>
           </provider>
@@ -119,7 +117,7 @@
       <file leaf-file-name="boletim.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/boletim.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-13.962963" vertical-offset="2413" max-vertical-offset="4770">
+            <state vertical-scroll-proportion="0.0" vertical-offset="2413" max-vertical-offset="4770">
               <caret line="155" column="55" selection-start-line="155" selection-start-column="55" selection-end-line="155" selection-end-column="55" />
               <folding />
             </state>
@@ -129,8 +127,8 @@
       <file leaf-file-name="models.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/diarioif/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2387" max-vertical-offset="3168">
-              <caret line="162" column="8" selection-start-line="162" selection-start-column="4" selection-end-line="162" selection-end-column="8" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="3006" max-vertical-offset="3186">
+              <caret line="167" column="20" selection-start-line="167" selection-start-column="20" selection-end-line="167" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -177,17 +175,17 @@
         <option value="$PROJECT_DIR$/templates/chamada.html" />
         <option value="$PROJECT_DIR$/diarioif/models.py" />
         <option value="$PROJECT_DIR$/diarioif/chamada.py" />
-        <option value="$PROJECT_DIR$/diario/urls.py" />
         <option value="$PROJECT_DIR$/diarioif/atividades.py" />
+        <option value="$PROJECT_DIR$/diario/urls.py" />
         <option value="$PROJECT_DIR$/templates/atividades.html" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="49" />
-    <option name="y" value="-4" />
-    <option name="width" value="1551" />
-    <option name="height" value="904" />
+    <option name="x" value="177" />
+    <option name="y" value="97" />
+    <option name="width" value="1521" />
+    <option name="height" value="814" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -564,11 +562,11 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="49" y="-4" width="1551" height="904" extended-state="6" />
+    <frame x="177" y="97" width="1521" height="814" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.18621604" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1749503" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32920793" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -597,7 +595,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32920793" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.726094" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18621604" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1749503" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32920793" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -900,26 +898,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/diarioif/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="8794" max-vertical-offset="13338">
-          <caret line="515" column="32" selection-start-line="506" selection-start-column="8" selection-end-line="515" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/diarioif/importar.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1814" max-vertical-offset="3258">
           <caret line="139" column="8" selection-start-line="139" selection-start-column="8" selection-end-line="139" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/lancarnotas.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.814815" vertical-offset="5369" max-vertical-offset="11286">
-          <caret line="313" column="27" selection-start-line="313" selection-start-column="27" selection-end-line="313" selection-end-column="27" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -941,31 +923,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/profile.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="5369" max-vertical-offset="14940">
+        <state vertical-scroll-proportion="-18.481482" vertical-offset="5369" max-vertical-offset="14940">
           <caret line="326" column="32" selection-start-line="326" selection-start-column="32" selection-end-line="326" selection-end-column="64" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/diarioif/lancarnotas.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.40204865" vertical-offset="1918" max-vertical-offset="2754">
-          <caret line="127" column="12" selection-start-line="127" selection-start-column="12" selection-end-line="127" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/boletim.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.962963" vertical-offset="2413" max-vertical-offset="4770">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2413" max-vertical-offset="4770">
           <caret line="155" column="55" selection-start-line="155" selection-start-column="55" selection-end-line="155" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/diarioif/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2387" max-vertical-offset="3168">
-          <caret line="162" column="8" selection-start-line="162" selection-start-column="4" selection-end-line="162" selection-end-column="8" />
           <folding />
         </state>
       </provider>
@@ -978,45 +945,76 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/diarioif/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1013" max-vertical-offset="13338">
+          <caret line="519" column="57" selection-start-line="519" selection-start-column="57" selection-end-line="519" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/diarioif/usuarios.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2462" max-vertical-offset="10440">
-          <caret line="155" column="146" selection-start-line="155" selection-start-column="126" selection-end-line="155" selection-end-column="146" />
+        <state vertical-scroll-proportion="0.3681462" vertical-offset="1086" max-vertical-offset="10440">
+          <caret line="79" column="0" selection-start-line="79" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/diarioif/lancarnotas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="641" max-vertical-offset="2754">
+          <caret line="53" column="4" selection-start-line="53" selection-start-column="4" selection-end-line="53" selection-end-column="4" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/diario/urls.py">
+    <entry file="file://$PROJECT_DIR$/templates/lancarnotas.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1284" max-vertical-offset="2106">
-          <caret line="95" column="78" selection-start-line="95" selection-start-column="78" selection-end-line="95" selection-end-column="78" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="8339" max-vertical-offset="11286">
+          <caret line="470" column="24" selection-start-line="470" selection-start-column="24" selection-end-line="472" selection-end-column="63" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/chamada.html">
+    <entry file="file://$PROJECT_DIR$/diarioif/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.481482" vertical-offset="2548" max-vertical-offset="10566">
-          <caret line="173" column="63" selection-start-line="173" selection-start-column="63" selection-end-line="173" selection-end-column="63" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="2389" max-vertical-offset="3168">
+          <caret line="167" column="20" selection-start-line="167" selection-start-column="20" selection-end-line="167" selection-end-column="20" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/diarioif/atividades.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1649" max-vertical-offset="2538">
-          <caret line="46" column="28" selection-start-line="46" selection-start-column="28" selection-end-line="46" selection-end-column="28" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="2585" max-vertical-offset="3474">
+          <caret line="171" column="20" selection-start-line="171" selection-start-column="4" selection-end-line="171" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/diario/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1325" max-vertical-offset="2160">
+          <caret line="97" column="28" selection-start-line="97" selection-start-column="11" selection-end-line="97" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/chamada.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.4814814" vertical-offset="3682" max-vertical-offset="10566">
+          <caret line="209" column="114" selection-start-line="209" selection-start-column="0" selection-end-line="210" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/atividades.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.35762483" vertical-offset="2561" max-vertical-offset="9216">
-          <caret line="157" column="56" selection-start-line="157" selection-start-column="56" selection-end-line="157" selection-end-column="56" />
+        <state vertical-scroll-proportion="0.6958525" vertical-offset="3651" max-vertical-offset="11448">
+          <caret line="228" column="44" selection-start-line="228" selection-start-column="44" selection-end-line="228" selection-end-column="44" />
           <folding>
-            <element signature="e#1390#1420#0#HTML" expanded="true" />
-            <element signature="e#4316#4356#0#HTML" expanded="true" />
+            <element signature="e#1440#1470#0#HTML" expanded="true" />
+            <element signature="e#2741#2763#0#HTML" expanded="true" />
           </folding>
         </state>
       </provider>

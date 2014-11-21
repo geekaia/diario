@@ -29,6 +29,7 @@
                 <br />
                 <div id="saveprogress"></div>
                 <div id="savemessage"></div>
+                <div id="savemessageError"></div>
 
            <table>
                <tr>
@@ -70,33 +71,15 @@
         </div>
 
 
-
         <div>
-            Conteúdo
+            Nota das atividades avaliativas bimestrais/semestrais
         </div>
-        <div style="padding: 15px;">
-            <input type="button" id="btnSaveContent" value="Salvar" />
+        <div style="padding: 10px;">
+            <center><h1><div id="disciplinanota"></div></h1></center>
+            <input type="button" id="btnSalvarNotas" value="Salvar" />
             <br />
             <br />
-            <textarea id="conteudodia" name='conteudodia'></textarea>
-            <br />
-            Conteúdo de: <div id="DataContent">DATA</div>
-        </div>
-
-        <div>
-            Efetuar chamada
-        </div>
-        <div>
-            <center><h1><div id="disciplinachamada"></div></h1></center>
-            <table>
-                <tr>
-                    <td style="padding-right: 5px;"><input type="button" id="btnSalvarChamada" value="Salvar" /></td>
-                    <td style="padding-right: 5px;"><input type="button" id="btnFaltou" value="Faltou" /></td>
-                    <td style="padding-right: 5px;"><input type="button" id="btnPresente" value="Presente" /></td>
-                </tr>
-            </table>
-            <br />
-            <div id="gridchamada"></div>
+            <div id="gridnotas"></div>
         </div>
     </div>
 
@@ -186,6 +169,8 @@
 
         $(document).ready(function() {
 
+            $("#saveprogress").jqxProgressBar({ width: 250, height: 15, value: 0, showText:true, orientation: 'horizontal'});
+
             var tipoArr = ['Prova',  'Trabalho', 'Recuperação Bimestral', 'Prova Final', 'Atitudinal', 'Outra'];
             $("#tipo").jqxDropDownList({source: tipoArr, width: '200', height: '25'});
 
@@ -194,11 +179,68 @@
 
             $("#mensagemextra").hide();
 
+
             var bimestreAtivarr = ['1', '2', '3', '4', 'PF'];
             $("#bimestreAtiv").jqxDropDownList({source: bimestreAtivarr, width: '70', height: '25'});
 
             $("#addAtividade").jqxButton();
+            $("#btnSalvarNotas").jqxButton();
             $("#btnNewAtividade").jqxButton();
+
+            $("#btnSalvarNotas").on('click', function(){
+                var rows = $('#gridnotas').jqxGrid('getrows');
+
+                var rowpercent = 100/rows.length;
+                var atual = 0;
+                $("#saveprogress").jqxProgressBar({ value: atual});
+                $("#savemessage").html('Salvando....');
+
+                for(var i=0; i<rows.length; i++){
+
+                    $.ajax({
+                        url:  "/salvarNotasAtivs",
+                        cache: false,
+                        data: {
+                            'id': rows[i].id,
+                            'nota0': rows[i].nota0,
+                            'nota1': rows[i].nota1,
+                            'nota2': rows[i].nota2 ,
+                            'nota3': rows[i].nota3,
+                            'nota4': rows[i].nota4,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        type: "POST",
+                        datatype: 'json',
+                        success: function(response) {
+                            atual = atual + rowpercent;
+                            console.log('Salvando '+atual);
+                            $("#saveprogress").jqxProgressBar({ value: atual});
+                            console.log('Porcentagem: '+$("#saveprogress").val()+"%");
+                            if($("#saveprogress").val()>=100) {
+                                $("#savemessage").html('<h4>Chamada salva com sucesso!!!</h4>');
+
+                                setTimeout(function(){
+                                       $("#savemessage").html('');
+                                       $("#saveprogress").jqxProgressBar({ value: 0});
+                                 }, 2000);
+                            }
+                            var respint = parseInt(response);
+
+                            if (respint == -1){
+                                $("#savemessageError").html('<h2>Erro ao salvar as notas!!!</h2>');
+                                setTimeout(function(){
+                                       $("#savemessageError").html('');
+                                 }, 10000);
+                            }
+                        }
+                    });
+                }
+
+                $("#chamadaacord").jqxNavigationBar('expandAt', 1);
+            });
+
+
+
             $("#btnNewAtividade").on('click', function(){
                     $("#imgloading").hide();
                     $("#AddAtividadeW").jqxWindow('open');
@@ -215,11 +257,10 @@
 
                 if($("#tipo").val()=='Trabalho' ) {
                     $("#ldatafim").show();
-                } else{
+                } else {
                     $("#ldatafim").hide();
                 }
             });
-
 
             function fillAtivis()
             {
@@ -321,18 +362,12 @@
                 });
             });
 
-
-
             $("#descricao").jqxInput({  width: '300px', height: '20px' });
             $("#dataInicio").jqxDateTimeInput({ width: '250px', height: '25px' });
             $("#dataFim").jqxDateTimeInput({ width: '250px', height: '25px' });
 
 
-            $("#conteudodia").jqxInput({  width: '800px', height: '200px' });
             $("#DataContent").show();
-            $("#btnSaveContent").jqxButton();
-            $("#btnPresente").jqxButton();
-
             $("#btnRemover").jqxButton();
             $("#btnSim").jqxButton();
             $("#btnNao").jqxButton();
@@ -368,6 +403,13 @@
 
 
             $("#btnNotas").jqxButton();
+            $("#btnNotas").on('click', function(evt){
+                $("#chamadaacord").jqxNavigationBar('expandAt', 2);
+                fillNotas();
+
+            });
+
+
 
             $("#btnRemover").on('click', function(){
                 $("#atividaderemove").html('Descrição: '+$('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "descricao")+'<br /> tipo: '+$('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "tipo")+"<br />Data Inicio "+$('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "dataInicio")+"<br />Bimestre: "+$('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "bimestre"));
@@ -402,7 +444,6 @@
                 });
 
             });
-
 
             $("#AddAtividadeW").hide();
             $("#AddAtividadeW").jqxWindow({ width: 500, height: 400 });
@@ -447,6 +488,89 @@
                 });
                 fillAtivis();
             });
+
+
+            function fillNotas()
+            {
+
+                var showAtid = true;
+                var digi = 2;
+                var max = 10;
+                console.log("Tipo atividade: "+$('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "tipo"));
+
+                if($('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "tipo")=='Atitudinal') {
+                    showAtid = false;
+                    var digi = 1;
+                    var max = 0.5;
+                } else {
+                    showAtid = true;
+                }
+
+                var url = "/getAlunosAtivs";
+                // prepare the data
+                var source2 =
+                {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'id'},
+                        { name: 'nome', type: 'string'},
+                        { name: 'nota0', type: 'number'},
+                        { name: 'nota1', type: 'number'},
+                        { name: 'nota2', type: 'number'},
+                        { name: 'nota3', type: 'number'},
+                        { name: 'nota4', type: 'number'},
+                    ],
+                    data: {
+                       'idativ': $('#atividadesgrid').jqxGrid('getcelltextbyid', rowAtividades, "id"),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: 'POST',
+                    url: url,
+                    async: false
+                };
+                var dataAdapter2 = new $.jqx.dataAdapter(source2);
+
+                $("#gridnotas").jqxGrid(
+                {
+                    width: 880,
+                    height: 500,
+                    editable: true,
+                    enabletooltips: true,
+                    selectionmode: 'multiplecellsadvanced',
+                    source: dataAdapter2,
+                    columns: [
+                        { text: 'ID', datafield: 'id', width: 0, hidden: true },
+                        { text: 'Name', datafield: 'nome', editable: false, width: 450 },
+                        { text: 'Nota 0', datafield: 'nota0', width: 80, align: 'right', cellsalign: 'right', width: 60, cellsformat: 'f', columntype: 'numberinput',
+                            createeditor: function (row, cellvalue, editor) {
+                                  editor.jqxNumberInput({ digits: digi, min: 0, max: max  });
+                              }
+                        },
+                        { text: 'Nota 1', datafield: 'nota1', width: 80, align: 'right', hidden: showAtid, cellsalign: 'right', width: 60, cellsformat: 'f', columntype: 'numberinput',
+                            createeditor: function (row, cellvalue, editor) {
+                                  editor.jqxNumberInput({ digits: 1, min: 0, max: 0.5  });
+                              }
+                        },
+                        { text: 'Nota 2', datafield: 'nota2', width: 80, align: 'right', hidden: showAtid, cellsalign: 'right', width: 60, cellsformat: 'f', columntype: 'numberinput',
+                            createeditor: function (row, cellvalue, editor) {
+                                  editor.jqxNumberInput({ digits: 1, min: 0, max: 0.5  });
+                              }
+                        },
+                        { text: 'Nota 3', datafield: 'nota3', width: 80, align: 'right', hidden: showAtid, cellsalign: 'right', width: 60, cellsformat: 'f', columntype: 'numberinput',
+                            createeditor: function (row, cellvalue, editor) {
+                                  editor.jqxNumberInput({ digits: 1, min: 0, max: 0.5  });
+                              }
+                        },
+                        { text: 'nota 4', datafield: 'nota4', width: 80, align: 'right', hidden: showAtid, cellsalign: 'right', width: 60, cellsformat: 'f', columntype: 'numberinput',
+                            createeditor: function (row, cellvalue, editor) {
+                                  editor.jqxNumberInput({ digits: 1, min: 0, max: 0.5  });
+                              }
+                        },
+                    ]
+                });
+
+                $('#gridnotas').jqxGrid('hidecolumn', 'id');
+            }
 
 
             function filAtribuicoes()

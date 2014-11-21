@@ -1,0 +1,37 @@
+Aluno
+	- Visualizar Notas 
+	- Visualizar presenças
+	- Visualizar tarefas 
+	- Visualizar informações no profile
+	- Enviar mensagem para a secretaria para modificar os dados do profile
+	
+
+Professor 
+	- Visualiza os alunos das turmas 
+	- Lança notas
+	- Cria atividades
+	- Faz chamada 
+	- Salva Notas por bimestre
+	- Marcar com falta alunos que tenham trancado a  aula
+	
+	
+
+Secretaria
+	- Pode criar turmas
+	- Inserir vários alunos 
+	- Pode modificar atributos dos alunos
+	- Adicionar novas atividades avaliativas 
+	- Criar cursos 
+	- Adicionar disciplinas
+	- Efetuar a transferência
+	- Gerar um pdf com foto e disciplinas em que o aluno está ruim
+	- Possibilidade de importar dados das planilhas criadas pelos professores.
+	- Inserir scores dos alunos 
+	- Gerar grupos balanceados 
+	- Gerar algoritmos para avaliar dados estatísticos dos alunos
+	- Enviar o login e a senha para o aluno
+
+
+	
+	
+
