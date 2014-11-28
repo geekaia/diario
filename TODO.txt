@@ -1,4 +1,6 @@
-Aluno
+Criar um sistema de controle dos usuários, com todas as permissões abaixo.
+
+<b>Aluno</b>
 	- Visualizar Notas 
 	- Visualizar presenças
 	- Visualizar tarefas 
@@ -6,32 +8,36 @@ Aluno
 	- Enviar mensagem para a secretaria para modificar os dados do profile
 	
 
-Professor 
+<b>Professor</b>
 	- Visualiza os alunos das turmas 
 	- Lança notas
 	- Cria atividades
 	- Faz chamada 
 	- Salva Notas por bimestre
-	- Marcar com falta alunos que tenham trancado a  aula
-	
-	
+	- Marcar com falta alunos que tenham trancado a  aula (AUTOMATICAMENTE)
+	- Alunos que trancaram ou desistiram não apareceram na chamada e irão ser salvos com nota falta
+    	  e nota zero.
 
-Secretaria
+
+<b>Secretaria</b>
 	- Pode criar turmas
-	- Inserir vários alunos 
+	- Inserir vários alunos
 	- Pode modificar atributos dos alunos
-	- Adicionar novas atividades avaliativas 
-	- Criar cursos 
+	- Adicionar novas atividades avaliativas
+	- Criar cursos
 	- Adicionar disciplinas
+	- Fazer a transferência dos alunos
 	- Efetuar a transferência
 	- Gerar um pdf com foto e disciplinas em que o aluno está ruim
 	- Possibilidade de importar dados das planilhas criadas pelos professores.
-	- Inserir scores dos alunos 
-	- Gerar grupos balanceados 
+	- Inserir scores dos alunos
+	- Gerar grupos balanceados
 	- Gerar algoritmos para avaliar dados estatísticos dos alunos
 	- Enviar o login e a senha para o aluno
+	- Gerar gráficos de desempenho de cada aluno
+	- Avaliar o rendimento de forma geral de acordo com o nível do aluno
+	- Efetuar a transferência interna entre os cursos disponíveis de forma transparente
+	
 
 
-	
-	
 

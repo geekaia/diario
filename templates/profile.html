@@ -36,10 +36,12 @@
                             <td><div style='font-size: 13px; font-family: verdana; '>Naturalidade: </div></td>
                             <td><input type="text" id="naturalidade" name='naturalidade' /></td>
                         </tr>
+                        {% if showcontrolers %}
                         <tr>
                             <td><div style='font-size: 13px; font-family: verdana; '>Tipo Conta: </div></td>
                             <td><div id="tipo" name="tipo" /></td>
                         </tr>
+                        {% endif %}
                     </table>
                 </div>
             </div>
@@ -49,7 +51,9 @@
              <div id='jqxtabs'>
         <ul style='margin-left: 20px;'>
                 <li>Informações para Contato</li>
-                <li>Documentos</li>
+                {% if showcontrolers %}
+                    <li>Documentos</li>
+                {% endif %}
                 <li>Dados das Matrículas</li>
             </ul>
             <div>
@@ -98,12 +102,15 @@
                         <td><div style='font-size: 13px; font-family: verdana; '>E-mail: </div></td>
                         <td><input type="text" id="email" name='email' /></td>
                     </tr>
+                    {% if showcontrolers %}
                     <tr>
                         <td><div style='font-size: 13px; font-family: verdana; vertical-position: top; '>Observações: </div></td>
                         <td><textarea id="observacoes" name='observacoes'>{{ prof.observacoes|safe }}</textarea></td>
                     </tr>
+                    {% endif%}
                 </table>
             </div>
+            {% if showcontrolers %}
             <div>
                 <table border="0">
                     <tr>
@@ -118,13 +125,17 @@
                         <td><div style='font-size: 13px; font-family: verdana; '>CPF/CNPJ: </div></td>
                         <td><input type="text" id="cpfcnpj" name='cpfcnpj' /></td>
                     </tr>
-
                 </table>
             </div>
+            {% endif %}
             <div>
                 <table border="0">
                    <tr>
-                      <td><input type="button" value="Edit" id="btnEdit" /> <input type="button" value="Adicionar" id="btnAddMatricula" /></td>
+                      <td>
+                          {% if showcontrolers %}
+                                <input type="button" value="Edit" id="btnEdit" /> <input type="button" value="Adicionar" id="btnAddMatricula" />
+                          {% endif %}
+                      </td>
                     </tr>
                     <tr>
                         <td >
@@ -134,12 +145,14 @@
                                 <tr>
                                     <td><input type="button" id="btnBoletim" value="Boletim" /></td>
                                     <td>
+                                        {% if showcontrolers %}
                                         <table>
                                             <tr>
                                                 <td><input type="button" id="btnEditSit" value="Edit" /></td>
                                                 <td><input type="button" id="btnAddSit" value="Adicionar" /></td>
                                             </tr>
                                         </table>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 <tr>
@@ -159,39 +172,41 @@
     </form>
 
 
-
+        {% if showcontrolers %}
 
         <div id="matriculaturma">
-         <div id="windowHeader">
-             <span>
-                Matricular este aluno em um curso
-             </span>
-         </div>
+             <div id="windowHeader">
+                 <span>
+                    Matricular este aluno em um curso
+                 </span>
+             </div>
 
-         <div style="overflow: hidden;" id="windowContent">
-             <div style="padding-top: 15px;"></div>
-             <table border="0">
-                 <tr>
-                     <td><div style='font-size: 13px;  font-family: verdana; '>Curso: </div></td>
-                     <td><div id="curso"></div> </td>
-                 </tr>
-                 <tr>
-                     <td><div style='font-size: 13px; font-family: verdana; '>Data de Matrícula: </div></td>
-                     <td> <div id="dataMatricula" name="dataMatricula"></div>  </td>
-                 </tr>
+             <div style="overflow: hidden;" id="windowContent">
+                 <div style="padding-top: 15px;"></div>
+                 <table border="0">
+                     <tr>
+                         <td><div style='font-size: 13px;  font-family: verdana; '>Curso: </div></td>
+                         <td><div id="curso"></div> </td>
+                     </tr>
+                     <tr>
+                         <td><div style='font-size: 13px; font-family: verdana; '>Data de Matrícula: </div></td>
+                         <td> <div id="dataMatricula" name="dataMatricula"></div>  </td>
+                     </tr>
 
-                 <tr>
-                     <td><div style='font-size: 13px; font-family: verdana; '>Atual: </div></td>
-                     <td> <div id="atual"> </div>  </td>
-                 </tr>
+                     <tr>
+                         <td><div style='font-size: 13px; font-family: verdana; '>Atual: </div></td>
+                         <td> <div id="atual"> </div>  </td>
+                     </tr>
 
-                 <tr>
-                     <td></td>
-                     <td><input type="button" id="btnSaveAluno" value="Salvar" /></td>
-                 </tr>
-             </table>
-         </div>
-      </div>
+                     <tr>
+                         <td></td>
+                         <td><input type="button" id="btnSaveAluno" value="Salvar" /></td>
+                     </tr>
+                 </table>
+            </div>
+        </div>
+    {% endif %}
+
 
 
 
@@ -280,6 +295,7 @@
                 $("#rua").jqxComboBox({  width: '300px', height: '20px' });
                 $("#numero").jqxMaskedInput({ width: '50px', height: '20px'});
                 $("#complemento").jqxInput({  width: '300px', height: '20px' });
+
                 $("#observacoes").jqxInput({  width: '400px', height: '100px' });
 
                 var data = {}
@@ -328,24 +344,6 @@
                         var args = event.args;
 
                         if (args) {
-                            //var item = args.item;
-                           // var url = "/cities/estado="+item.label;
-                            // prepare the data
-                           // var source =
-                         //   {
-                           //     datatype: "json",
-                          //      datafields: [
-                          //          { name: 'id' },
-                          //          { name: 'nome' }
-                         //       ],
-                           //     url: url,
-                           //     async: false
-                          //  };
-
-                            //var dataAdapter = new $.jqx.dataAdapter(source);
-                            //$("#cidade").jqxDropDownList({source: dataAdapter,  displayMember: "nome", valueMember: "nome", width: '200', theme: 'energyblue', height: '25'});
-
-
                             var dataN = Array();
                             dataN.push('');
                             var Estado = $("#estado").val();
@@ -526,13 +524,6 @@
         $('#mae').jqxInput('val', "{{ prof.mae|safe }}");
 
          try {
-{#             var date = new Date();#}
-{#             var data = '{{ curso.nascimento|safe }}';#}
-{##}
-{#             var day = data.split('-')[2].split(' ')[0];#}
-{#             var month = data.split('-')[1];#}
-{#             var year = data.split('-')[0];#}
-{#             date.setFullYear(parseInt(year), parseInt(month) -1 ,parseInt(day));#}
              $('#nascimento').jqxDateTimeInput('val', '{{ nascimento|safe }}');
          } catch(err)  {
              console.log('Err');

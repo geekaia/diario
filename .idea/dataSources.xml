@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="4184226185">
+  <component name="DataSourceManagerImpl" format="xml" hash="4283069180">
     <data-source source="LOCAL" name="Django default" uuid="c2645afe-23e0-431a-9684-179177118f30">
       <driver-ref>mysql</driver-ref>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://127.0.0.1:3306/diario</jdbc-url>
-      <user-name>root</user-name>
-      <user-password>df9bdf98df99df9edf9fdf9c</user-password>
       <libraries />
     </data-source>
   </component>
 </project>
-

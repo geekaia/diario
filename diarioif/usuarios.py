@@ -50,18 +50,56 @@ def loginUser(request):
     return render(request, 'login.html', context)
 
 
+def temAcesso(request, page):
+
+    id = request.user.id
+    user = User.objects.get(pk=id)
+
+    prof = ProfileUser.objects.get(user=user)
+
+    # Usuario
+    alunoslist = ['viewnotas', 'viewpresenca', 'viewtarefas', 'viewprofile']
+
+    if prof.tipo == 'Aluno':
+        if page in alunoslist:
+            print 'No problem'
+        else:
+            return redirect('/')
+
+    elif prof.tipo == 'Administrador':
+        print 'no problem - tem acesso a tudo'
+    elif prof.tipo == 'Secretaria':
+        print 'no problem - tem acesso a tudo'
+    elif prof.tipo == 'Professor':
+        print 'Acesso a tudo'
+
+
+
+
+
+
 
 
 
 @login_required()
 def changeProfile(request, id=None):
 
-
+    showcontrolers = False
     # Vou ter que adicionar alguma coisa
     # para controlar os níveis
     context = {}
     user = User.objects.get(pk=id)
     myprof = ProfileUser.objects.get(user=user)
+
+    # Aqui os alunos e professores só podem ver o próprio profile
+    profreq = ProfileUser.objects.get(user=request.user)
+    if (profreq.tipo == 'Aluno' or profreq.tipo == 'Professor') and request.user.id != user.id:
+        print "Redirecionando ..."
+        return redirect('/')
+
+    if profreq.tipo == 'Administrador' or profreq.tipo == 'Secretaria':
+        showcontrolers = True
+
 
     try:
 
@@ -148,6 +186,7 @@ def changeProfile(request, id=None):
 
     context['actionform'] = '/profile/'+str(myprof.user.id)
     context['prof'] = myprof
+    context['showcontrolers'] = showcontrolers
 
     cursos = Curso.objects.all()
     context['cursos'] = cursos
@@ -220,7 +259,7 @@ def cadastrarUser(request):
             loginUser(request)
 
             # Redireciona para o profile
-            return redirect('/profile')
+            return redirect('/profile/'+profuser.id)
 
 
     context['mensagem'] = mensagem
