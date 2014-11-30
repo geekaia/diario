@@ -118,7 +118,6 @@
                                         <li><a href="/bimestrecad">Período Letivo</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="#">All industries and solutions</a></li>
                             </ul>
                         </li>
                         <li>Diario
@@ -128,44 +127,32 @@
                                 <li><a href="/atividades">Atividades</a></li>
                             </ul>
                         </li>
+
+                        <li>Aluno
+                            <ul>
+                                <li><a href="/minhasfaltas">Faltas</a></li>
+                                <li><a href="/notas">Notas</a></li>
+                                <li><a href="/atividades">Atividades</a></li>
+                                <li><a href="/mudarmeuprofile">Requerer Mudança de Profile</a></li>
+                            </ul>
+                        </li>
+
+                        <li>Ano Letivo
+                            <ul>
+
+                                <li><a href="/diasexcept">Eventos/Feriados e outros</a></li>
+                                <li><a href="/calendarioano">Calendário</a></li>
+                            </ul>
+
+                        </li>
+
                         <li>Secretaria
                             <ul style='width: 200px;'>
                                 <li><a href="/addvarios">Adicionar ALunos</a></li>
                                 <li><a href="/boletim">Boletim</a></li>
                             </ul>
                         </li>
-                        <li>Communities
-                            <ul style='width: 200px;'>
-                                <li><a href="#Designers">Designers</a></li>
-                                <li><a href="#Developers">Developers</a></li>
-                                <li><a href="#Educators">Educators and students</a></li>
-                                <li><a href="#Partners">Partners</a></li>
-                                <li type='separator'></li>
-                                <li>By resource
-                                    <ul>
-                                        <li><a href="#Labs">Labs</a></li>
-                                        <li><a href="#TV">TV</a></li>
-                                        <li><a href="#Forums">Forums</a></li>
-                                        <li><a href="#Exchange">Exchange</a></li>
-                                        <li><a href="#Blogs">Blogs</a></li>
-                                        <li><a href="#Experience Design">Experience Design</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>Company
-                            <ul style='width: 180px;'>
-                                <li><a href="#About">About Us</a></li>
-                                <li><a href="#Press">Press</a></li>
-                                <li><a href="#Investor">Investor Relations</a></li>
-                                <li><a href="#CorporateAffairs">Corporate Affairs</a></li>
-                                <li><a href="#Careers">Careers</a></li>
-                                <li><a href="#Showcase">Showcase</a></li>
-                                <li><a href="#Events">Events</a></li>
-                                <li><a href="#ContactUs">Contact Us</a></li>
-                                <li><a href="#Become an affiliate">Become an affiliate</a></li>
-                            </ul>
-                        </li>
+
 
                         {% if user.is_authenticated %}
                             <li><a href="/profile/{{ user.id }}">Profile</a></li>

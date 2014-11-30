@@ -170,3 +170,36 @@ class NotaAtividade(models.Model):
     nota2 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     nota3 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     nota4 = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+
+
+class Building(models.Model):
+    nome = models.CharField(max_length=255)
+
+class Sala(models.Model):
+    build = models.ForeignKey(Building)
+    nome = models.CharField(max_length=255)
+
+
+
+class DiaExcept(models.Model):
+    """
+    Dias em que ocorre coisas diferentes no campus. Por obrigação tem que adicionar os sábados que não tem aula, pois no sábado pode ter aula..
+    """
+    # Aqui é ano letivo e não o ano corrente, apesar de que sempre pegamos o ano atual para termos como base
+    ano = models.CharField(max_length=10)
+    # por padrão o domingo não pode ter aula e, portanto já fica desmarcado no registro
+    dataInicio = models.DateField()
+    dataFim = models.DateField(blank=True, null=True)
+
+    #FD - Férias Docentes, F - Feriados, PF - Período de Provas Finais, PFAC - Ponto Facultativo, SB - Sábado(Este é ao contrário dos demais aqui habilita registrar no sábado)
+    tipo = models.CharField(max_length=50)
+    descricao = models.CharField(max_length=255)
+
+class HorariodeAula(models.Model):
+    # Ano letivo corrente
+    ano = models.CharField(max_length=10)
+    # Matutino, Vespertino, Noturno
+    turno = models.CharField(max_length=255)
+    horaInicio = models.TimeField()
+    horaFim = models.TimeField()
+

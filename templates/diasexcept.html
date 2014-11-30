@@ -1,0 +1,400 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Eventos/Sábados/Feriados e outros</h1>
+
+   <table>
+       <tr>
+           <td style="vertical-align: top;">
+               <table>
+                   <tr>
+                       <td rowspan="3"  style="vertical-align: top"><div id="ano"></div></td>
+                       <td style="vertical-align: top">
+                           <fieldset>
+                               <legend>Adicionar um dia:</legend>
+                           <table style="width: 550px;">
+                               <tr>
+                                   <td width="200" style="vertical-align: bottom;">Tipo:<div id="tipo"></div></td>
+                                   <td width="120" style="vertical-align: bottom;"><div id='dayl'>Início:</div><div id="dataInicio"></div></td>
+                                   <td id="datafimCol" style="vertical-align: bottom;">Fim:<div id="dataFim"></div></td>
+                               </tr>
+                               <tr>
+                                   <td colspan="2">Descrição: <input  type="text" id="descricao" /> </td>
+                                   <td style="vertical-align: bottom;"><input type="button" id="btnAddDay" value="Adicionar"/></td>
+                               </tr>
+                           </table>
+                       </fieldset>
+                       </td>
+                   </tr>
+                   <tr>
+                       <td colspan="2" style="vertical-align: top;">
+                          <input type="button" id="btnRemover" value="Remover"/>
+                       </td>
+                   </tr>
+                   <tr >
+                       <td colspan="2" style="padding-top: 15px; vertical-align: top;"><div style="min-height: 180px;" id="diasgrid"></div></td>
+                   </tr>
+               </table>
+
+           </td>
+       </tr>
+
+   </table>
+
+
+    <script language="javascript">
+        var anos = new Array();
+            var data = new Date();
+
+            for(var i=data.getFullYear()-10; i<=(data.getFullYear()+1); i++)
+            {
+                anos.push(i);
+            }
+
+            var rowAtrib = -1;
+            var rowDia = -1;
+            var IDdia = -1;
+            var quanti = -1;
+            var rowStChamada= -1;
+
+        $(document).ready(function() {
+            $("#DataContent").show();
+
+            $("#descricao").jqxInput({  width: '350px', height: '20px' });
+
+            var tipoSel = [
+                    { 'lb': 'SB', 'val': 'Sábado Letivo' },
+                    { 'lb': 'FD', 'val': 'Férias Docentes' },
+                    { 'lb': 'F', 'val': 'Feriado' },
+                    { 'lb': 'PF', 'val': 'Período de Provas Finais' },
+                    { 'lb': 'PFAC', 'val': 'Ponto Facultativo' },
+                    { 'lb': 'O', 'val': 'Outro' },
+                    { 'lb': 'EVT', 'val': 'Eventos' },
+                    { 'lb': 'RC', 'val': 'Recesso' }
+            ];
+
+            var source =
+            {
+                datatype: "json",
+                datafields: [
+                    { name: 'lb' },
+                    { name: 'val' }
+                ],
+                localdata: tipoSel
+            };
+            var dataAdapter = new $.jqx.dataAdapter(source);
+
+            $("#tipo").jqxDropDownList({
+                    selectedIndex: 0, source: dataAdapter, displayMember: "val", valueMember: "lb", width: 200, height: 25
+                });
+
+            $("#tipo").on('change', function(evt){
+                if($("#tipo").val()=='SB')  {
+                    $("#datafimCol").hide();
+                    $("#dayl").html('Dia:');
+                } else {
+                    $("#datafimCol").show();
+                    $("#dayl").html('Início:');
+                }
+            });
+            $("#tipo").val('F');
+
+
+
+
+
+            $("#btnRemover").jqxButton();
+
+
+
+            function getContent()
+            {
+                $("#conteudodia").val('');
+                IDdia = $('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "id");
+
+                 $.ajax({
+                    url:  "/getContent",
+                    cache: false,
+                    data: {
+                        'id': IDdia,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: "POST",
+                    datatype: 'json',
+                    async: false,
+                    success: function(response) {
+                        $("#conteudodia").val(response[0].content);
+                        //console.log("Responsta: "+response[0].content);
+                    }
+                });
+
+                $("#DataContent").html($('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "data"));
+            }
+
+            $("#btnFaltou").on('click', function() {
+
+                var selectedrowindexes = $('#gridchamada').jqxGrid('selectedrowindexes');
+                for (var j = 0; j < selectedrowindexes.length; j++) {
+                    for (var i = 0; i < quanti; i++) {
+                        $("#gridchamada").jqxGrid('setcellvaluebyid', selectedrowindexes[j], i, false);
+                    }
+                }
+                console.log((selectedrowindexes));
+            });
+
+            $("#btnPresente").on('click', function() {
+
+                var selectedrowindexes = $('#gridchamada').jqxGrid('selectedrowindexes');
+                for (var j = 0; j < selectedrowindexes.length; j++) {
+                    for (var i = 0; i < quanti; i++) {
+                        $("#gridchamada").jqxGrid('setcellvaluebyid', selectedrowindexes[j], i, true);
+                    }
+                }
+                console.log((selectedrowindexes));
+            });
+
+
+
+
+            function fillChamada()
+            {
+                IDdia = $('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "id");
+
+                quanti = parseInt($('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "quant"));
+
+                var colsArr = new Array();
+
+                var fields = new Array();
+
+                var sourcef = new Array();
+                sourcef.push({ name: 'id'});
+                sourcef.push({ name: 'nome'});
+
+                var arr = {};
+                arr['text'] = 'ID';
+                arr['datafield'] = 'id';
+                arr['hidden'] = true;
+                colsArr.push(arr);
+
+                arr = {};
+                arr['text'] = 'Nome';
+                arr['datafield'] = 'nome';
+                arr['editable'] = false;
+                colsArr.push(arr);
+
+
+                for(var i=0; i<quanti; i++){
+                    console.log(i);
+                    // conteudo
+                    var arr = {};
+                    arr['text'] = 'Aula'+ (i+1);
+                    arr['datafield'] = i.toString();
+                    arr['columntype'] = 'checkbox';
+                    arr['width'] = '50';
+                    arr['editable'] = true;
+                    colsArr.push(arr);
+
+                    // idsfaltas
+                    arr = {};
+                    arr['text'] = i.toString()+'id';
+                    arr['datafield'] = i.toString()+'id';
+                    arr['hidden'] = true;
+                    colsArr.push(arr);
+
+
+                    sourcef.push({ name: i.toString()});
+                    sourcef.push({ name: i.toString()+'id'});
+
+                }
+                console.log('Data: '+colsArr);
+
+                 var url = "/getChamadaList";
+                // prepare the data
+                var source2 =
+                {
+                    datatype: "json",
+                    datafields: sourcef,
+                    data: {
+                        'id': IDdia,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: 'POST',
+                    url: url,
+                    async: false
+                };
+                var dataAdapter2 = new $.jqx.dataAdapter(source2);
+
+
+                $("#gridchamada").jqxGrid(
+                {
+                    width: 895,
+                    height: 500,
+                    editable: true,
+                    source: dataAdapter2,
+                    columns: colsArr,
+                    selectionmode: 'multiplerowsextended',
+                });
+
+                $('#gridchamada').jqxGrid('hidecolumn', 'id');
+
+                $('#gridchamada').on('rowselect', function (event){
+                    rowStChamada = event.args.rowindex;
+                });
+            }
+
+
+
+            $("#btnChamada").on('click', function(){
+                $("#saveprogress").jqxProgressBar({ value: 0});
+                fillChamada();
+                $("#chamadaacord").jqxNavigationBar('expandAt', 3);
+                getContent();
+            });
+
+
+            $("#btnSaveContent").on('click', function(ev){
+                 $.ajax({
+                    url:  "/saveContent",
+                    cache: false,
+                    data: {
+                        'id': IDdia,
+                        'content': $("#conteudodia").val(),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: "POST",
+                    datatype: 'json',
+                    async: false,
+                    success: function(response) {
+                        var respint = parseInt(response);
+                        if(respint == 1) {
+                             $("#chamadaacord").jqxNavigationBar('expandAt', 1);
+                        } else {
+                             alert('Erro ao atualizar o conteúdo!');
+                        }
+                        //console.log("Responsta: "+response[0].content);
+                    }
+                });
+
+                $("#DataContent").html($('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "data"));
+                $("#chamadaacord").jqxNavigationBar('expandAt', 2);
+            });
+
+
+
+            $("#btnAddDay").jqxButton();
+
+
+            $("#btnAddDay").on('click', function(event) {
+                 $.ajax({
+                    url:  "/addDiaExcept",
+                    cache: false,
+                    data: {
+                       'dataInicio': $("#dataInicio").val(),
+                       'dataFim': $("#dataFim").val(),
+                       'tipo': $("#tipo").val(),
+                       'descricao': $("#descricao").val(),
+                       'ano': $("#ano").val(),
+                       csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: "POST",
+                    datatype: 'json',
+                    async: false,
+                    success: function(response) {
+                        var respint = parseInt(response);
+                        if(respint == 1) {
+                            fillDiasGrid();
+                        } else {
+                            console.log('Houve erro ao salvar os dados');
+                        }
+                    }
+                });
+            });
+
+            $("#btnRemover").on('click', function(evt){
+                  $.ajax({
+                    url:  "/removeDayE",
+                    cache: false,
+                    data: {
+                       'id': $('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "id"),
+                       csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: "POST",
+                    datatype: 'json',
+                    async: false,
+                    success: function(response) {
+                        var respint = parseInt(response);
+                        if(respint == 1) {
+                            fillDiasGrid();
+                        } else {
+                            console.log('Houve erro ao salvar os dados');
+                        }
+                    }
+                });
+
+            });
+
+
+            function fillDiasGrid()
+            {
+                var url = "/listDiasExcept";
+                // prepare the data
+                var source2 =
+                {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'id'},
+                        { name: 'ano'},
+                        { name: 'dataInicio'},
+                        { name: 'dataFim' },
+                        { name: 'tipo' },
+                        { name: 'tipod' },
+                        { name: 'descricao' },
+                    ],
+                    data: {
+                        'ano': $('#ano').val(),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: 'POST',
+                    url: url,
+                    async: false
+                };
+                var dataAdapter2 = new $.jqx.dataAdapter(source2);
+
+                $("#diasgrid").jqxGrid(
+                {
+                    width: 820,
+                    height: 300,
+                    source: dataAdapter2,
+                    columns: [
+                        { text: 'ID', datafield: 'id', width: 0, hidden: true },
+                        { text: 'Ano', datafield: 'ano', width: 50 },
+                        { text: 'Inicio', datafield: 'dataInicio', width: 100 },
+                        { text: 'Fim', datafield: 'dataFim', width: 100 },
+                        { text: 'Tipo', datafield: 'tipo', width: 60, hidden: true },
+                        { text: 'Tipo', datafield: 'tipod', width: 150 },
+                        { text: 'Descricao', datafield: 'descricao', width: 380 }
+                    ]
+                });
+
+                $('#diasgrid').jqxGrid('hidecolumn', 'id');
+                $('#diasgrid').on('rowselect', function (event){
+                    rowDia = event.args.rowindex;
+                });
+            }
+
+            $("#dataInicio").jqxDateTimeInput({ width: '120px', height: '25px' });
+            $("#dataFim").jqxDateTimeInput({ width: '120px', height: '25px' });
+
+            $("#ano").jqxListBox({source: anos, width: '70', height: '350'});
+
+            $("#ano").on('change', function(evt){
+                fillDiasGrid();
+            });
+
+            // Seta como o ano atual
+            $("#ano").val(data.getFullYear());
+        });
+    </script>
+
+
+{% endblock %}

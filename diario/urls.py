@@ -39,6 +39,18 @@ urlpatterns = patterns('',
     url(r'^alunoBoletim/(?P<idturma>\d[^/]*)/(?P<idaluno>\d[^/]*)$', 'diarioif.testboletim.gemPdf', name='alunoBoletim'),
 
 
+    # Aluno
+    url(r'^minhasfaltas$', 'diarioif.aluno.minhasfaltas', name='minhasfaltas'),
+
+
+    # Calendário escolar
+    url(r'^diasexcept$', 'diarioif.calendario.diasexcept', name='diasexcept'),
+    url(r'^addDiaExcept$', 'diarioif.calendario.addDiaExcept', name='addDiaExcept'),
+    url(r'^calendarioano$', 'diarioif.calendario.calendarioano', name='calendarioano'),
+    url(r'^listDiasExcept$', 'diarioif.calendario.listDiasExcept', name='listDiasExcept'),
+    url(r'^removeDayE$', 'diarioif.calendario.removeDayE', name='removeDayE'),
+
+
     # Cursos
     url(r'^listCourses$', 'diarioif.views.listCourses', name='listCourses'),
     url(r'^cursocad/$', 'diarioif.views.cursocad', name='cursocad'),

@@ -1,0 +1,582 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Chamada</h1>
+     <div id='chamadaacord'>
+        <div>
+            Disciplinas e turmas
+        </div>
+        <div><center>
+            <table border="0">
+                <tr>
+                    <td style="width: 72px;">Selecione um ano:</td>
+                    <td>Disciplina</td>
+                </tr>
+                <tr>
+                    <td><div id="ano"></div></td>
+                    <td><div id="turma"></div></td>
+                    <td style="padding-left: 20px;"><input type="button" value="Chamada" id="btnchamada" /> </td>
+                </tr>
+            </table>
+            </center>
+        </div>
+        <div>
+            Dias
+        </div>
+        <div>
+            <center>
+                <h1><div id="disciplinasel"></div></h1>
+                <br />
+                <div id="saveprogress"></div>
+                <div id="savemessage"></div>
+
+           <table>
+               <tr>
+                   <td style="vertical-align: top;">
+                       <table>
+                           <tr>
+                               <td style="vertical-align: bottom">
+
+                                   <fieldset>
+                                       <legend>Adicionar um dia:</legend>
+                                   <table>
+                                       <tr>
+                                           <td style="vertical-align: bottom;">Dia:<div id="dia"></div></td>
+                                           <td style="vertical-align: bottom;">Quant.:  <div id="quantDias"></div></td>
+                                           <td style="vertical-align: bottom;"><input type="button" id="btnAddDay" value="Adicionar"/></td>
+                                       </tr>
+                                   </table>
+                               </fieldset>
+                               </td>
+                           </tr>
+                           <tr>
+                               <td colspan="3"><br /></td>
+                           </tr>
+                           <tr>
+                               <td colspan="3">
+                                <fieldset>
+                                  <legend>Ações:</legend>
+                                  <input type="button" id="btnChamada" value="Chamada"/>
+                                  <input type="button" id="btnConteúdo" value="Conteúdo"/>
+                                  <input type="button" id="btnRemover" value="Remover"/>
+                               </fieldset>
+                               </td>
+                           </tr>
+                           <tr >
+                               <td colspan="3" style="padding-top: 15px;"><div id="diasgrid"></div></td>
+                           </tr>
+                       </table>
+
+                   </td>
+               </tr>
+
+           </table>
+          </center>
+        </div>
+
+
+
+        <div>
+            Conteúdo
+        </div>
+        <div style="padding: 15px;">
+            <input type="button" id="btnSaveContent" value="Salvar" />
+            <br />
+            <br />
+            <textarea id="conteudodia" name='conteudodia'></textarea>
+            <br />
+            Conteúdo de: <div id="DataContent">DATA</div>
+        </div>
+
+        <div>
+            Efetuar chamada
+        </div>
+        <div>
+            <center><h1><div id="disciplinachamada"></div></h1></center>
+            <table>
+                <tr>
+                    <td style="padding-right: 5px;"><input type="button" id="btnSalvarChamada" value="Salvar" /></td>
+                    <td style="padding-right: 5px;"><input type="button" id="btnFaltou" value="Faltou" /></td>
+                    <td style="padding-right: 5px;"><input type="button" id="btnPresente" value="Presente" /></td>
+                </tr>
+            </table>
+            <br />
+            <div id="gridchamada"></div>
+        </div>
+    </div>
+
+        <div id="changesit">
+         <div id="windowHeader">
+             <span>
+                Remover um dia e todas as chamadas e conteúdos.
+             </span>
+         </div>
+
+         <div style="overflow: hidden; padding: 15px;" id="windowContent">
+             <h4>Você deseja remover <div id="diatoremove"></div> do seu diário?</h4>
+            <input  type="button" id="btnSim" value="Sim" /> <input  type="button" id="btnNao" value="Não" />
+             <br />
+         </div>
+      </div>
+
+
+
+
+
+    <script language="javascript">
+        var anos = new Array();
+            var data = new Date();
+
+            for(var i=data.getFullYear()-10; i<=data.getFullYear(); i++)
+            {
+                anos.push(i);
+            }
+
+            var rowAtrib = -1;
+            var rowDia = -1;
+
+            var IDdia = -1;
+            var quanti = -1;
+
+            var rowStChamada= -1;
+
+        $(document).ready(function() {
+            $("#conteudodia").jqxInput({  width: '800px', height: '200px' });
+            $("#DataContent").show();
+            $("#btnSaveContent").jqxButton();
+            $("#btnPresente").jqxButton();
+
+            // Janela para remover um dia!!!
+            $("#changesit").hide();
+            $("#changesit").jqxWindow({ width: 500, height: 200 });
+            $("#btnSim").jqxButton();
+            $("#btnSim").on('click', function(ev){
+                console.log('Removendo');
+                $.ajax({
+                    url:  "/removerDia",
+                    cache: false,
+                    data:{
+                        'id': $('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "id"),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    } ,
+                    type: "POST",
+                    datatype: 'json',
+                    success: function(response) {
+
+                        var respint = parseInt(response);
+
+                        if(respint == 1) {
+                            $("#savemessage").html('<h4>Dia removido com sucesso!</h4>');
+                            setTimeout(function(){
+                                   $("#savemessage").html('');
+                             }, 2000);
+                            fillDiasGrid();
+                            $("#changesit").jqxWindow("close");
+                            $('#changesit').jqxWindow({ isModal: false });
+                        } else {
+                            $("#savemessage").html('<h4>Erro ao remover o dia!</h4>');
+                            setTimeout(function(){
+                                   $("#savemessage").html('');
+                             }, 2000);
+                        }
+                   }
+                });
+            });
+
+            $("#btnNao").jqxButton();
+            $("#btnNao").on('click', function(ev){
+                $("#changesit").jqxWindow("close");
+                $('#changesit').jqxWindow({ isModal: false });
+            });
+
+            $("#btnRemover").on('click', function(){
+                $('#changesit').jqxWindow({ isModal: true });
+                $("#changesit").jqxWindow("open");
+               $("#diatoremove").html($('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "data"));
+
+            });
+
+            $("#btnRemover").jqxButton();
+
+
+            $("#btnConteúdo").on('click', function() {
+                $("#saveprogress").jqxProgressBar({ value: 0});
+                getContent();
+                $("#chamadaacord").jqxNavigationBar('expandAt', 2);
+                fillChamada();
+            });
+
+
+             $("#saveprogress").jqxProgressBar({ width: 250, height: 15, value: 0, showText:true, orientation: 'horizontal'});
+
+
+            $("#btnSalvarChamada").on('click', function(ev) {
+
+                var rows = $('#gridchamada').jqxGrid('getrows');
+
+                var rowpercent = 100/rows.length;
+                var atual = 0;
+                $("#saveprogress").jqxProgressBar({ value: atual});
+                $("#savemessage").html('Salvando....');
+
+                for(var i=0; i<rows.length; i++){
+                    var datareq = {};
+
+                    datareq['quant'] = quanti;
+
+                    for(var j=0; j<quanti; j++) {
+                        datareq[j] = rows[i][j]; // val presente ou faltoso
+                        datareq[j+'id'] = rows[i][j+'id']; // id da falta ou presença
+                    }
+                    datareq['csrfmiddlewaretoken'] = '{{ csrf_token }}';
+
+                    $.ajax({
+                        url:  "/salvarChamada",
+                        cache: false,
+                        data: datareq,
+                        type: "POST",
+                        datatype: 'json',
+                        success: function(response) {
+                           console.log('Presença saved!!!');
+                            atual = atual + rowpercent;
+                            $("#saveprogress").jqxProgressBar({ value: atual});
+                            console.log('Porcentagem: '+$("#saveprogress").val()+"%");
+                            if($("#saveprogress").val()>=100) {
+                                $("#savemessage").html('<h4>Chamada salva com sucesso!!!</h4>');
+
+                                setTimeout(function(){
+                                       $("#savemessage").html('');
+                                       $("#saveprogress").jqxProgressBar({ value: 0});
+                                 }, 2000);
+                            }
+                        }
+                    });
+                }
+                $("#chamadaacord").jqxNavigationBar('expandAt', 1);
+            });
+
+            function getContent()
+            {
+                $("#conteudodia").val('');
+                IDdia = $('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "id");
+
+                 $.ajax({
+                    url:  "/getContent",
+                    cache: false,
+                    data: {
+                        'id': IDdia,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: "POST",
+                    datatype: 'json',
+                    async: false,
+                    success: function(response) {
+                        $("#conteudodia").val(response[0].content);
+                        //console.log("Responsta: "+response[0].content);
+                    }
+                });
+
+                $("#DataContent").html($('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "data"));
+            }
+
+            $("#btnFaltou").on('click', function() {
+
+                var selectedrowindexes = $('#gridchamada').jqxGrid('selectedrowindexes');
+                for (var j = 0; j < selectedrowindexes.length; j++) {
+                    for (var i = 0; i < quanti; i++) {
+                        $("#gridchamada").jqxGrid('setcellvaluebyid', selectedrowindexes[j], i, false);
+                    }
+                }
+                console.log((selectedrowindexes));
+            });
+
+            $("#btnPresente").on('click', function() {
+
+                var selectedrowindexes = $('#gridchamada').jqxGrid('selectedrowindexes');
+                for (var j = 0; j < selectedrowindexes.length; j++) {
+                    for (var i = 0; i < quanti; i++) {
+                        $("#gridchamada").jqxGrid('setcellvaluebyid', selectedrowindexes[j], i, true);
+                    }
+                }
+                console.log((selectedrowindexes));
+            });
+
+
+
+
+            function fillChamada()
+            {
+                IDdia = $('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "id");
+
+                quanti = parseInt($('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "quant"));
+
+                var colsArr = new Array();
+
+                var fields = new Array();
+
+                var sourcef = new Array();
+                sourcef.push({ name: 'id'});
+                sourcef.push({ name: 'nome'});
+
+                var arr = {};
+                arr['text'] = 'ID';
+                arr['datafield'] = 'id';
+                arr['hidden'] = true;
+                colsArr.push(arr);
+
+                arr = {};
+                arr['text'] = 'Nome';
+                arr['datafield'] = 'nome';
+                arr['editable'] = false;
+                colsArr.push(arr);
+
+
+                for(var i=0; i<quanti; i++){
+                    console.log(i);
+                    // conteudo
+                    var arr = {};
+                    arr['text'] = 'Aula'+ (i+1);
+                    arr['datafield'] = i.toString();
+                    arr['columntype'] = 'checkbox';
+                    arr['width'] = '50';
+                    arr['editable'] = true;
+                    colsArr.push(arr);
+
+                    // idsfaltas
+                    arr = {};
+                    arr['text'] = i.toString()+'id';
+                    arr['datafield'] = i.toString()+'id';
+                    arr['hidden'] = true;
+                    colsArr.push(arr);
+
+
+                    sourcef.push({ name: i.toString()});
+                    sourcef.push({ name: i.toString()+'id'});
+
+                }
+                console.log('Data: '+colsArr);
+
+                 var url = "/getChamadaList";
+                // prepare the data
+                var source2 =
+                {
+                    datatype: "json",
+                    datafields: sourcef,
+                    data: {
+                        'id': IDdia,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: 'POST',
+                    url: url,
+                    async: false
+                };
+                var dataAdapter2 = new $.jqx.dataAdapter(source2);
+
+
+                $("#gridchamada").jqxGrid(
+                {
+                    width: 895,
+                    height: 500,
+                    editable: true,
+                    source: dataAdapter2,
+                    columns: colsArr,
+                    selectionmode: 'multiplerowsextended',
+                });
+
+                $('#gridchamada').jqxGrid('hidecolumn', 'id');
+
+                $('#gridchamada').on('rowselect', function (event){
+                    rowStChamada = event.args.rowindex;
+                });
+            }
+
+
+
+            $("#btnChamada").on('click', function(){
+                $("#saveprogress").jqxProgressBar({ value: 0});
+                fillChamada();
+                $("#chamadaacord").jqxNavigationBar('expandAt', 3);
+                getContent();
+            });
+
+
+            $("#btnSaveContent").on('click', function(ev){
+                 $.ajax({
+                    url:  "/saveContent",
+                    cache: false,
+                    data: {
+                        'id': IDdia,
+                        'content': $("#conteudodia").val(),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: "POST",
+                    datatype: 'json',
+                    async: false,
+                    success: function(response) {
+                        var respint = parseInt(response);
+                        if(respint == 1) {
+                             $("#chamadaacord").jqxNavigationBar('expandAt', 1);
+                        } else {
+                             alert('Erro ao atualizar o conteúdo!');
+                        }
+                        //console.log("Responsta: "+response[0].content);
+                    }
+                });
+
+                $("#DataContent").html($('#diasgrid').jqxGrid('getcelltextbyid', rowDia, "data"));
+                $("#chamadaacord").jqxNavigationBar('expandAt', 2);
+            });
+
+
+            var quantidiasArr = [1, 2, 3, 4, 5, 6, 7, 8];
+            $("#quantDias").jqxDropDownList({source: quantidiasArr, width: '70', height: '25'});
+            $("#quantDias").val(2);
+
+            $("#btnAddDay").jqxButton();
+            $("#btnSalvarChamada").jqxButton();
+            $("#btnFaltou").jqxButton();
+
+
+            $("#btnAddDay").on('click', function(event) {
+                 $.ajax({
+                    url:  "/addDia",
+                    cache: false,
+                    data: {
+                        'id': $('#turma').jqxGrid('getcelltextbyid', rowAtrib, "id"),
+                        'dia': $("#dia").val(),
+                        'quantidade': $("#quantDias").val(),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: "POST",
+                    datatype: 'json',
+                    async: false,
+                    success: function(response) {
+                        var respint = parseInt(response);
+                        if(respint == 1) {
+                            fillDiasGrid();
+
+                        } else {
+                            console.log('Houve erro ao salvar os dados');
+                        }
+                    }
+                });
+
+            });
+
+
+            function fillDiasGrid()
+            {
+                var url = "/getDiasBimestre";
+                // prepare the data
+                var source2 =
+                {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'id'},
+                        { name: 'id2'},
+                        { name: 'quant'},
+                        { name: 'data', type: 'string'},
+                    ],
+                    data: {
+                        'id': $('#turma').jqxGrid('getcelltextbyid', rowAtrib, "id"),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: 'POST',
+                    url: url,
+                    async: false
+                };
+                var dataAdapter2 = new $.jqx.dataAdapter(source2);
+
+                $("#diasgrid").jqxGrid(
+                {
+                    width: 500,
+                    height: 300,
+                    source: dataAdapter2,
+                    columns: [
+                        { text: 'ID', datafield: 'id', width: 0, hidden: true },
+                        { text: 'Data', datafield: 'data', width: 400 },
+                        { text: 'Quant', datafield: 'quant', width: 60 },
+                    ]
+                });
+
+                $('#diasgrid').jqxGrid('hidecolumn', 'id');
+                $('#diasgrid').on('rowselect', function (event){
+                    rowDia = event.args.rowindex;
+                });
+
+            }
+
+
+
+            $("#dia").jqxDateTimeInput({ width: '250px', height: '25px' });
+
+            $("#ano").jqxListBox({source: anos, width: '70', height: '350'});
+            $("#chamadaacord").jqxNavigationBar({ width: 900, height: 700});
+
+
+            $("#btnChamada").jqxButton();
+            $("#btnConteúdo").jqxButton();
+
+            $("#btnchamada").on('click', function(event) {
+                 $("#chamadaacord").jqxNavigationBar('expandAt', 1);
+                 $("#disciplinasel").html($('#turma').jqxGrid('getcelltextbyid', rowAtrib, "nome"));
+                 fillDiasGrid();
+            });
+
+
+            function filAtribuicoes()
+            {
+                var url = "/chamadaDisc";
+                // prepare the data
+                var source2 =
+                {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'id'},
+                        { name: 'nome', type: 'string'},
+                        { name: 'turma', type: 'string'},
+                        { name: 'curso', type: 'string'},
+                    ],
+                    data: {
+                        'ano': $("#ano").val(),
+                        'idprof': 6,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    type: 'POST',
+                    url: url,
+                    async: false
+                };
+                var dataAdapter2 = new $.jqx.dataAdapter(source2);
+
+
+                $("#turma").jqxGrid(
+                {
+                    width: 700,
+                    height: 350,
+                    source: dataAdapter2,
+                    columns: [
+                        { text: 'ID', datafield: 'id', width: 0, hidden: true },
+                        { text: 'Name', datafield: 'nome', width: 250 },
+                        { text: 'Turma', datafield: 'turma', width: 50 },
+                        { text: 'Curso', datafield: 'curso', width: 400 },
+                    ]
+                });
+
+                $('#turma').jqxGrid('hidecolumn', 'id');
+                $('#turma').on('rowselect', function (event){
+                    rowAtrib = event.args.rowindex;
+                });
+            }
+
+            $("#ano").on('change', function(evt){
+                filAtribuicoes();
+            });
+            $("#btnchamada").jqxButton({height: 50});
+
+            // Seta como o ano atual
+            $("#ano").val(data.getFullYear());
+        });
+    </script>
+
+
+{% endblock %}
