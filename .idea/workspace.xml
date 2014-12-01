@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="09acc1be-3fcf-415f-8622-ea873ce4e75f" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/diarioif/calendario.py" afterPath="$PROJECT_DIR$/diarioif/calendario.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/diasexcept.html" afterPath="$PROJECT_DIR$/templates/diasexcept.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/diarioif/gencalendario.py" afterPath="$PROJECT_DIR$/diarioif/gencalendario.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/diarioif/models.py" afterPath="$PROJECT_DIR$/diarioif/models.py" />
     </list>
     <ignored path="diario.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -83,8 +80,8 @@
       <file leaf-file-name="gencalendario.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/diarioif/gencalendario.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.35677084" vertical-offset="9518" max-vertical-offset="11646">
-              <caret line="544" column="38" selection-start-line="544" selection-start-column="38" selection-end-line="544" selection-end-column="38" />
+            <state vertical-scroll-proportion="0.2734375" vertical-offset="8718" max-vertical-offset="11610">
+              <caret line="496" column="40" selection-start-line="496" selection-start-column="40" selection-end-line="496" selection-end-column="40" />
               <folding>
                 <element signature="e#24#60#0" expanded="true" />
               </folding>
@@ -1053,8 +1050,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/diarioif/gencalendario.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.35677084" vertical-offset="9518" max-vertical-offset="11646">
-          <caret line="544" column="38" selection-start-line="544" selection-start-column="38" selection-end-line="544" selection-end-column="38" />
+        <state vertical-scroll-proportion="0.2734375" vertical-offset="8718" max-vertical-offset="11610">
+          <caret line="496" column="40" selection-start-line="496" selection-start-column="40" selection-end-line="496" selection-end-column="40" />
           <folding>
             <element signature="e#24#60#0" expanded="true" />
           </folding>

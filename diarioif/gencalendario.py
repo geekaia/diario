@@ -421,13 +421,11 @@ class BoletimLayout:
             while actual < len(Ano['meses']):
                 l, actual, contnull, mNum = getQuatro(Ano['meses'], actual)
 
-
                 print "Vars:"
                 print "L ", l
                 print "actual ", actual
                 print "contnull ", contnull
                 print "mNum ", mNum
-
 
                 # Só tem fazios
                 if contnull == 4:
