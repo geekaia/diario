@@ -62,15 +62,22 @@
 
             $("#descricao").jqxInput({  width: '350px', height: '20px' });
 
+            $("#dataInicio").on('change', function(evt) {
+                var jsDate = evt.args.date;
+                $('#dataFim').jqxDateTimeInput({ value: jsDate });
+            });
+
             var tipoSel = [
                     { 'lb': 'SB', 'val': 'Sábado Letivo' },
                     { 'lb': 'FD', 'val': 'Férias Docentes' },
+                    { 'lb': 'FDS', 'val': 'Férias Discentes' },
                     { 'lb': 'F', 'val': 'Feriado' },
                     { 'lb': 'PF', 'val': 'Período de Provas Finais' },
                     { 'lb': 'PFAC', 'val': 'Ponto Facultativo' },
                     { 'lb': 'O', 'val': 'Outro' },
                     { 'lb': 'EVT', 'val': 'Eventos' },
-                    { 'lb': 'RC', 'val': 'Recesso' }
+                    { 'lb': 'RC', 'val': 'Recesso' },
+                    { 'lb': 'SP', 'val': 'Semana Pedagógica' }
             ];
 
             var source =

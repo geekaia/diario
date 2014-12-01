@@ -191,7 +191,8 @@ class DiaExcept(models.Model):
     dataInicio = models.DateField()
     dataFim = models.DateField(blank=True, null=True)
 
-    #FD - Férias Docentes, F - Feriados, PF - Período de Provas Finais, PFAC - Ponto Facultativo, SB - Sábado(Este é ao contrário dos demais aqui habilita registrar no sábado)
+    # FD - Férias Docentes, F - Feriados, PF - Período de Provas Finais, PFAC - Ponto Facultativo, SB - Sábado(Este é ao contrário dos demais aqui habilita registrar no sábado)
+    # PFAC - Ponto Facultativo , RC - Recesso
     tipo = models.CharField(max_length=50)
     descricao = models.CharField(max_length=255)
 

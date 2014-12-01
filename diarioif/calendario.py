@@ -59,7 +59,7 @@ def addDiaExcept(request):
 
         d.dataInicio = dataInicio
 
-        if tipo in ['F']:
+        if tipo in ['SB']:
             d.dataFim = dataInicio
         else:
             d.dataFim = dataFim
@@ -80,7 +80,7 @@ def listDiasExcept(request):
     diasex = DiaExcept.objects.filter(ano=ano).order_by('-dataInicio')
 
 
-    tipos = {'FD': 'Férias Docentes', 'F': 'Feriado', 'PF':'Período de Provas Finais', 'PFAC': 'Ponto Facultativo', 'SB':'Sábado Letivo', 'O': 'Outro', 'EVT': 'Eventos', 'RC': 'Recesso'}
+    tipos = {'FD': 'Férias Docentes', 'FDS': 'Férias Discentes', 'F': 'Feriado', 'PF':'Período de Provas Finais', 'PFAC': 'Ponto Facultativo', 'SB':'Sábado Letivo', 'O': 'Outro', 'EVT': 'Eventos', 'RC': 'Recesso',  'SP': 'Semana Pedagógica' }
 
     for i in diasex:
         d = {}
