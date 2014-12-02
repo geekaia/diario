@@ -2,7 +2,7 @@
 from django.http import HttpResponse
 
 from reportlab.lib.pagesizes import A4, landscape
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, Table, TableStyle, PageBreak
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, Table, TableStyle, PageBreak, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from django.contrib.auth.models import User
@@ -26,8 +26,10 @@ pdfmetrics.registerFont(TTFont('OpenSans', FONT_PATH))
 FONT_PATH = os.path.join(settings.BASE_DIR, 'static/fonts/OpenSans-Bold.ttf')
 pdfmetrics.registerFont(TTFont('OpenSans-Bold', FONT_PATH))
 
+cores = [HexColor('#00ff00'), HexColor('#00ffff'), HexColor('#ff0000'), HexColor('#ffff00'), HexColor('#ff00ff'), HexColor('#ff9966')]
 
 class BoletimLayout:
+    ano =''
     def __init__(self, buffer):
         # O padrão é sempre A4
         self.pagesize = A4
@@ -38,18 +40,17 @@ class BoletimLayout:
         # A large collection of style sheets pre-made for us
 
     @staticmethod
+    # @classmethod
     def __header_footer(canvas, doc):
         canvas.saveState()
-
         styles = getSampleStyleSheet()
-        # Our Custom Style
         styles.add(ParagraphStyle(name='RightAlign', fontName='Arial', align=TA_RIGHT))
-
 
         stH = ParagraphStyle(
             name='header1',
             fontName='OpenSans-Bold',
             fontSize=7,
+            leading=8,
         )
 
         stF = ParagraphStyle(
@@ -65,24 +66,31 @@ class BoletimLayout:
 
         fn = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logo.png')
         logo = Image(fn)
-        logo.drawHeight = 0.6*inch
-        logo.drawWidth = 0.5*inch
+        logo.drawHeight = 0.45*inch
+        logo.drawWidth = 0.35*inch
 
         txtHeader = """
             MINISTÉRIO DA EDUCAÇÃO/ SECRETARIA DE EDUCAÇÃO TECNOLÓGICA <br />
             INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DE MATO GROSSO <br />
-            PRÓ-REITORIA DE ENSINO - CALENDÁRIO ACADÊMICO ANO_ATUAL <br />
+            PRÓ-REITORIA DE ENSINO - CALENDÁRIO ACADÊMICO  <br />
             CAMPUS JUINA
         """
 
-        data = [[logo,Paragraph(txtHeader, styles['header1'])]]
-        header=Table(data, colWidths=[40, 350])
+        # print "Ano ", ano
+
+        data = [[logo, Paragraph(txtHeader, styles['header1'])]]
+        header=Table(data, colWidths=[45, 350])
         w, h = header.wrap(doc.width, doc.topMargin)
 
-        style = TableStyle([ ('VALIGN',(0, 0),(0,-1),'MIDDLE')])
+        style = TableStyle([
+            ('VALIGN',(0, 0),(0,-1),'MIDDLE'),
+            ('ALIGN', (0, 0), (-2, 0), 'RIGHT')
+        ])
+
+
         header.setStyle(style)
 
-        header.drawOn(canvas, doc.leftMargin-10, doc.height + doc.topMargin+10 - h+70)
+        header.drawOn(canvas, doc.leftMargin-10, doc.height + doc.topMargin+10 - h+55)
 
         # header =Paragraph('This is a Multi-line header. It goes on every page. '*5, styles['Normal'])
         # w, h = header.wrap(doc.width, doc.topMargin)
@@ -103,15 +111,15 @@ class BoletimLayout:
         canvas.restoreState()
 
 
-    def print_users(self, mesesCalendario, mesesLetivos):
+    def print_users(self, mesesCalendario, mesesLetivos, firstS, secondS, year):
         styles = getSampleStyleSheet()
 
         buffer = self.buffer
         doc = SimpleDocTemplate(buffer,
                                 rightMargin=inch/4,
                                 leftMargin=inch/4-10,
-                                topMargin=inch/2+17,
-                                bottomMargin=inch*1.2,
+                                topMargin=inch/2+5,
+                                bottomMargin=inch*1,
                                 pagesize=self.pagesize)
 
         # Our container for "Flowable" objects
@@ -144,6 +152,18 @@ class BoletimLayout:
             fontSize=6,
             alignment=TA_CENTER,
         )
+        sBody2 = ParagraphStyle(
+            name='sBody2',
+            fontName='OpenSans',
+            fontSize=8,
+            alignment=TA_CENTER,
+        )
+        sBody2l = ParagraphStyle(
+            name='sBody2l',
+            fontName='OpenSans',
+            fontSize=8,
+            alignment=TA_LEFT,
+        )
 
         sBodyEsq = ParagraphStyle(
             name='stBodyEsq',
@@ -165,6 +185,8 @@ class BoletimLayout:
         styles.add(stTituloName)
         styles.add(stHeader)
         styles.add(sBody)
+        styles.add(sBody2)
+        styles.add(sBody2l)
         styles.add(sBodyEsq)
         styles.add(sNomeEsq)
 
@@ -193,7 +215,7 @@ class BoletimLayout:
                 #Período de Provas Finais
                 #Ponto Facultativo
                 # SP - Semana Pedagógica
-                cores = [HexColor('#00ff00'), HexColor('#00ffff'), HexColor('#ff0000'), HexColor('#ffff00'), HexColor('#ff00ff'), HexColor('#ff9966')]
+
 
 
                 listXy = []
@@ -267,13 +289,6 @@ class BoletimLayout:
                         ('ALIGN',(0,0),(-1,-1),'CENTER'),
                         ('VALIGN',(0,0), (-1, -2),'BOTTOM'),
                 ]
-
-            # # Green
-            # dias = [1, 10, 27, 13,  8]
-            # for myd in dias:
-            #     Pintar = getCoors(myd, l, 1)
-            #     for p in Pintar:
-            #         styleL.append(p)
 
             rangeM = calendar.monthrange(year, month)
             dtIni = datetime.date(year, month, 1)
@@ -349,7 +364,6 @@ class BoletimLayout:
                 for myd in dias:
                     Pintar = getCoors(myd, l, cor)
 
-                    print "Week d"
                     DayT = datetime.date(evt.dataInicio.year, evt.dataInicio.month, myd)
                     wd = DayT.weekday()
                     if wd > 4:
@@ -368,14 +382,7 @@ class BoletimLayout:
                     for p in Pintar:
                         styleL.append(p)
 
-            # print "Dias Finais: ", letivoDias
-
-
-
-
             l.insert(0, ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'])
-
-
             for i in l:
                 cont2 = 0
                 for j in i:
@@ -386,8 +393,6 @@ class BoletimLayout:
 
                     cont2 += 1
                 cont1 += 1
-
-
 
             tb =Table(l,
                 colWidths=[wid, wid, wid, wid, wid, wid, wid],
@@ -414,9 +419,6 @@ class BoletimLayout:
             return m, (actual+1), contnull, mNum
 
         for Ano in mesesCalendario:
-
-
-
             actual = 0
             while actual < len(Ano['meses']):
                 l, actual, contnull, mNum = getQuatro(Ano['meses'], actual)
@@ -513,7 +515,88 @@ class BoletimLayout:
                                 ]
         )
 
+
+        def Conta(l, d):
+            c = 0
+            for dy in l:
+                # print "Day: ", dy, ' Weekday: ', dy.weekday(), ' D: ', d
+                if dy.weekday() == d:
+                    c += 1
+
+            return MyP(c)
+
+        listaStatis1 = []
+        listaStatis2 = []
+
+        def MyP(val):
+            return Paragraph(str(val), styles['sBody2'])
+
+        def MyPl(val):
+            return Paragraph(str(val), styles['sBody2l'])
+
+        listaStatis1.append([MyP('D'), MyP('S'), MyP('T'), MyP('Q'), MyP('Q'), MyP('S'), MyP('S')])
+        listaStatis2.append([MyP('D'), MyP('S'), MyP('T'), MyP('Q'), MyP('Q'), MyP('S'), MyP('S')])
+
+
+        # print "Conta firsts 1: ", Conta(firstS, 1)
+        # print "Conta firsts 1: ", Conta(firstS, 2)
+        # print "Conta firsts 1: ", Conta(firstS, 3)
+        # print "Conta firsts 1: ", Conta(firstS, 4)
+        # print "Conta firsts 1: ", Conta(firstS, 5)
+        # print "Conta firsts 1: ", Conta(firstS, 6)
+
+        listaStatis1.append([MyP(0), Conta(firstS, 0), Conta(firstS, 1), Conta(firstS, 2), Conta(firstS, 3), Conta(firstS, 4), Conta(firstS, 5)])
+        listaStatis2.append([MyP(0), Conta(secondS, 0), Conta(secondS, 1), Conta(secondS, 2), Conta(secondS, 3), Conta(secondS, 4), Conta(secondS, 5)])
+
+        l1 = []
+        l1.append([MyP('DIAS LETIVOS '+str(year)+'.1')])
+        tbStais = Table(listaStatis1,  colWidths=[22, 22, 22, 22, 22, 22, 22], style=[('GRID',(0,0),(-1,-1), 0.5,colors.black), ('BACKGROUND', (0, 0), (-1, 0), colors.grey)])
+        l1.append([tbStais])
+        l1.append([MyPl('TOTAL = '+str(len(firstS)))])
+
+        tb1F = Table(l1, colWidths=[165],  style=[('GRID', (0, 0), (-1, -1), 0.5, colors.black), ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey)])
+
+        l2 =  []
+        l2.append([MyP('DIAS LETIVOS '+str(year)+'.2')])
+        tbStais2 = Table(listaStatis2,  colWidths=[22, 22, 22, 22, 22, 22, 22], style=[
+            ('GRID',(0,0),(-1,-1),0.5,colors.black),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ])
+        l2.append([tbStais2])
+        l2.append([MyPl('TOTAL = '+str(len(secondS)))])
+        tb2F = Table(l2,  colWidths=[165], style=[('GRID',(0,0),(-1,-1),0.5,colors.black), ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey)])
+
+
+        # mesesLetivos
         elements.append(tableNotas)
+        # elements.append( Paragraph("<br />", styles['stBodyBoletim']))
+        s = Spacer(width=0, height=2)
+        elements.append(s)
+
+        llegenda = [['', MyPl('Dias Letivos')], ['', MyPl('Férias Docentes')], ['', MyPl('Feriados')], ['', MyPl('Período de Provas Finais')], ['', MyPl('Ponto Facultativo')]]
+        lLeg = []
+        lLeg.append([MyP(' LEGENDA ')])
+        tbLegL = Table(llegenda,  colWidths=[20, 105], style=[
+            ('GRID',(0,0),(-1,-1),0,colors.black),
+            ('BACKGROUND', (0, 0), (-2, 0), cores[0]),
+            ('BACKGROUND', (0, 1), (-2, 1), cores[1]),
+            ('BACKGROUND', (0, 2), (-2, 2), cores[2]),
+            ('BACKGROUND', (0, 3), (-2, 3), cores[3]),
+            ('BACKGROUND', (0, 4), (-2, 4), cores[4]),
+
+        ])
+
+
+
+        lLeg.append([tbLegL])
+        tbLeg = Table(lLeg,  colWidths=[135], style=[('GRID',(0,0),(-1,-1),0.5,colors.black)])
+
+
+
+        lTables = [[tb1F , tb2F, tbLeg]]
+        tBstat = Table(lTables,  colWidths=[175, 175, 155])
+
+        elements.append(tBstat)
         elements.append(PageBreak())
 
 
@@ -574,6 +657,61 @@ def getAnosMeses(dataInicial, dataFinal, cod=1):
 
     return anos
 
+def getStatis(listdays, ano):
+    firstSemester = []
+    secondSemester = []
+
+    tiposCan = ['O', 'EVT']
+    semestre1 = Bimestre.objects.get(ano=str(ano), numero='1', bimestreSemestre='semestre')
+    # Não precisa do segundo, pois se não for o primeiro é o segundo rsrs
+
+    for listD in listdays:
+        daysAno = listD['dias']
+
+        for day in daysAno:
+            d = datetime.date(day[2], day[0], day[1])
+            if semestre1.dataInicio <= d and d <= semestre1.dataFim:
+                print "Dia ", d
+                wd = d.weekday()
+                if wd != 6: # Nao e permitido aulas aos domingos
+                    # Há qualquer dia em que não se registra aula?
+                    eventos = DiaExcept.objects.filter(dataInicio__gt=d, dataFim__lt=d)
+                    if len(eventos) == 0:
+                        if wd != 5: # Não é permitido o sábado se não for por evento
+                            firstSemester.append(d)
+                    else:
+                        for evt in eventos:
+                            if evt in tiposCan:
+                                if wd != 5:
+                                    firstSemester.append(d)
+                                    break
+                            else:
+                                if evt.tipo == 'SB':
+                                    firstSemester.append(d)
+                                    break
+
+            else:
+                wd = d.weekday()
+                print "Dia ", d, ' week day', wd
+                if wd != 6: # Nao e permitido aulas aos domingos
+                    # Há qualquer dia em que não se registra aula?
+                    eventos = DiaExcept.objects.filter(dataInicio__gt=d, dataFim__lt=d)
+                    if len(eventos) == 0:
+                        if wd != 6: # Não é permitido o sábado se não for por evento
+                            secondSemester.append(d)
+                    else:
+                        for evt in eventos:
+                            if evt in tiposCan:
+                                if wd != 5:
+                                    secondSemester.append(d)
+                                    break
+                            else:
+                                if evt.tipo == 'SB':
+                                    secondSemester.append(d)
+                                    break
+
+    return firstSemester, secondSemester
+
 
 
 
@@ -599,7 +737,11 @@ def gemPdf(request, ano=None):
             finalB = bim.dataFim
 
     anosMesesLetivos = getAnosMeses(initialB, finalB)
-    # print "Anos Meses Letivos: ", anosMesesLetivos
+    print "Anos Meses Letivos: ", anosMesesLetivos
+
+    firstS, secondS = getStatis(anosMesesLetivos, ano)
+    # Devo passar aqui para a função para estatísticas
+
 
 
     # Com todos os anos, meses, dias letivos, não letivos e datas comemorativas
@@ -626,13 +768,15 @@ def gemPdf(request, ano=None):
     # print "DataIni: ", initialA, " Final: ", finalA
 
     anosMesesCalendario = getAnosMeses(initialA, finalA, -1)
+    # print "AnosMesesCalendarios"
+
 
     # print "Anosmeses calendario: ", anosMesesCalendario
 
     response = HttpResponse(content_type='application/pdf')
     buffer = BytesIO()
     report = BoletimLayout(buffer)
-    pdf = report.print_users(anosMesesCalendario, anosMesesLetivos)
+    pdf = report.print_users(anosMesesCalendario, anosMesesLetivos, firstS, secondS, ano)
     # print "Anos Meses Letivos: ", anosMesesLetivos
     response.write(pdf)
 

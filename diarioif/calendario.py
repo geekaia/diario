@@ -27,6 +27,7 @@ from unicodedata import normalize
 
 from lancarnotas import defaultencode
 
+from gencalendario import gemPdf
 
 
 @login_required()
@@ -38,7 +39,7 @@ def diasexcept(request):
 
 def calendarioano(request):
 
-    from gencalendario import *
+
 
 
     return gemPdf(request)

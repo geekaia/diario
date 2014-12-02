@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="09acc1be-3fcf-415f-8622-ea873ce4e75f" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/diarioif/calendario.py" afterPath="$PROJECT_DIR$/diarioif/calendario.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/diarioif/gencalendario.py" afterPath="$PROJECT_DIR$/diarioif/gencalendario.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="diario.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -46,7 +48,7 @@
       <file leaf-file-name="base.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/base.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-23.333334" vertical-offset="2016" max-vertical-offset="3672">
+            <state vertical-scroll-proportion="0.0" vertical-offset="2646" max-vertical-offset="3672">
               <caret line="147" column="0" selection-start-line="147" selection-start-column="0" selection-end-line="147" selection-end-column="0" />
               <folding>
                 <element signature="n#style#0;n#ul#0;n#li#1;n#ul#0;n#div#0;n#div#0;n#div#0;n#header#0;n#div#0;n#body#0;n#!!top" expanded="true" />
@@ -80,8 +82,8 @@
       <file leaf-file-name="gencalendario.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/diarioif/gencalendario.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.2734375" vertical-offset="8718" max-vertical-offset="11610">
-              <caret line="496" column="40" selection-start-line="496" selection-start-column="40" selection-end-line="496" selection-end-column="40" />
+            <state vertical-scroll-proportion="0.3189189" vertical-offset="9682" max-vertical-offset="14202">
+              <caret line="551" column="28" selection-start-line="551" selection-start-column="28" selection-end-line="551" selection-end-column="28" />
               <folding>
                 <element signature="e#24#60#0" expanded="true" />
               </folding>
@@ -92,8 +94,8 @@
       <file leaf-file-name="diasexcept.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/diasexcept.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-11.518518" vertical-offset="985" max-vertical-offset="7416">
-              <caret line="72" column="32" selection-start-line="72" selection-start-column="29" selection-end-line="72" selection-end-column="32" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1260" max-vertical-offset="7416">
+              <caret line="70" column="20" selection-start-line="70" selection-start-column="20" selection-end-line="79" selection-end-column="62" />
               <folding />
             </state>
           </provider>
@@ -102,8 +104,8 @@
       <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/diarioif/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1094" max-vertical-offset="3816">
-              <caret line="77" column="20" selection-start-line="77" selection-start-column="4" selection-end-line="77" selection-end-column="20" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="3038" max-vertical-offset="3816">
+              <caret line="190" column="14" selection-start-line="190" selection-start-column="4" selection-end-line="190" selection-end-column="14" />
               <folding>
                 <element signature="e#25#53#0" expanded="true" />
               </folding>
@@ -114,8 +116,8 @@
       <file leaf-file-name="calendario.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/diarioif/calendario.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1302" max-vertical-offset="2070">
-              <caret line="82" column="42" selection-start-line="82" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="168" max-vertical-offset="2088">
+              <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
               <folding>
                 <element signature="e#25#60#0" expanded="true" />
               </folding>
@@ -146,8 +148,8 @@
         <option value="$PROJECT_DIR$/diario/urls.py" />
         <option value="$PROJECT_DIR$/templates/base.html" />
         <option value="$PROJECT_DIR$/diarioif/models.py" />
-        <option value="$PROJECT_DIR$/diarioif/calendario.py" />
         <option value="$PROJECT_DIR$/templates/diasexcept.html" />
+        <option value="$PROJECT_DIR$/diarioif/calendario.py" />
         <option value="$PROJECT_DIR$/diarioif/gencalendario.py" />
       </list>
     </option>
@@ -157,9 +159,9 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="49" />
-    <option name="y" value="-4" />
+    <option name="y" value="24" />
     <option name="width" value="1551" />
-    <option name="height" value="904" />
+    <option name="height" value="876" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -575,29 +577,29 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="49" y="-4" width="1551" height="904" extended-state="6" />
+    <frame x="49" y="24" width="1551" height="876" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15970841" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32920793" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32920793" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32920793" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.36138615" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15970841" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.36138615" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39975247" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32920793" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32920793" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39975247" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -850,7 +852,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="216" max-vertical-offset="10566">
           <caret line="12" column="39" selection-start-line="12" selection-start-column="39" selection-end-line="12" selection-end-column="39" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -858,21 +859,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="324" max-vertical-offset="10566">
           <caret line="18" column="21" selection-start-line="0" selection-start-column="0" selection-end-line="581" selection-end-column="14" />
-          <folding>
-            <element signature="e#257#277#0#HTML" expanded="true" />
-            <element signature="e#510#537#0#HTML" expanded="true" />
-            <element signature="e#994#1022#0#HTML" expanded="true" />
-            <element signature="e#1122#1152#0#HTML" expanded="true" />
-            <element signature="e#1409#1440#0#HTML" expanded="true" />
-            <element signature="e#1518#1549#0#HTML" expanded="true" />
-            <element signature="e#1638#1669#0#HTML" expanded="true" />
-            <element signature="e#2700#2726#0#HTML" expanded="true" />
-            <element signature="e#2992#3014#0#HTML" expanded="true" />
-            <element signature="e#3497#3524#0#HTML" expanded="true" />
-            <element signature="e#3615#3642#0#HTML" expanded="true" />
-            <element signature="e#3726#3753#0#HTML" expanded="true" />
-            <element signature="e#4145#4185#0#HTML" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -880,7 +866,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="558" max-vertical-offset="1818">
           <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -888,9 +873,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="810">
           <caret line="23" column="42" selection-start-line="23" selection-start-column="42" selection-end-line="23" selection-end-column="42" />
-          <folding>
-            <element signature="e#25#60#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -898,7 +880,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1670" max-vertical-offset="11142">
           <caret line="124" column="64" selection-start-line="124" selection-start-column="64" selection-end-line="124" selection-end-column="64" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -906,7 +887,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.35762483" vertical-offset="4793" max-vertical-offset="14778">
           <caret line="281" column="72" selection-start-line="281" selection-start-column="26" selection-end-line="281" selection-end-column="72" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -914,7 +894,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="774">
           <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -930,9 +909,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="3462" max-vertical-offset="5958">
           <caret line="215" column="87" selection-start-line="215" selection-start-column="27" selection-end-line="215" selection-end-column="87" />
-          <folding>
-            <element signature="e#24#60#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -940,7 +916,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="781">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -948,7 +923,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="965" max-vertical-offset="2754">
           <caret line="53" column="4" selection-start-line="53" selection-start-column="4" selection-end-line="53" selection-end-column="4" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -956,7 +930,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2052" max-vertical-offset="4644">
           <caret line="149" column="75" selection-start-line="149" selection-start-column="4" selection-end-line="149" selection-end-column="75" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -978,7 +951,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/base.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-23.333334" vertical-offset="2016" max-vertical-offset="3672">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2646" max-vertical-offset="3672">
           <caret line="147" column="0" selection-start-line="147" selection-start-column="0" selection-end-line="147" selection-end-column="0" />
           <folding>
             <element signature="n#style#0;n#ul#0;n#li#1;n#ul#0;n#div#0;n#div#0;n#div#0;n#header#0;n#div#0;n#body#0;n#!!top" expanded="true" />
@@ -992,7 +965,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="9540" max-vertical-offset="11448">
           <caret line="530" column="45" selection-start-line="530" selection-start-column="45" selection-end-line="530" selection-end-column="45" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1012,46 +984,45 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/diarioif/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1094" max-vertical-offset="3816">
-          <caret line="77" column="20" selection-start-line="77" selection-start-column="4" selection-end-line="77" selection-end-column="20" />
-          <folding>
-            <element signature="e#25#53#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/disciplinas.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3580902" vertical-offset="2988" max-vertical-offset="5400">
           <caret line="181" column="91" selection-start-line="181" selection-start-column="34" selection-end-line="181" selection-end-column="91" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/diasexcept.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.518518" vertical-offset="985" max-vertical-offset="7416">
-          <caret line="72" column="32" selection-start-line="72" selection-start-column="29" selection-end-line="72" selection-end-column="32" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1260" max-vertical-offset="7416">
+          <caret line="70" column="20" selection-start-line="70" selection-start-column="20" selection-end-line="79" selection-end-column="62" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/diarioif/calendario.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1302" max-vertical-offset="2070">
-          <caret line="82" column="42" selection-start-line="82" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="168" max-vertical-offset="2088">
+          <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
           <folding>
             <element signature="e#25#60#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/diarioif/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3038" max-vertical-offset="3816">
+          <caret line="190" column="14" selection-start-line="190" selection-start-column="4" selection-end-line="190" selection-end-column="14" />
+          <folding>
+            <element signature="e#25#53#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/diarioif/gencalendario.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2734375" vertical-offset="8718" max-vertical-offset="11610">
-          <caret line="496" column="40" selection-start-line="496" selection-start-column="40" selection-end-line="496" selection-end-column="40" />
+        <state vertical-scroll-proportion="0.3189189" vertical-offset="9682" max-vertical-offset="14202">
+          <caret line="551" column="28" selection-start-line="551" selection-start-column="28" selection-end-line="551" selection-end-column="28" />
           <folding>
             <element signature="e#24#60#0" expanded="true" />
           </folding>
