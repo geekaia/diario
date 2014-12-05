@@ -21,10 +21,11 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.core.context_processors import csrf
-
+from usuarios import temAcesso
 
 @login_required()
 def home(request):
+
     mensagem = ''
     isAuth = request.user.is_authenticated()
     context = {'mensagem': mensagem, 'isAuth':isAuth}
@@ -35,6 +36,7 @@ def home(request):
 
 @login_required()
 def getCities(request):
+
 
     cidades = []
     if request.POST:
@@ -66,6 +68,8 @@ def getCities(request):
 
 @login_required()
 def cursocad(request, id=None):
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     context ={}
 
@@ -102,6 +106,9 @@ def cursocad(request, id=None):
 
 @login_required()
 def bimestrecad(request, id=None):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     context = {}
 
     if request.POST:
@@ -134,6 +141,8 @@ def bimestrecad(request, id=None):
 
 @login_required()
 def geBimestres(request, ano=None):
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     bimestres = []
 
@@ -163,6 +172,9 @@ def geBimestres(request, ano=None):
 
 @login_required()
 def listBimestres(request, id=None):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     context = {}
 
     return render(request, 'bimestreList.html', context)
@@ -216,6 +228,9 @@ def hasAcess(request):
 
 @login_required()
 def geCourses(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     cursos = []
     Cursos = Curso.objects.all()
 
@@ -234,6 +249,8 @@ def geCourses(request):
 
 @login_required()
 def listCourses(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     context = {}
 
@@ -243,6 +260,8 @@ def listCourses(request):
 
 @login_required()
 def turmas(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     context = {}
     cursos = Curso.objects.all()
@@ -255,8 +274,10 @@ def turmas(request):
 
 @login_required()
 def getTurmas(request, idcurso, periodo, ano ):
-    turmas = []
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
+    turmas = []
     curso = Curso.objects.get(pk=idcurso)
     turmasL = Turma.objects.filter(curso=curso, anosemestre=periodo, anoturma=ano)
 
@@ -271,6 +292,9 @@ def getTurmas(request, idcurso, periodo, ano ):
 
 @login_required()
 def cadturmas(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     try:
         if request.POST:
             # Lembrar de perguntar o periodo da turma caso o curso seja semestral para que possa montar o período inicial e final
@@ -354,6 +378,9 @@ def cadturmas(request):
 
 @login_required()
 def delturma(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     try:
         if request.POST:
             idturma = request.POST['idturma']
@@ -368,6 +395,8 @@ def delturma(request):
 
 @login_required()
 def getAlunosCurso(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     try:
         alunosmatch = []
@@ -390,6 +419,9 @@ def getAlunosCurso(request):
 
 @login_required()
 def cadTurmaAlunosDisc(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     try:
         idturma = request.POST['idturma']
         print "idturma ", idturma
@@ -431,6 +463,10 @@ def cadTurmaAlunosDisc(request):
 
 @login_required()
 def listDiscTurma(request):
+
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     discs = []
 
     try:
@@ -472,6 +508,9 @@ def listDiscTurma(request):
 
 @login_required()
 def changeAtrib(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     try:
         at = AtribAula.objects.get(pk=request.POST['id'])
         prof = ProfileUser.objects.get(pk=request.POST['prof'].split('-')[0])
@@ -501,6 +540,9 @@ def changeAtrib(request):
 
 @login_required()
 def listAlunosTurma(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     alunos = []
 
     try:
@@ -522,6 +564,8 @@ def listAlunosTurma(request):
 
 @login_required()
 def updateRow(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     try:
         id = request.POST['id']
@@ -630,19 +674,19 @@ def getCep(request):
 
     return HttpResponse(json.dumps(ruaslist), content_type="application/json")
 
-
 @login_required()
 def getPeriodos(request, idcurso=None):
+
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     cursoNumPs = {}
 
     try:
         curso = Curso.objects.get(pk=idcurso)
         cursoNumPs['periodos'] = curso.quantPeriodo
         cursoNumPs['periodopor'] = curso.periodo # Ano/Semestre
-
-
     except:
-
         print 'Erro Periodos'
 
     return HttpResponse(json.dumps(cursoNumPs), content_type="application/json")
@@ -650,6 +694,9 @@ def getPeriodos(request, idcurso=None):
 
 @login_required()
 def disciplinas(request):
+
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     context = {}
     cursos = Curso.objects.all()
@@ -660,6 +707,7 @@ def disciplinas(request):
 
 @login_required()
 def getDisciplinas(request,idcurso=None, numperiodo=None):
+
     Disciplinas = []
 
     try:
@@ -683,6 +731,8 @@ def getDisciplinas(request,idcurso=None, numperiodo=None):
 
 @login_required()
 def cadDisciplinas(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     try:
         if request.POST:
@@ -711,6 +761,9 @@ def cadDisciplinas(request):
 
 @login_required()
 def removerDisc(request, idrem=None):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     try:
         disc = Disciplina.objects.get(pk=idrem)
         disc.delete()

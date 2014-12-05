@@ -24,11 +24,12 @@ from django.core.context_processors import csrf
 from django.utils.encoding import smart_str, smart_unicode
 
 from unicodedata import normalize
-
+from usuarios import temAcesso
 
 @login_required()
 def chamada(request):
-
+    if temAcesso(request):
+        return HttpResponse(status=500)
     context = {}
 
     # Todos os cursos em que o professor leciona
@@ -38,7 +39,8 @@ def chamada(request):
 
 @login_required()
 def chamadaDisc(request):
-
+    if temAcesso(request):
+        return HttpResponse(status=500)
     ano = request.POST['ano']
     idprof = request.POST['idprof']
     disciplinas = []
@@ -61,6 +63,8 @@ def chamadaDisc(request):
 
 @login_required()
 def addDia(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
     try:
 
         diaDt = request.POST['dia']
@@ -111,7 +115,8 @@ def addDia(request):
 
 @login_required()
 def getActualBimestre(request):
-
+    if temAcesso(request):
+        return HttpResponse(status=500)
     try:
         idatrib = request.POST['id']
         atrib = AtribAula.objects.get(pk=idatrib)
@@ -126,6 +131,8 @@ def getActualBimestre(request):
 
 @login_required()
 def getDiasBimestre(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
     datas = []
 
     try:
@@ -151,6 +158,8 @@ def getDiasBimestre(request):
 
 @login_required()
 def getContent(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
     content = []
     try:
         iddia = request.POST['id']
@@ -169,7 +178,8 @@ def getContent(request):
 
 @login_required()
 def saveContent(request):
-
+    if temAcesso(request):
+        return HttpResponse(status=500)
     try:
         id=request.POST['id']
 
@@ -187,6 +197,8 @@ def saveContent(request):
 
 @login_required()
 def getChamadaList(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
     lista = []
 
     try:
@@ -223,6 +235,8 @@ def getChamadaList(request):
 
 @login_required()
 def salvarChamada(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
     try:
         # quant aulas
         quant = request.POST['quant']
@@ -240,6 +254,9 @@ def salvarChamada(request):
 
 @login_required()
 def removerDia(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     try:
 
         iddia = request.POST['id']

@@ -31,9 +31,13 @@ from decimal import Decimal
 from decimal import *
 
 from importar import FileUploadedForm
+from usuarios import temAcesso
 
 @login_required()
 def notas(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     context = {}
     cursos = Curso.objects.all()
     context['cursos'] = cursos
@@ -61,6 +65,8 @@ def defaultencode(o):
 
 @login_required()
 def notasAlunosTurma(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
     alunos = []
 
     try:
@@ -97,6 +103,8 @@ def notasAlunosTurma(request):
 
 @login_required()
 def saveNotas(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
     try:
         nota = Notafalta.objects.get(pk=request.POST['id'])
         nota.nota1b = Decimal(request.POST['nota1b'])
@@ -123,6 +131,8 @@ def saveNotas(request):
 
 @login_required()
 def quantBimestre(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
     try:
         # Byidturma
         try:

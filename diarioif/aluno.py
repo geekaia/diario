@@ -27,14 +27,18 @@ from unicodedata import normalize
 
 from lancarnotas import defaultencode
 
-
+from usuarios import temAcesso
 
 
 @login_required()
 def minhasfaltas(request):
+
+    if temAcesso(request):
+        return HttpResponse(status=500)
     """
         Aqui irá mostrar todos as faltas de cada disciplina que o aluno está fazendo
     """
     context = {}
+
 
     return render(request, 'minhasfaltas.html', context)

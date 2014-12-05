@@ -24,9 +24,11 @@ from django.core.context_processors import csrf
 from django.utils.encoding import smart_str, smart_unicode
 
 from unicodedata import normalize
+from usuarios import temAcesso
 
 def boletim(request):
-
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     context = {}
     cursos = Curso.objects.all()

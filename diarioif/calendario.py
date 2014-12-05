@@ -28,18 +28,21 @@ from unicodedata import normalize
 from lancarnotas import defaultencode
 
 from gencalendario import gemPdf
-
+from usuarios import temAcesso
 
 @login_required()
 def diasexcept(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     context = {}
 
     return render(request, 'diasexcept.html', context)
 
 
 def calendarioano(request):
-
-
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
 
     return gemPdf(request)
@@ -47,6 +50,8 @@ def calendarioano(request):
 
 @login_required()
 def addDiaExcept(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
     try:
         dataInicioB = request.POST['dataInicio']
         dataInicio = datetime.strptime(dataInicioB, '%d/%m/%Y')
@@ -75,7 +80,8 @@ def addDiaExcept(request):
 
 @login_required()
 def listDiasExcept(request):
-
+    if temAcesso(request):
+        return HttpResponse(status=500)
     daysL = []
     ano = request.POST['ano']
     diasex = DiaExcept.objects.filter(ano=ano).order_by('-dataInicio')
@@ -100,6 +106,8 @@ def listDiasExcept(request):
 
 @login_required()
 def removeDayE(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
     try:
         id = request.POST['id']
 

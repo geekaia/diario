@@ -29,10 +29,12 @@ from usuarios import gera_senha
 from usuarios import geraUsuario
 from django.forms import *
 from xlrd import open_workbook,cellname
-
+from usuarios import temAcesso
 
 @login_required()
 def addvarios(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
     context = {}
     cursos = Curso.objects.all()
     context['cursos'] = cursos
@@ -46,7 +48,8 @@ def addvarios(request):
 
 @login_required()
 def importarAlunos(request):
-
+    if temAcesso(request):
+        return HttpResponse(status=500)
     try:
 
         idturma = request.POST['idturma']
@@ -137,6 +140,8 @@ class FileUploadedForm(forms.Form):
     uploaded_file = forms.FileField(required=False)
 
 def importXlsNotas(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
     try:
 
 
@@ -171,6 +176,9 @@ def importXlsNotas(request):
 
 
 def fileupload(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     context = {}
     context['form'] = FileUploadedForm
 

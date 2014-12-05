@@ -20,6 +20,9 @@ import calendar
 import datetime
 from datetime import timedelta
 
+
+from usuarios import temAcesso
+
 FONT_PATH = os.path.join(settings.BASE_DIR, 'static/fonts/OpenSans-Regular.ttf')
 pdfmetrics.registerFont(TTFont('OpenSans', FONT_PATH))
 
@@ -29,7 +32,7 @@ pdfmetrics.registerFont(TTFont('OpenSans-Bold', FONT_PATH))
 cores = [HexColor('#00ff00'), HexColor('#00ffff'), HexColor('#ff0000'), HexColor('#ffff00'), HexColor('#ff00ff'), HexColor('#ff9966')]
 
 class BoletimLayout:
-    ano =''
+    ano = ''
     def __init__(self, buffer):
         # O padrão é sempre A4
         self.pagesize = A4
@@ -39,8 +42,9 @@ class BoletimLayout:
 
         # A large collection of style sheets pre-made for us
 
-    @staticmethod
+
     # @classmethod
+    @staticmethod
     def __header_footer(canvas, doc):
         canvas.saveState()
         styles = getSampleStyleSheet()
@@ -90,7 +94,7 @@ class BoletimLayout:
 
         header.setStyle(style)
 
-        header.drawOn(canvas, doc.leftMargin-10, doc.height + doc.topMargin+10 - h+55)
+        header.drawOn(canvas, doc.leftMargin-10, doc.height + doc.topMargin+10 - h+25)
 
         # header =Paragraph('This is a Multi-line header. It goes on every page. '*5, styles['Normal'])
         # w, h = header.wrap(doc.width, doc.topMargin)
@@ -119,7 +123,7 @@ class BoletimLayout:
                                 rightMargin=inch/4,
                                 leftMargin=inch/4-10,
                                 topMargin=inch/2+5,
-                                bottomMargin=inch*1,
+                                bottomMargin=inch/2+5,#   inch*1,
                                 pagesize=self.pagesize)
 
         # Our container for "Flowable" objects
@@ -158,11 +162,26 @@ class BoletimLayout:
             fontSize=8,
             alignment=TA_CENTER,
         )
+        sBody2t = ParagraphStyle(
+            name='sBody2t',
+            fontName='OpenSans-Bold',
+            fontSize=8,
+            alignment=TA_CENTER,
+        )
+
         sBody2l = ParagraphStyle(
             name='sBody2l',
             fontName='OpenSans',
             fontSize=8,
             alignment=TA_LEFT,
+            leading=7,
+        )
+        sBody2l2 = ParagraphStyle(
+            name='sBody2l2',
+            fontName='OpenSans',
+            fontSize=7,
+            alignment=TA_LEFT,
+            leading=7,
         )
 
         sBodyEsq = ParagraphStyle(
@@ -186,7 +205,9 @@ class BoletimLayout:
         styles.add(stHeader)
         styles.add(sBody)
         styles.add(sBody2)
+        styles.add(sBody2t)
         styles.add(sBody2l)
+        styles.add(sBody2l2)
         styles.add(sBodyEsq)
         styles.add(sNomeEsq)
 
@@ -197,8 +218,10 @@ class BoletimLayout:
         monthnames= []
 
         import calendar
+        def ParaMonths(val):
+            return Paragraph(str(val), styles['sBody2t'])
 
-        meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+        meses = [ParaMonths('Janeiro'), ParaMonths('Fevereiro'), ParaMonths('Março'), ParaMonths('Abril'), ParaMonths('Maio'), ParaMonths('Junho'), ParaMonths('Julho'), ParaMonths('Agosto'), ParaMonths('Setembro'), ParaMonths('Outubro'), ParaMonths('Novembro'), ParaMonths('Dezembro')]
 
 
         def getTable(year, month):
@@ -206,6 +229,8 @@ class BoletimLayout:
             l = calendar.monthcalendar(int(year),int(month))
             n = []
             cont1 = 0
+
+
 
             def getCoors(d, l, corIndex):
                 # Matriz com todas as coordenadas
@@ -274,6 +299,65 @@ class BoletimLayout:
                     listXy.append(('BACKGROUND', x, y, cores[corIndex]))
 
                 return listXy
+
+
+            def getInicioMesclar(d, l):
+
+                coordX = [
+                    [(0,1), (1,1),  (2,1), (3,1), (4,1), (5,1), (6,1)],
+                    [(0,2), (1,2),  (2,2), (3,2), (4,2), (5,2), (6,2)],
+                    [(0,3), (1,3),  (2,3), (3,3), (4,3), (5,3), (6,3)],
+                    [(0,4), (1,4),  (2,4), (3,4), (4,4), (5,4), (6,4)],
+                    [(0,5), (1,5),  (2,5), (3,5), (4,5), (5,5), (6,5)],
+                    [(0,6), (1,6),  (2,6), (3,6), (4,6), (5,6), (6,6)],
+                ]
+
+                # lista de coordenadas de Y
+                coordY = [
+                    [(-7,1), (-6,1), (-5,1), (-4,1), (-3,1), (-2,1), (-1,1)],
+                    [(-7,2), (-6,2), (-5,2), (-4,2), (-3,2), (-2,2), (-1,2)],
+                    [(-7,3), (-6,3), (-5,3), (-4,3), (-3,3), (-2,3), (-1,3)],
+                    [(-7,4), (-6,4), (-5,4), (-4,4), (-3,4), (-2,4), (-1,4)],
+                    [(-7,5), (-6,5), (-5,5), (-4,5), (-3,5), (-2,5), (-1,5)],
+                    [(-7,6), (-6,6), (-5,6), (-4,6), (-3,6), (-2,6), (-1,6)],
+                ]
+
+                def findPosition(val, l, matrix):
+                    cont1 = 0
+                    for i in l:
+                        cont2 = 0
+                        for j in i:
+                            try:
+                                # Is Here
+                                # print "Cont1: ", cont1, " Cont2: ", cont2
+
+                                if str(j) == str(val): # Não pinta o domingo
+                                    if matrix == 0: # x
+                                        position = coordX[cont1][cont2+1]
+
+                                    return position, cont1, (cont2+1)
+                            except Exception, e:
+                                print "Error: %s " % e
+
+                            cont2 += 1
+                        cont1 += 1
+
+                    return -1, -1
+
+                x, linhax, yadd = findPosition(d, l, 0)
+                #y = findPosition(d, l, 1)
+
+                # lastLine = coordX[len(coordX)-1]
+                # xlast = lastLine[len(lastLine)-1]
+
+                lastLine = coordY[linhax]
+                ylast = lastLine[len(lastLine)-1]
+
+
+                return x, ylast, linhax, yadd
+
+
+
 
             hei = 12
             wid = 18
@@ -382,6 +466,22 @@ class BoletimLayout:
                     for p in Pintar:
                         styleL.append(p)
 
+
+            wd = dtFim.weekday()
+            if wd <= 2 or wd == 6:
+                xMx, yMy, xAdd, yAdd = getInicioMesclar(dtFim.day, l)
+                # print ('SPAN', xMx, (-1, -1))
+                styleL.append(('SPAN', xMx, yMy)) # tudo certo
+
+                try:
+                    num = ContaDiasMonth(dtFim.year, dtFim.month, firstS, secondS)
+                    if num != 0:
+                        # l[xAdd][yAdd] = Paragraph(str(num) +' Dias Letivos', styles['sBody2l2'])
+                        l[xAdd][yAdd] = str(num) +' Dias Letivos'
+                except Exception, e:
+                    print " Erro %s " % e
+
+
             l.insert(0, ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'])
             for i in l:
                 cont2 = 0
@@ -401,6 +501,7 @@ class BoletimLayout:
             )
 
             return tb
+
 
         def getQuatro(t, actual):
             m = []
@@ -438,7 +539,37 @@ class BoletimLayout:
                 l = []
                 for i in mNum:
                     try:
-                        l.append(getTable(Ano['ano'], i)) # Acredito que seja isso
+
+                        p = getTable(Ano['ano'], i)
+                        l2 = []
+                        l2.append([p])
+
+                        # Aqui pega as estatísticas de cada mês
+
+                        if mNum != '':
+                            lastDayM = calendar.monthrange(Ano['ano'], i)[1]
+                            dateLastM = datetime.date(Ano['ano'], i, lastDayM)
+
+                            wd = dateLastM.weekday()
+                            if wd != 6 and wd > 2:
+                                try:
+                                    num = ContaDiasMonth(Ano['ano'], i, firstS, secondS)
+                                    if num != 0:
+                                        l2.append([Paragraph(str(num) +' Dias Letivos', styles['sBody2l2'])])
+                                except Exception, e:
+                                    print " Erro %s " % e
+
+                        tbLeg = Table(l2,
+                                      colWidths=[135],
+                                      style= [
+                                          ('LEFTPADDING',(0,0),(-1,-1), 0),
+                                          ('RIGHTPADDING',(0,0),(-1,-1), 0),
+                                          ('TOPPADDING',(0,0),(-1,-1), 0),
+                                          ('BOTTOMPADDING',(0,0),(-1,-1), 0)
+                                      ]
+                        )
+
+                        l.append(tbLeg) # Acredito que seja isso
                     except:
                         l.append('')
 
@@ -475,19 +606,91 @@ class BoletimLayout:
                         dtIni = datetime.date(Ano['ano'], i, 1)
                         dtFim = datetime.date(Ano['ano'], i, rangeM[1])
 
-                        print "dtIni: ", dtIni
-                        print "dtFim: ", dtFim
 
                         eventos = DiaExcept.objects.filter(dataInicio__range=(dtIni, dtFim))
-                        print "Len(eventos): ", len(eventos)
+
+                        # Initializa algum bimestre?
+                        bimestreInit = Bimestre.objects.filter(dataInicio__range=(dtIni, dtFim), bimestreSemestre='bimestre')
+                        bimestreFim = Bimestre.objects.filter(dataFim__range=(dtIni, dtFim), bimestreSemestre='bimestre')
+
+                        semestreInit = Bimestre.objects.filter(dataInicio__range=(dtIni, dtFim), bimestreSemestre='semestre')
+                        semestreFim = Bimestre.objects.filter(dataFim__range=(dtIni, dtFim), bimestreSemestre='semestre')
+
+
                         p =''
+                        listParas = []
+
                         for evt in eventos:
                             if evt.tipo in ['FD']:
-                                p += whatDate(evt.dataInicio, evt.dataFim, evt.tipo) + ' - ' + tipos[evt.tipo] +"<br />"
+                                pA = [whatDate(evt.dataInicio, evt.dataFim, evt.tipo), tipos[evt.tipo]]
                             else:
-                                p += whatDate(evt.dataInicio, evt.dataFim, evt.tipo) + ' - ' + evt.descricao +"<br />"
+                                pA = [whatDate(evt.dataInicio, evt.dataFim, evt.tipo), evt.descricao]
 
-                            print evt.descricao, "evt id: ", evt.id
+                            listParas.append({evt.dataInicio.day: pA })
+
+                        for bimI in bimestreInit:
+                            pA = [str(bimI.dataInicio.day), u'início do '+ str(bimI.numero)+u"º Bimestre"]
+                            print pA
+
+                            listParas.append({bimI.dataInicio.day: pA })
+
+                        for bimI in bimestreFim:
+                            pA = [str(bimI.dataFim.day), u'fim do '+ str(bimI.numero)+u"º Bimestre" + ' - ' + str(ContaDiasRange(firstS, secondS, bimI.dataInicio, bimI.dataFim)) + ' dias letivos']
+                            print pA
+                            listParas.append({bimI.dataFim.day: pA })
+
+
+                        for bimI in semestreInit:
+                            pA = [str(bimI.dataInicio.day), u'início do '+str(bimI.numero)+u"º Semestre"]
+                            print pA
+
+                            listParas.append({bimI.dataInicio.day: pA })
+
+                        for bimI in semestreFim:
+                            pA = [str(bimI.dataFim.day), u'fim do '+ str(bimI.numero)+u"º Semestre" + ' - ' + str(ContaDiasRange(firstS, secondS, bimI.dataInicio, bimI.dataFim)) + ' dias letivos']
+                            print pA
+                            listParas.append({bimI.dataFim.day: pA })
+
+                        listParas.sort()
+
+                        print "ListParas: ", listParas
+
+
+                        cont = 0
+                        blackList = []
+                        while len(listParas) > cont:
+                            key = listParas[cont].keys()[0]
+                            listAdd = []
+                            index = 0
+                            for pars in listParas:
+                                if key == pars.keys()[0] and index not in blackList:
+                                    listAdd.append(pars)
+                                    blackList.append(index)
+
+                                index += 1
+
+                            if len(listAdd) == 1:
+                                p += listAdd[0][listAdd[0].keys()[0]][0] + ' - ' + listAdd[0][listAdd[0].keys()[0]][1] + '<br/>'
+                            else:
+                                index = 0
+
+                                hasprint = False
+                                for vad in listAdd:
+                                    print "Val: ", vad[vad.keys()[0]][0], ' ', vad[vad.keys()[0]][1]
+                                    if len(listAdd) != (index+1):
+                                        initP = '' if hasprint != False else (vad[vad.keys()[0]][0] +' - ')
+                                        p += initP + vad[vad.keys()[0]][1] + ' / '
+                                        hasprint = True
+                                    else:
+                                        p += vad[vad.keys()[0]][1] + '<br />'
+
+                                    index += 1
+                            cont += 1
+
+                        #
+                        # for ParaL in listParas:
+                        #     p += ParaL[ParaL.keys()[0]] + '<br/>'
+
 
                         # Falta verificar o que pode ser adicionado para efentos que começam em um mês e terminam em outro
                         # Verificar se há algum efento que termina neste mês
@@ -507,9 +710,22 @@ class BoletimLayout:
                                 # ('VALIGN',(0,0), (-1, -1),'BOTTOM'),
                                 # ('LEFTPADDING',(0,0),(-1,-1), 1),
                                 # ('RIGHTPADDING',(0,0),(-1,-1), 1),
-                                # ('TOPPADDING',(0,0),(-1,-1), 8),
-                                # ('BOTTOMPADDING',(0,0),(-1,-1), 1)
+                                # First Line
+                                ('TOPPADDING', (0, 0), (-1, 0), 1),
+                                ('BOTTOMPADDING', (0, 0), (-1, 0), -1),
 
+                                # Second line
+                                ('TOPPADDING', (0, 3), (-1, 3), 1),
+                                ('BOTTOMPADDING', (0, 3), (-1, 3), -1),
+
+                                # Third line
+                                ('TOPPADDING', (0, 6), (-1, 6), 1),
+                                ('BOTTOMPADDING', (0, 6), (-1, 6), -1),
+
+
+
+
+                                ('VALIGN', (0, 0), (-1, 0),'MIDDLE'),
                                 ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
                                 ('VALIGN',(0,0), (-1, -1),'TOP'),
                                 ]
@@ -529,7 +745,7 @@ class BoletimLayout:
         listaStatis2 = []
 
         def MyP(val):
-            return Paragraph(str(val), styles['sBody2'])
+            return Paragraph(str(val), styles['sBody2t'])
 
         def MyPl(val):
             return Paragraph(str(val), styles['sBody2l'])
@@ -575,9 +791,13 @@ class BoletimLayout:
 
         llegenda = [['', MyPl('Dias Letivos')], ['', MyPl('Férias Docentes')], ['', MyPl('Feriados')], ['', MyPl('Período de Provas Finais')], ['', MyPl('Ponto Facultativo')]]
         lLeg = []
-        lLeg.append([MyP(' LEGENDA ')])
-        tbLegL = Table(llegenda,  colWidths=[20, 105], style=[
+        lLeg.append([MyP('LEGENDA')])
+        tbLegL = Table(llegenda,  colWidths=[12, 105], style=[
             ('GRID',(0,0),(-1,-1),0,colors.black),
+
+            ('TOPPADDING', (0, 0), (-1, -1), -3),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+
             ('BACKGROUND', (0, 0), (-2, 0), cores[0]),
             ('BACKGROUND', (0, 1), (-2, 1), cores[1]),
             ('BACKGROUND', (0, 2), (-2, 2), cores[2]),
@@ -589,7 +809,12 @@ class BoletimLayout:
 
 
         lLeg.append([tbLegL])
-        tbLeg = Table(lLeg,  colWidths=[135], style=[('GRID',(0,0),(-1,-1),0.5,colors.black)])
+        tbLeg = Table(lLeg,  colWidths=[125], style=[
+            ('GRID',(0,0),(-1,-1),0.5,colors.black),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('TOPPADDING', (0, 0), (-1, 0), 1),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 1),
+        ])
 
 
 
@@ -599,7 +824,6 @@ class BoletimLayout:
         elements.append(tBstat)
         elements.append(PageBreak())
 
-
         doc.build(elements, onFirstPage=self.__header_footer, onLaterPages=self.__header_footer)
 
         # Get the value of the BytesIO buffer and write it to the response
@@ -607,6 +831,42 @@ class BoletimLayout:
         buffer.close()
 
         return pdf
+
+def ContaDiasMonth(ano, mes, firstS, secondS):
+    dateIni = datetime.date(ano, mes, 1)
+    rangeM = calendar.monthrange(ano, mes)
+    dateFim = datetime.date(ano, mes, rangeM[1])
+
+    c = 0
+    for dy in firstS:
+        if dateIni <= dy and dy <=  dateFim:
+            c += 1
+
+    for dy in secondS:
+        if dateIni <= dy and dy <=  dateFim:
+            c += 1
+
+    return c
+
+
+def ContaDiasRange(firstS, secondS, inicio, fim):
+    dateIni = datetime.date(inicio.year, inicio.month, inicio.day)
+    dateFim = datetime.date(fim.year, fim.month, fim.day)
+
+    c = 0
+    for dy in firstS:
+        if dateIni <= dy and dy <=  dateFim:
+            # if dy.month >= 7:
+            #     print "Dia excessão: ", dy
+            c += 1
+    # print "Firsts: ", c, 'inicio: ', inicio, ' Fim: ', fim
+    for dy in secondS:
+        if dateIni <= dy and dy <=  dateFim:
+            c += 1
+    # print "SecondS: ", c, 'inicio: ', inicio, ' Fim: ', fim
+    return c
+
+
 
 def getDias(dtInc, dataFinal, year):
     # A secretaria deve definir bimestres como período inicial e final letivo
@@ -637,6 +897,7 @@ def getAnosMeses(dataInicial, dataFinal, cod=1):
     anos = []
 
     dtInc = dataInicial
+
     # anos desta data
     for year in range(dataInicial.year, dataFinal.year+1):
       ano = {}
@@ -663,25 +924,42 @@ def getStatis(listdays, ano):
 
     tiposCan = ['O', 'EVT']
     semestre1 = Bimestre.objects.get(ano=str(ano), numero='1', bimestreSemestre='semestre')
+    semestre2 = Bimestre.objects.get(ano=str(ano), numero='2', bimestreSemestre='semestre')
     # Não precisa do segundo, pois se não for o primeiro é o segundo rsrs
 
     for listD in listdays:
         daysAno = listD['dias']
 
+        # Aqui adiciona somente os sábados
+        evtsSb = DiaExcept.objects.filter(dataInicio__lt=semestre1.dataInicio, dataFim__gt=semestre2.dataFim)
+        for evts in evtsSb:
+            if evts.tipo=='SB' and evts.dataInicio.weekday()==5:
+                daysAno.append([evts.dataInicio.month, evts.dataInicio.day, evts.dataInicio.year])
+
         for day in daysAno:
+            # print day
             d = datetime.date(day[2], day[0], day[1])
             if semestre1.dataInicio <= d and d <= semestre1.dataFim:
-                print "Dia ", d
+                # print "Dia ", d
                 wd = d.weekday()
                 if wd != 6: # Nao e permitido aulas aos domingos
-                    # Há qualquer dia em que não se registra aula?
                     eventos = DiaExcept.objects.filter(dataInicio__gt=d, dataFim__lt=d)
+
+                    if len(eventos) ==0:
+                        eventos = DiaExcept.objects.filter(dataInicio=d) # para dias em que não é range
+
+
+
                     if len(eventos) == 0:
                         if wd != 5: # Não é permitido o sábado se não for por evento
                             firstSemester.append(d)
                     else:
                         for evt in eventos:
-                            if evt in tiposCan:
+
+                            if d.month == 3:
+                                print "Day", d, 'evts: ', len(eventos), evt.tipo, 'vt ini', evt.dataInicio, ' evt.f', evt.dataFim
+
+                            if evt.tipo in tiposCan:
                                 if wd != 5:
                                     firstSemester.append(d)
                                     break
@@ -692,16 +970,20 @@ def getStatis(listdays, ano):
 
             else:
                 wd = d.weekday()
-                print "Dia ", d, ' week day', wd
+                # print "Dia ", d, ' week day', wd
                 if wd != 6: # Nao e permitido aulas aos domingos
                     # Há qualquer dia em que não se registra aula?
                     eventos = DiaExcept.objects.filter(dataInicio__gt=d, dataFim__lt=d)
+
+                    if len(eventos) == 0:
+                        eventos = DiaExcept.objects.filter(dataInicio=d) # para dias em que não é range
+
                     if len(eventos) == 0:
                         if wd != 6: # Não é permitido o sábado se não for por evento
                             secondSemester.append(d)
                     else:
                         for evt in eventos:
-                            if evt in tiposCan:
+                            if evt.tipo in tiposCan:
                                 if wd != 5:
                                     secondSemester.append(d)
                                     break
@@ -720,6 +1002,9 @@ from io import BytesIO
 # @login_required()
 def gemPdf(request, ano=None):
 
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     lista = []
 
         # Pega os dias Letivos
@@ -737,7 +1022,7 @@ def gemPdf(request, ano=None):
             finalB = bim.dataFim
 
     anosMesesLetivos = getAnosMeses(initialB, finalB)
-    print "Anos Meses Letivos: ", anosMesesLetivos
+    # print "Anos Meses Letivos: ", anosMesesLetivos
 
     firstS, secondS = getStatis(anosMesesLetivos, ano)
     # Devo passar aqui para a função para estatísticas

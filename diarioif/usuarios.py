@@ -50,39 +50,40 @@ def loginUser(request):
     return render(request, 'login.html', context)
 
 
-def temAcesso(request, page):
+def temAcesso(request):
+    page = request.path
 
     id = request.user.id
     user = User.objects.get(pk=id)
-
     prof = ProfileUser.objects.get(user=user)
 
     # Usuario
-    alunoslist = ['viewnotas', 'viewpresenca', 'viewtarefas', 'viewprofile']
+    alunoslist = ['/viewnotas', '/viewpresenca', '/viewtarefas']
+    profslist = ['/calendarioano']
 
     if prof.tipo == 'Aluno':
         if page in alunoslist:
-            print 'No problem'
+            return False
         else:
-            return redirect('/')
+            return False
 
-    elif prof.tipo == 'Administrador':
-        print 'no problem - tem acesso a tudo'
+    elif prof.tipo == 'Administrador': # Pode fazer tudo no sistema
+        return False
     elif prof.tipo == 'Secretaria':
-        print 'no problem - tem acesso a tudo'
+        return False
     elif prof.tipo == 'Professor':
-        print 'Acesso a tudo'
-
-
-
-
-
+        if page in profslist:
+            return False
+        else:
+            return True
 
 
 
 
 @login_required()
 def changeProfile(request, id=None):
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     showcontrolers = False
     # Vou ter que adicionar alguma coisa
@@ -201,6 +202,8 @@ def changeProfile(request, id=None):
 
 
 def cadastrarUser(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     mensagem=''
     nome=''
@@ -271,6 +274,9 @@ def cadastrarUser(request):
 
 @login_required()
 def matriculasAluno(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     matriculas = []
 
     idaluno = request.POST['id']
@@ -291,6 +297,9 @@ def matriculasAluno(request):
 
 @login_required()
 def matricularAluno(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     try:
         idaluno = request.POST['id']
         idcurso = request.POST['idcurso']
@@ -344,6 +353,9 @@ def matricularAluno(request):
 
 @login_required()
 def cadUsuario(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     mensagem=''
     nome=''
     usuario=''
@@ -422,6 +434,9 @@ def remover_acentos(txt, codif='utf-8'):
 
 
 def recuperarSenha(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     context =  {}
 
     try:
@@ -476,6 +491,8 @@ def gera_senha(tamanho):
 
 @login_required()
 def listUsuarios(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     context = {}
 
@@ -489,6 +506,8 @@ def listUsuarios(request):
 
 @login_required()
 def getUsers(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     users = []
 
@@ -537,6 +556,8 @@ def getUsers(request):
 
 @login_required()
 def turmasCursoAluno(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     turmas = []
     try:
@@ -568,6 +589,8 @@ def turmasCursoAluno(request):
 
 @login_required()
 def situacaoMatricula(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     sitmats = []
     try:
@@ -591,6 +614,9 @@ def situacaoMatricula(request):
 
 @login_required()
 def changesituacao(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
     try:
 
         sitmatri = request.POST['sitmatri']

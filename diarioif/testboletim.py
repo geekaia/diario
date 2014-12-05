@@ -23,6 +23,7 @@ pdfmetrics.registerFont(TTFont('OpenSans', FONT_PATH))
 FONT_PATH = os.path.join(settings.BASE_DIR, 'static/fonts/OpenSans-Bold.ttf')
 pdfmetrics.registerFont(TTFont('OpenSans-Bold', FONT_PATH))
 
+from usuarios import temAcesso
 
 class BoletimLayout:
     def __init__(self, buffer):
@@ -247,7 +248,8 @@ from io import BytesIO
 def gemPdf(request, idcurso=None, idturma=None, ano=None, periodo=None, idaluno=None):
     # curso=None, ano bimestre=None, turma=None
     # Para o ano
-
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     print "Argumento  idcurso: ", idcurso, " idturma: ", idturma, " ano: ", ano, " periodo: ", periodo, ' idaluno: ', idaluno
 

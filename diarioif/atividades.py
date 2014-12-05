@@ -26,9 +26,13 @@ from django.utils.encoding import smart_str, smart_unicode
 from unicodedata import normalize
 
 from lancarnotas import defaultencode
+from usuarios import temAcesso
+
 
 @login_required()
 def atividades(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     context = {}
 
@@ -40,6 +44,8 @@ def atividades(request):
 
 @login_required()
 def criarAtividade(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
 
     try:
         # Cria uma nova atividade avaliativa
@@ -100,6 +106,8 @@ def criarAtividade(request):
 
 @login_required()
 def listAtividades(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
     atividades = []
 
     try:
@@ -126,7 +134,8 @@ def listAtividades(request):
 
 @login_required()
 def removeAtiv(request):
-
+    if temAcesso(request):
+        return HttpResponse(status=500)
     try:
         idativ = int(request.POST['idativ'])
         atv = Atividade.objects.get(pk=idativ)
@@ -140,6 +149,8 @@ def removeAtiv(request):
 
 @login_required()
 def getAlunosAtivs(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
     alunosList = []
     try:
 
@@ -170,6 +181,8 @@ def getAlunosAtivs(request):
 
 @login_required()
 def salvarNotasAtivs(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
     try:
         id = int(request.POST['id'])
         ntfa = NotaAtividade.objects.get(pk=id)
