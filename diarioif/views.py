@@ -400,17 +400,27 @@ def getAlunosCurso(request):
 
     try:
         alunosmatch = []
-        idcurso = request.POST['idcurso']
         nome = request.POST['nome']
+        idturma = request.POST['idturma']
+        t = Turma.objects.get(pk=int(idturma))
+
 
         # Aqui tem que mostrar os alunos que estão matriculados regularmente no curso
-        alunos = ProfileUser.objects.filter(tipo='Aluno', nome__contains=nome)
+        alunos = ProfileUser.objects.filter(tipo='Aluno', nome__icontains=nome)
 
         for i in alunos:
-            aluno = {}
-            aluno['id'] = i.id
-            aluno['nome'] = i.nome
-            alunosmatch.append(aluno)
+
+            # Está matriculado neste curso?
+            idmat = Matricula.objects.filter(curso=t.curso, user=i.user)
+
+            # Já foi adicionado na turma?
+            nota = Notafalta.objects.filter(aluno=i, turma=t)
+
+            if len(idmat) != 0 and len(nota) == 0:
+                aluno = {}
+                aluno['id'] = i.id
+                aluno['nome'] = i.nome
+                alunosmatch.append(aluno)
 
         return HttpResponse(json.dumps(alunosmatch), content_type="application/json")
 
@@ -424,30 +434,57 @@ def cadTurmaAlunosDisc(request):
 
     try:
         idturma = request.POST['idturma']
-        print "idturma ", idturma
         turma = Turma.objects.get(pk=idturma)
         idaluno = request.POST['aluno']
-        print "idaluno ", idaluno
         aluno = ProfileUser.objects.get(pk=idaluno)
 
-        print 'ok1'
+        # Cadastrar todos?
+        todos = request.POST['todos']
+        print "Todos: ", todos
+        vals = {'true': True, 'false': False}
+        todasD = vals[str(todos)]
 
-        # disciplinas
-        dics = Disciplina.objects.filter(curso=turma.curso, periodo=turma.anosemestre)
-        print 'ok2'
+        if todasD:
+            # disciplinas
+            dics = Disciplina.objects.filter(curso=turma.curso, periodo=turma.anosemestre)
 
-        for disc in dics:
+            for disc in dics:
+                try:
+                    # verifica se já não há nada para esta disciplina  - Isto evita duplicidade
+                    nota = Notafalta.objects.get(disciplina=disc, curso=turma.curso, turma=turma, aluno=aluno)
+
+                    # Pula pq já tem cadastro e não tem problema
+                    continue
+                except:
+                    nota = Notafalta()
+
+                nota.aluno = aluno
+                nota.disciplina = disc
+                nota.curso = turma.curso
+                nota.turma = turma
+                nota.falta1b = 0
+                nota.falta2b = 0
+                nota.falta3b = 0
+                nota.falta4b = 0
+                nota.falta5b = 0
+                nota.save()
+
+
+            return HttpResponse(1)
+        else:
+            iddisc = int(request.POST['iddisc'])
+            atr = AtribAula.objects.get(pk=iddisc)
+
             try:
                 # verifica se já não há nada para esta disciplina  - Isto evita duplicidade
-                nota = Notafalta.objects.get(disciplina=disc, curso=turma.curso, turma=turma, aluno=aluno)
+                nota = Notafalta.objects.get(disciplina=atr.disciplina, curso=turma.curso, turma=turma, aluno=aluno)
+                return HttpResponse(1)
 
-                # Pula pq já tem cadastro e não tem problema
-                continue
             except:
                 nota = Notafalta()
 
             nota.aluno = aluno
-            nota.disciplina = disc
+            nota.disciplina = atr.disciplina
             nota.curso = turma.curso
             nota.turma = turma
             nota.falta1b = 0
@@ -457,9 +494,10 @@ def cadTurmaAlunosDisc(request):
             nota.falta5b = 0
             nota.save()
 
-        return HttpResponse(1)
+            return HttpResponse(1)
     except Exception, e:
         return HttpResponse(-1)
+
 
 @login_required()
 def listDiscTurma(request):
@@ -486,6 +524,7 @@ def listDiscTurma(request):
                 dic['inicio'] = at.periodoInicio.strftime("%m/%d/%Y") #isoformat()
                 dic['fim'] = at.periodoFim.strftime("%m/%d/%Y")       #strftime("%d/%m/%Y")
                 dic['acesso'] = at.acesso
+                dic['add'] = True
 
                 try:
                     u = ProfileUser.objects.get(pk=at.professor.id)
@@ -500,7 +539,6 @@ def listDiscTurma(request):
 
     except Exception, e:
         print 'Hello exception %s !!!' % e
-
 
     return HttpResponse(json.dumps(discs), content_type="application/json")
 

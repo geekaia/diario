@@ -97,7 +97,6 @@
             </div>
       </div>
 
-
      <div id="PesquiAluno">
          <div id="windowHeader">
              <span>
@@ -112,14 +111,38 @@
                      <td><input type="text" name="pesqaluno" id="pesqaluno" /> </td>
                      <td><input type="button" id="btnSelaluno" value="Adicionar" /></td>
                  </tr>
+                </table>
+             <table>
+                 <tr>
+                    <td style="vertical-align: top;">
+                        Selecionar todos: <div id="seldics"></div>
+                        <div id="griddiscs">
+                        </div>
+                    </td>
+                    <td colspan="2"><div id="gridpesq"></div></td>
+                </tr>
              </table>
+         </div>
+      </div>
 
-             <div id="gridpesq"></div>
 
+      <div id="removealuno">
+         <div id="windowHeader">
+             <span>
+                Remover remover este aluno desta turma?
+             </span>
+         </div>
+
+         <div style="overflow: hidden; padding: 15px;" id="windowContent">
+             <h4>Você deseja remover <div id="diatoremove"></div> do seu diário?</h4>
+            <input  type="button" id="btnSim" value="Sim" /> <input  type="button" id="btnNao" value="Não" />
+             <br />
          </div>
       </div>
 
     <script language="javascript">
+
+                $("#removealuno").hide();
 
 
                 // Global variables iniciais
@@ -152,6 +175,8 @@
                     width: 250
                 });
 
+                $("#removealuno").jqxWindow({ width: 500, height: 200 });
+
                 $("#btnSave").jqxButton();
 
 
@@ -171,6 +196,79 @@
                             { text: 'Name', datafield: 'nome', width: 750 },
                         ]
                     });
+
+                function fillDisc()
+                {
+                    $("#griddiscs").jqxGrid('clear');
+
+                    var url = "/listDiscTurma";
+                    // prepare the data
+                    var source2 =
+                    {
+                        datatype: "json",
+                        datafields: [
+                            { name: 'id'},
+                            { name: 'nome', type: 'string'},
+                            { name: 'add', type: 'bool'},
+                        ],
+                        data: {
+                           'idturma': $("#turma").val().split('-')[0],
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        type: 'POST',
+                        url: url,
+                        async: false
+                    };
+                    dataAdapter2 = new $.jqx.dataAdapter(source2);
+
+
+                    $("#griddiscs").jqxGrid(
+                    {
+                        width: 380,
+                        source: dataAdapter2,
+                        editable: true,
+                        columns: [
+                            { text: 'ID', datafield: 'id', width: 0, visible: false },
+                            { text: 'Name', datafield: 'nome', width: 310, editable: false},
+                            { text: 'Add?', datafield: 'add', columntype: 'checkbox', width: 70, editable: true, type: 'bool' },
+                        ]
+                    });
+                    $("#btnSaveProf").off('click');
+                    $("#btnSaveProf").on('click',function(event){
+                         // update entire table
+                         var rows = $('#gridatribuicao').jqxGrid('getrows');
+
+                         console.log('Número: '+rows.length);
+
+                         for(var i=0; i < rows.length; i++ ) {
+                             console.log('i: '+i);
+                            $.ajax({
+                                url:  "/changeAtrib",
+                                cache: false,
+                                data: {
+                                    "id": $('#gridatribuicao').jqxGrid('getcelltextbyid', i, "id"),
+                                    "prof": $('#gridatribuicao').jqxGrid('getcelltextbyid', i, "profsel"),
+                                    "inicio": $('#gridatribuicao').jqxGrid('getcelltextbyid', i, "inicio"),
+                                    "fim": $('#gridatribuicao').jqxGrid('getcelltextbyid', i, "fim"),
+                                    "acesso": $('#gridatribuicao').jqxGrid('getcelltextbyid', i, "acesso"),
+                                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                                },
+                                type: "POST",
+                                datatype: 'json',
+                                async: false,
+                                success: function(response) {
+                                    var respint = parseInt(response);
+
+                                    if(respint == 1) {
+                                        console.log('Dados salvos com sucesso na linha '+ i);
+                                    }
+                                }
+                            });
+                         }
+                    });
+
+                    $('#griddiscs').jqxGrid('hidecolumn', 'id');
+                }
 
 
                 function fillAlunosTurma()
@@ -219,11 +317,9 @@
                      $('#PesquiAluno').jqxWindow({
         {#                    showCollapseButton: false,#}
                             maxHeight: 500,
-                            maxWidth: 600,
-                            minHeight: 410,
-                            minWidth: 510,
+                            maxWidth: 900,
                             height: 410,
-                            width: 510
+                            width: 790
                     });
 
                     $("#pesqaluno").jqxInput({  width: '250px', height: '20px' });
@@ -236,31 +332,68 @@
                              var nomeV = $('#gridpesq').jqxGrid('getcelltextbyid', rowIndex, "nome");
                              var idV = $('#gridpesq').jqxGrid('getcelltextbyid', rowIndex, "id");
 
-                             $.ajax({
-                                url:  "/cadTurmaAlunosDisc",
-                                data: {
-                                    "aluno": idV,
-                                    "nome": nomeV,
-                                    "idturma": $("#turma").val().split('-')[0],
-                                    csrfmiddlewaretoken: '{{ csrf_token }}'
-                                },
-                                cache: false,
-                                type: "POST",
-                                datatype: 'json',
-                                async: false,
-                                success: function(response) {
-                                    var respint = parseInt(response);
+                             if ($("#seldics").val()) {
 
-                                    if(respint == 1) {
-                                        // Close window
-                                        fillAlunosTurma();
-                                        $('#PesquiAluno').jqxWindow('close');
+                                 $.ajax({
+                                     url: "/cadTurmaAlunosDisc",
+                                     data: {
+                                         "aluno": idV,
+                                         "nome": nomeV,
+                                         "todos": $("#seldics").val(),
+                                         "idturma": $("#turma").val().split('-')[0],
+                                         csrfmiddlewaretoken: '{{ csrf_token }}'
+                                     },
+                                     cache: false,
+                                     type: "POST",
+                                     datatype: 'json',
+                                     async: false,
+                                     success: function (response) {
+                                         var respint = parseInt(response);
 
-                                    } else {
-                                        alert('Erro ao cadastrar a disciplina');
-                                    }
-                                }
-                            });
+                                         if (respint == 1) {
+                                             // Close window
+                                             fillAlunosTurma();
+                                             $('#PesquiAluno').jqxWindow('close');
+
+                                         } else {
+                                             alert('Erro ao cadastrar a disciplina');
+                                         }
+                                     }
+                                 });
+                             } else {
+                                 var rows = $('#griddiscs').jqxGrid('getrows');
+                                 for(var i=0; i<rows.length; i++) {
+                                     if(rows[i].add) {
+                                         $.ajax({
+                                             url: "/cadTurmaAlunosDisc",
+                                             data: {
+                                                 "aluno": idV,
+                                                 "nome": nomeV,
+                                                 'iddisc': rows[i].id,
+                                                 "todos": $("#seldics").val(),
+                                                 "idturma": $("#turma").val().split('-')[0],
+                                                 csrfmiddlewaretoken: '{{ csrf_token }}'
+                                             },
+                                             cache: false,
+                                             type: "POST",
+                                             datatype: 'json',
+                                             async: false,
+                                             success: function (response) {
+                                                 var respint = parseInt(response);
+
+                                                 if (respint == 1) {
+                                                     // Close window
+                                                     fillAlunosTurma();
+                                                     $('#PesquiAluno').jqxWindow('close');
+
+                                                 } else {
+                                                     alert('Erro ao cadastrar a disciplina');
+                                                 }
+                                             }
+                                         });
+                                     }
+                                 }
+                             }
 
                          // Insert em NotaFalta e setFillgrade
                          } else {
@@ -269,55 +402,48 @@
                     });
 
                     $("#pesqaluno").on('keyup', function(event){
-                        var url =  "/getAlunosCurso";
-                        // prepare the data
-                        var source =
-                        {
-                            datatype: "json",
-                            datafields: [
-                                { name: 'id'},
-                                { name: 'nome'}
-                            ],
-                            data: {
-                                'idcurso': $("#curso").val().split('-')[0],
-                                'nome': $("#pesqaluno").val(),
-                                csrfmiddlewaretoken: '{{ csrf_token }}'
-                            },
-                            type: 'POST',
-                            url: url,
-                            async: false
-                        };
-                        var dataAdapter = new $.jqx.dataAdapter(source);
-
-                        $("#gridpesq").jqxGrid(
-                        {
-                            width: 780,
-                            source: dataAdapter,
-                            columns: [
-                              { text: 'ID', datafield: 'id', width: 0 },
-                              { text: 'Name', datafield: 'nome', width: 400 }
-                            ]
-                        });
-
-                         $('#gridpesq').on('rowselect', function (event){
-                                rowIndex = event.args.rowindex;
-                         });
-                        $('#gridpesq').jqxGrid('hidecolumn', 'id');
+                        fillPesq();
                     });
                 }
 
-{#                function setLook()#}
-{#                {#}
-{#                    var rows = $('#gridatribuicao').jqxGrid('getrows');#}
-{#                    for(var i=0; i<rows.length; i++) {#}
-{#                        $("#sel" + i ).jqxDropDownList({source: profes, width: '200', height: '18'});#}
-{#                        $("#sel" + i ).on('select', function (event) {#}
-{#                            //console.log("I: "+ rowProfessores);#}
-{#                            dataAdapter2.records[rowProfessores]['profsel'] = $("#sel"+rowProfessores).val()+'-'+dataAdapter2.records[rowProfessores]['id'];#}
-{#                            //console.log("Val mudado: "+ dataAdapter2.records[rowProfessores]['profsel']);#}
-{#                        });#}
-{#                    }#}
-{#                }#}
+                function fillPesq()
+                {
+                    var url =  "/getAlunosCurso";
+                    // prepare the data
+                    var source =
+                    {
+                        datatype: "json",
+                        datafields: [
+                            { name: 'id'},
+                            { name: 'nome'}
+                        ],
+                        data: {
+                            'nome': $("#pesqaluno").val(),
+                            'idturma': $("#turma").val().split('-')[0],
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        type: 'POST',
+                        url: url,
+                        async: false
+                    };
+                    var dataAdapter = new $.jqx.dataAdapter(source);
+
+                    $("#gridpesq").jqxGrid(
+                    {
+                        width: 350,
+                        source: dataAdapter,
+                        columns: [
+                          { text: 'ID', datafield: 'id', width: 0 },
+                          { text: 'Name', datafield: 'nome', width: 350 }
+                        ]
+                    });
+
+                     $('#gridpesq').on('rowselect', function (event){
+                            rowIndex = event.args.rowindex;
+                     });
+                    $('#gridpesq').jqxGrid('hidecolumn', 'id');
+
+                }
 
                 function fillAtribuicao()
                 {
@@ -444,6 +570,21 @@
 {#                };#}
 
                  $(document).ready( function() {
+
+
+
+                     $("#seldics").jqxCheckBox({ width: 120, height: 25 });
+                     $("#seldics").jqxCheckBox('check');
+
+
+                      $("#seldics").bind('change', function (event) {
+                        var checked = event.args.checked;
+                        if (checked == false) {
+                          fillDisc();
+                        }else {
+                          $('#griddiscs').jqxGrid('clear');
+                        }
+                    });
 
                     //dataAdapter2.records[0]['profsel']
                     setupPesquialuno();
@@ -599,6 +740,7 @@
                         $("#PesquiAluno").jqxWindow('open');
                         $('#gridpesq').jqxGrid('clear');
                         $("#pesqaluno").val('');
+                        fillPesq();
                     });
 
                     $("#addTurma").click(function(event){

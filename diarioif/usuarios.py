@@ -523,7 +523,7 @@ def getUsers(request):
     users = []
 
     if request.POST['idcurso'] == 'Todos':
-        profs = ProfileUser.objects.filter(nome__contains=request.POST['pesquisar'])[:100]
+        profs = ProfileUser.objects.filter(nome__icontains=request.POST['pesquisar'])[:100]
 
         for prof in profs:
             user = {}
