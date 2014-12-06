@@ -142,19 +142,7 @@
                         async: false,
                         success: function(response) {
                             console.log('Cadastrei!!');
-
                             window.location = '/profile/'+response;
-
-{#                            var respint = parseInt(response);#}
-
-{#                            if(respint == 1) {#}
-{#                                // Close window#}
-{#                                fillAlunosTurma();#}
-{#                                $('#PesquiAluno').jqxWindow('close');#}
-{##}
-{#                            } else {#}
-{#                                alert('Erro ao cadastrar a disciplina');#}
-{#                            }#}
                         }
                     });
 

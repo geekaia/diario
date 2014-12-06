@@ -65,17 +65,66 @@ def chamadaDisc(request):
 def addDia(request):
     if temAcesso(request):
         return HttpResponse(status=500)
-    try:
 
+    try:
         diaDt = request.POST['dia']
-        dia_object = datetime.strptime(diaDt, '%d/%m/%Y')
+        dia_ob = datetime.strptime(diaDt, '%d/%m/%Y')
+        dia_object = dia_ob.date()
+
+        # -2 - Código do domingo
+        if dia_object.weekday() == 6:
+            return HttpResponse(-2)
+
+        # -3 - É sábado letivo?
+        elif dia_object.weekday() == 5:
+            try:
+                DiaExcept.objects.get(dataInicio=dia_object, tipo='SB')
+            except Exception, e:
+                return HttpResponse(-3)
+
+        else:
+            # É feriado?
+            try:
+                dias = DiaExcept.objects.filter(dataInicio__lte=dia_object, dataFim__gte=dia_object)
+                diasCant = ['FD', 'FDS', 'F', 'PF', 'RC', 'SP']
+
+                for d in dias:
+                    if d.tipo in diasCant and dia_object >= d.dataInicio and dia_object <= d.dataFim:
+                        return HttpResponse(-4)
+
+            except Exception, e:
+                print "Não é um dia letivo " % e
+
+
+            # Está entre o periodo letivo ?
+            try:
+                idsOk = False
+                ano = request.POST['ano']
+                print "Ano: ", ano
+                bims = Bimestre.objects.filter(ano=str(ano), bimestreSemestre='semestre')
+                print "ok111"
+                for bi in bims:
+                    if bi.dataInicio <= dia_object and bi.dataFim >= dia_object:
+                        print "ok t"
+                        idsOk = True
+                        break
+
+                print "ok t2"
+                if idsOk == False:
+                    return HttpResponse(-5)
+                print "ok t3"
+
+            except Exception, e:
+                print "Não é um dia letivo " % e
 
 
         idatrib = request.POST['id']
+        print "ok1"
         atrib = AtribAula.objects.get(pk=idatrib)
 
         turma = atrib.turma
         quantidade = int(request.POST['quantidade'])
+        print "ok1"
 
         # Procura para ver se não tem nenhum desses dias cadastrados
         diafind = Dia.objects.filter(data=dia_object, atrib=atrib)
@@ -93,6 +142,7 @@ def addDia(request):
         else:
             dia = diafind[0]
 
+        print "ok2"
         # Agora eu tenho que adicionar uma linha para cada aluno e aula
         # Procura por todos os alunos desta turma e insere uma linha
         alunosTurma = Notafalta.objects.values_list('aluno').filter(turma=turma).distinct()
@@ -106,6 +156,7 @@ def addDia(request):
                 presenca.presente = True
                 presenca.save()
 
+        print "ok3"
         return HttpResponse(1)
 
     except Exception, e:

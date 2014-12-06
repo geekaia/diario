@@ -1,35 +1,36 @@
 Criar um sistema de controle dos usuários, com todas as permissões abaixo.
 
 <b>Aluno</b>
-	- Visualizar Notas 
-	- Visualizar presenças
-	- Visualizar tarefas 
+	- Visualizar Notas - OK
+	- Visualizar presenças - OK
+	- Visualizar tarefas - OK
 	- Visualizar informações no profile
 	- Enviar mensagem para a secretaria para modificar os dados do profile
-	
 
 <b>Professor</b>
-	- Visualiza os alunos das turmas 
-	- Lança notas
-	- Cria atividades
-	- Faz chamada 
-	- Salva Notas por bimestre
-	- Marcar com falta alunos que tenham trancado a  aula (AUTOMATICAMENTE)
+	- Visualiza os alunos das turmas -ok
+	- Lança notas - ok
+	- Cria atividades - ok
+	- Faz chamada - ok
+	- Salva Notas por bimestre - ok
+	- Marcar com falta alunos que tenham trancado a aula (AUTOMATICAMENTE) - ???
 	- Alunos que trancaram ou desistiram não apareceram na chamada e irão ser salvos com nota falta
-    	  e nota zero.
-
+    	  e nota zero. ???
+   	- Fazer a verificação dos dias letivos e não letivos - OK
 
 <b>Secretaria</b>
-	- Pode criar turmas
-	- Inserir vários alunos
-	- Pode modificar atributos dos alunos
+	- Pode criar turmas - Almost Done
+	- Inserir vários alunos - ok
+	- Pode modificar atributos dos alunos - ok
 	- Adicionar novas atividades avaliativas
-	- Criar cursos
-	- Adicionar disciplinas
+	- Efetuar a transferência
+	- Criar cursos - ok
+	- Adicionar disciplinas - ok
 	- Fazer a transferência dos alunos
+	- Janelas de confirmação das turmas e alunos
 	- Efetuar a transferência
 	- Gerar um pdf com foto e disciplinas em que o aluno está ruim
-	- Possibilidade de importar dados das planilhas criadas pelos professores.
+	- Possibilidade de importar dados das planilhas criadas pelos professores
 	- Inserir scores dos alunos
 	- Gerar grupos balanceados
 	- Gerar algoritmos para avaliar dados estatísticos dos alunos
@@ -37,7 +38,4 @@ Criar um sistema de controle dos usuários, com todas as permissões abaixo.
 	- Gerar gráficos de desempenho de cada aluno
 	- Avaliar o rendimento de forma geral de acordo com o nível do aluno
 	- Efetuar a transferência interna entre os cursos disponíveis de forma transparente
-	
-
-
 

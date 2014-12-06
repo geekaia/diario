@@ -41,6 +41,13 @@ urlpatterns = patterns('',
 
     # Aluno
     url(r'^minhasfaltas$', 'diarioif.aluno.minhasfaltas', name='minhasfaltas'),
+    url(r'^MinhasMatriculas$', 'diarioif.aluno.MinhasMatriculas', name='MinhasMatriculas'),
+    url(r'^MinhasTurmas$', 'diarioif.aluno.MinhasTurmas', name='MinhasTurmas'),
+    url(r'^MinhasDisciplinas$', 'diarioif.aluno.MinhasDisciplinas', name='MinhasDisciplinas'),
+    url(r'^MinhasFaltas$', 'diarioif.aluno.MinhasFaltas', name='MinhasFaltas'),
+    url(r'^MinhasAtividades$', 'diarioif.aluno.MinhasAtividades', name='MinhasAtividades'),
+    url(r'^MinhasAtividadesl$', 'diarioif.aluno.MinhasAtividadesl', name='MinhasAtividadesl'),
+
 
 
     # Calendário escolar

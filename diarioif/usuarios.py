@@ -58,14 +58,26 @@ def temAcesso(request):
     prof = ProfileUser.objects.get(user=user)
 
     # Usuario
-    alunoslist = ['/viewnotas', '/viewpresenca', '/viewtarefas']
+    alunoslist = ['/viewnotas',
+                  '/viewpresenca',
+                  '/viewtarefas',
+                  '/MinhasAtividades',
+                  '/MinhasAtividadesl',
+                  '/minhasfaltas',
+                  '/MinhasTurmas',
+                  '/MinhasMatriculas',
+                  '/MinhasDisciplinas',
+                  '/MinhasFaltas']
+
     profslist = ['/calendarioano']
 
     if prof.tipo == 'Aluno':
+        print "Page: ", page
         if page in alunoslist:
+
             return False
         else:
-            return False
+            return True
 
     elif prof.tipo == 'Administrador': # Pode fazer tudo no sistema
         return False
@@ -316,7 +328,6 @@ def matricularAluno(request):
             print 'Update matricula'
         except:
             mat = Matricula()
-
             print 'New matricula'
 
         atual = request.POST['atual']
@@ -640,3 +651,6 @@ def changesituacao(request):
     except Exception, e:
         print "Erro: ", e
         return HttpResponse(-1)
+
+
+

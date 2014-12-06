@@ -242,7 +242,6 @@ class BoletimLayout:
                 # SP - Semana Pedagógica
 
 
-
                 listXy = []
 
                 # lista de coordenadas de X
@@ -931,7 +930,7 @@ def getStatis(listdays, ano):
         daysAno = listD['dias']
 
         # Aqui adiciona somente os sábados
-        evtsSb = DiaExcept.objects.filter(dataInicio__lt=semestre1.dataInicio, dataFim__gt=semestre2.dataFim)
+        evtsSb = DiaExcept.objects.filter(dataInicio__lte=semestre1.dataInicio, dataFim__gte=semestre2.dataFim)
         for evts in evtsSb:
             if evts.tipo=='SB' and evts.dataInicio.weekday()==5:
                 daysAno.append([evts.dataInicio.month, evts.dataInicio.day, evts.dataInicio.year])
@@ -943,7 +942,7 @@ def getStatis(listdays, ano):
                 # print "Dia ", d
                 wd = d.weekday()
                 if wd != 6: # Nao e permitido aulas aos domingos
-                    eventos = DiaExcept.objects.filter(dataInicio__gt=d, dataFim__lt=d)
+                    eventos = DiaExcept.objects.filter(dataInicio__gte=d, dataFim__lte=d)
 
                     if len(eventos) ==0:
                         eventos = DiaExcept.objects.filter(dataInicio=d) # para dias em que não é range
@@ -973,7 +972,7 @@ def getStatis(listdays, ano):
                 # print "Dia ", d, ' week day', wd
                 if wd != 6: # Nao e permitido aulas aos domingos
                     # Há qualquer dia em que não se registra aula?
-                    eventos = DiaExcept.objects.filter(dataInicio__gt=d, dataFim__lt=d)
+                    eventos = DiaExcept.objects.filter(dataInicio__gte=d, dataFim__lte=d)
 
                     if len(eventos) == 0:
                         eventos = DiaExcept.objects.filter(dataInicio=d) # para dias em que não é range

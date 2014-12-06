@@ -119,10 +119,6 @@
          </div>
       </div>
 
-
-
-
-
     <script language="javascript">
         var anos = new Array();
             var data = new Date();
@@ -444,6 +440,7 @@
                     data: {
                         'id': $('#turma').jqxGrid('getcelltextbyid', rowAtrib, "id"),
                         'dia': $("#dia").val(),
+                        'ano': $("#ano").val(),
                         'quantidade': $("#quantDias").val(),
                         csrfmiddlewaretoken: '{{ csrf_token }}'
                     },
@@ -454,15 +451,21 @@
                         var respint = parseInt(response);
                         if(respint == 1) {
                             fillDiasGrid();
-
-                        } else {
-                            console.log('Houve erro ao salvar os dados');
+                        } else if (respint == -2)  {
+                            alert('Não é permitido registrar um domingo!!');
+                        } else if (respint == -3)  {
+                            alert('Este sábado não é letivo')
+                        } else if (respint == -4) {
+                            alert('Este não é um dia letivo');
+                        } else if(respint==-5)
+                        {
+                            alert('Este não é pertencente ao ano corrente!!!');
+                        } else  if(respint==-1) {
+                            alert('Ocorreu um erro ao cadastrar esse da!!!');
                         }
                     }
                 });
-
             });
-
 
             function fillDiasGrid()
             {
