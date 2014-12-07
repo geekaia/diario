@@ -498,6 +498,48 @@ def cadTurmaAlunosDisc(request):
     except Exception, e:
         return HttpResponse(-1)
 
+@login_required()
+def remAlunoTurma(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
+    try:
+        idrem = request.POST['id']
+        profrm = ProfileUser.objects.get(pk=int(idrem))
+        ntfs = Notafalta.objects.filter(aluno=profrm)
+
+        for nt in ntfs:
+            nt.delete()
+
+        return HttpResponse(1)
+    except:
+        print 'Err '
+
+
+    return HttpResponse(-1)
+
+
+@login_required()
+def listDiscAluno(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
+    disc = []
+
+    idaluno = request.POST['id']
+    prof = ProfileUser.objects.get(pk=int(idaluno))
+
+    notas = Notafalta.objects.filter(aluno=prof)
+
+    for nt in notas:
+        nta = {}
+        nta['id'] = nt.id
+        nta['nome'] = nt.id
+        disc.append(nta)
+
+    return HttpResponse(json.dumps(disc), content_type="application/json")
+
+
 
 @login_required()
 def listDiscTurma(request):

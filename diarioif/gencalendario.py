@@ -32,7 +32,8 @@ pdfmetrics.registerFont(TTFont('OpenSans-Bold', FONT_PATH))
 cores = [HexColor('#00ff00'), HexColor('#00ffff'), HexColor('#ff0000'), HexColor('#ffff00'), HexColor('#ff00ff'), HexColor('#ff9966')]
 
 class BoletimLayout:
-    ano = ''
+    ano = -1
+
     def __init__(self, buffer):
         # O padrão é sempre A4
         self.pagesize = A4
@@ -44,8 +45,19 @@ class BoletimLayout:
 
 
     # @classmethod
-    @staticmethod
-    def __header_footer(canvas, doc):
+    # @staticmethod
+    # def __header_footer(canvas, doc):
+    # def footer(self, canvas, doc):
+    #     print 'Ola mundo'
+    #     # canvas.saveState()
+    #     # canvas.setFont('Times-Roman',9)
+    #     # canvas.drawString(inch, 0.75 * inch, "Page %d %s" % (doc.page, pageinfo))
+    #     # canvas.restoreState()
+
+
+
+    def header(self, canvas, doc):
+
         canvas.saveState()
         styles = getSampleStyleSheet()
         styles.add(ParagraphStyle(name='RightAlign', fontName='Arial', align=TA_RIGHT))
@@ -76,7 +88,7 @@ class BoletimLayout:
         txtHeader = """
             MINISTÉRIO DA EDUCAÇÃO/ SECRETARIA DE EDUCAÇÃO TECNOLÓGICA <br />
             INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DE MATO GROSSO <br />
-            PRÓ-REITORIA DE ENSINO - CALENDÁRIO ACADÊMICO  <br />
+            PRÓ-REITORIA DE ENSINO - CALENDÁRIO ACADÊMICO  """+str(self.ano)+""" <br />
             CAMPUS JUINA
         """
 
@@ -116,6 +128,7 @@ class BoletimLayout:
 
 
     def print_users(self, mesesCalendario, mesesLetivos, firstS, secondS, year):
+        self.ano = year
         styles = getSampleStyleSheet()
 
         buffer = self.buffer
@@ -125,6 +138,8 @@ class BoletimLayout:
                                 topMargin=inch/2+5,
                                 bottomMargin=inch/2+5,#   inch*1,
                                 pagesize=self.pagesize)
+
+
 
         # Our container for "Flowable" objects
         elements = []
@@ -823,7 +838,7 @@ class BoletimLayout:
         elements.append(tBstat)
         elements.append(PageBreak())
 
-        doc.build(elements, onFirstPage=self.__header_footer, onLaterPages=self.__header_footer)
+        doc.build(elements, onFirstPage=self.header)
 
         # Get the value of the BytesIO buffer and write it to the response
         pdf = buffer.getvalue()

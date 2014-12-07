@@ -289,24 +289,27 @@ def gemPdf(request, idcurso=None, idturma=None, ano=None, periodo=None, idaluno=
                     atrib = AtribAula.objects.filter(disciplina=i, turma=turma)
 
                     for at in atrib:
-                        disciplina = {}
-                        notasAno = Notafalta.objects.filter(turma=turma, disciplina=at.disciplina,aluno=prof)[0]
-                        disciplina['nome'] = notasAno.disciplina.nome.upper().encode('utf-8')
-                        disciplina['nota1b'] = str(notasAno.nota1b if type(notasAno.nota1b)!=type(None) else '')
-                        disciplina['falta1b'] = str(notasAno.falta1b if type(notasAno.falta1b)!=type(None) else '')
-                        # disciplina['falta1b'] = str(notasAno.nota1b if type(notasAno.nota1b)!=type(None) else '')
-                        disciplina['nota2b'] = str(notasAno.nota2b if type(notasAno.nota2b)!=type(None) else '')
-                        disciplina['falta2b'] = str(notasAno.falta2b if type(notasAno.falta2b)!=type(None) else '')
-                        disciplina['nota3b'] = str(notasAno.nota3b if type(notasAno.nota3b)!=type(None) else '')
-                        disciplina['falta3b'] = str(notasAno.falta3b if type(notasAno.falta3b)!=type(None) else '')
-                        disciplina['nota4b'] = str(notasAno.nota4b if type(notasAno.nota4b)!=type(None) else '')
-                        disciplina['falta4b'] = str(notasAno.falta4b if type(notasAno.falta4b)!=type(None) else '')
-                        disciplina['mediaanual'] = str(notasAno.mediaanual if type(notasAno.mediaanual)!=type(None) else '')
-                        disciplina['recuperacao'] = str(notasAno.recuperacao if type(notasAno.recuperacao)!=type(None) else '')
-                        disciplina['mediapospf'] = str(notasAno.mediapospf if type(notasAno.mediapospf)!=type(None) else '')
-                        disciplina['situacaofinal'] = str(notasAno.situacaofinal if type(notasAno.situacaofinal)!=type(None) else '')
+                        try:
+                            disciplina = {}
+                            notasAno = Notafalta.objects.filter(turma=turma, disciplina=at.disciplina,aluno=prof)[0]
+                            disciplina['nome'] = notasAno.disciplina.nome.upper().encode('utf-8')
+                            disciplina['nota1b'] = str(notasAno.nota1b if type(notasAno.nota1b)!=type(None) else '')
+                            disciplina['falta1b'] = str(notasAno.falta1b if type(notasAno.falta1b)!=type(None) else '')
+                            # disciplina['falta1b'] = str(notasAno.nota1b if type(notasAno.nota1b)!=type(None) else '')
+                            disciplina['nota2b'] = str(notasAno.nota2b if type(notasAno.nota2b)!=type(None) else '')
+                            disciplina['falta2b'] = str(notasAno.falta2b if type(notasAno.falta2b)!=type(None) else '')
+                            disciplina['nota3b'] = str(notasAno.nota3b if type(notasAno.nota3b)!=type(None) else '')
+                            disciplina['falta3b'] = str(notasAno.falta3b if type(notasAno.falta3b)!=type(None) else '')
+                            disciplina['nota4b'] = str(notasAno.nota4b if type(notasAno.nota4b)!=type(None) else '')
+                            disciplina['falta4b'] = str(notasAno.falta4b if type(notasAno.falta4b)!=type(None) else '')
+                            disciplina['mediaanual'] = str(notasAno.mediaanual if type(notasAno.mediaanual)!=type(None) else '')
+                            disciplina['recuperacao'] = str(notasAno.recuperacao if type(notasAno.recuperacao)!=type(None) else '')
+                            disciplina['mediapospf'] = str(notasAno.mediapospf if type(notasAno.mediapospf)!=type(None) else '')
+                            disciplina['situacaofinal'] = str(notasAno.situacaofinal if type(notasAno.situacaofinal)!=type(None) else '')
 
-                        disciplinas.append(disciplina)
+                            disciplinas.append(disciplina)
+                        except:
+                            print 'Disc inexistnete'
 
                 aluno['disciplinas'] = disciplinas
                 lista.append(aluno)

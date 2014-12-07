@@ -86,6 +86,9 @@ urlpatterns = patterns('',
     url(r'^changeAtrib$', 'diarioif.views.changeAtrib', name='changeAtrib'),
     url(r'^getTurmas/(?P<idcurso>\d[^/]*)/(?P<periodo>\d[^/]*)/(?P<ano>\d[^/]*)$', 'diarioif.views.getTurmas', name='getTurmas'),
     url(r'^cadTurmaAlunosDisc$', 'diarioif.views.cadTurmaAlunosDisc', name='cadTurmaAlunosDisc'),
+    url(r'^remAlunoTurma$', 'diarioif.views.remAlunoTurma', name='remAlunoTurma'),
+    url(r'^listDiscAluno$', 'diarioif.views.listDiscAluno', name='listDiscAluno'),
+
 
     # Lancar notas
     url(r'^lancarnotas$', 'diarioif.lancarnotas.notas', name='lancarnotas'),

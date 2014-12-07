@@ -48,6 +48,7 @@
                     <tr>
                         <td> <input type="button" value="+" id="addAluno" /> </td>
                         <td> <input type="button" value="-" id="remAluno" /> </td>
+                        <td> <input type="button" value="Disciplinas" id="editAluno" /> </td>
                     </tr>
                 </table>
                 <br />
@@ -125,7 +126,6 @@
          </div>
       </div>
 
-
       <div id="removealuno">
          <div id="windowHeader">
              <span>
@@ -134,19 +134,46 @@
          </div>
 
          <div style="overflow: hidden; padding: 15px;" id="windowContent">
-             <h4>Você deseja remover <div id="diatoremove"></div> do seu diário?</h4>
+             <h4>Você deseja remover <div id="alunorem"></div> ?</h4>
             <input  type="button" id="btnSim" value="Sim" /> <input  type="button" id="btnNao" value="Não" />
              <br />
          </div>
       </div>
 
+      <div id="editAl">
+         <div id="windowHeader">
+             <span>
+                Remover e adicionar disciplinas
+             </span>
+         </div>
+
+
+         <div style="overflow: hidden; padding: 15px;" id="windowContent">
+
+          Atenção: caso remova uma disciplina você também irá remover todas as notas lançadas para este aluno.
+          <br />
+          <table>
+              <tr>
+                  <td>Disciplina <div id="disciplinasaladd"></div> <input type="button" value="+" id="adddisc" /> </td>
+                  <td><input type="button" id="removeDisc" /> </td>
+              </tr>
+          </table>
+          <div id="alunodiscs"
+         </div>
+      </div>
+
+
+
+
     <script language="javascript">
 
                 $("#removealuno").hide();
+                $("#editAl").hide();
 
 
                 // Global variables iniciais
                 var rowIndex = -1;
+                var rowAl = -1;
                 var rowProfessores = -1;
                 var dataAdapter2;
                 var cursosData = new Array();
@@ -176,13 +203,54 @@
                 });
 
                 $("#removealuno").jqxWindow({ width: 500, height: 200 });
+                $("#btnSim").jqxButton();
+                $("#btnNao").jqxButton();
+                $("#editAluno").jqxButton();
+
+                $("#btnNao").on('click', function() {
+                    $("#removealuno").jqxWindow('close');
+                });
+
+
+                $("#remAluno").on('click', function() {
+                    $("#removealuno").jqxWindow('open');
+
+                    $("#alunorem").html($('#gridAlunos').jqxGrid('getcelltextbyid', rowAl, "nome"));
+                });
+
+
+                $("#btnSim").on('click', function(){
+                    $.ajax({
+                        url:  "/remAlunoTurma",
+                        cache: false,
+                        data: {
+                            "id": $('#gridAlunos').jqxGrid('getcelltextbyid', rowAl, "id"),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        type: "POST",
+                        datatype: 'json',
+                        async: false,
+                        success: function(response) {
+                            var respint = parseInt(response);
+
+                            if(respint == 1) {
+                                console.log('Dados salvos com sucesso na linha '+ i);
+                                fillAlunosTurma();
+                                $("#removealuno").jqxWindow('close');
+                            }
+                        }
+                    });
+                });
+
+
+
 
                 $("#btnSave").jqxButton();
 
 
                 $("#gridAlunos").jqxGrid(
                     {
-                        width: 200,
+                        width: 600,
                         columns: [
                           { text: 'ID', datafield: 'id', width: 0 },
                           { text: 'Name', datafield: 'nome', width: 200 },
@@ -307,6 +375,9 @@
                     );
 
                     $('#gridAlunos').jqxGrid('hidecolumn', 'id');
+                     $('#gridAlunos').on('rowselect', function (event){
+                        rowAl = event.args.rowindex;
+                    });
 
                 }
 
