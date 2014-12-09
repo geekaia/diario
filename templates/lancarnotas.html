@@ -93,6 +93,7 @@
         <div style="overflow: hidden;" id="windowContent">
             <form id="formplan" name="formplan" enctype="multipart/form-data">
                 {% csrf_token %}
+                <input type="hidden" value="-1" id="idatrib" name="idatrib" />
                 {{ form }}
 {#                <input name="file" type="file" />#}
                 <input type="button" id="btnUploadf" value="Upload" />
@@ -110,8 +111,12 @@
             </span>
         </div>
         <div style="overflow: hidden;" id="windowContent">
-            <div id="gridImport"></div>
-            <input type="button" value="Confirmar inserção" />
+            <table>
+                <tr style="padding: 15px;">
+                    <td><div id="gridImport"></div></td>
+                    <td><input type="button" id="btnInserir" value="Inserir dados" /></td>
+                </tr>
+            </table>
         </div>
     </div>
 
@@ -140,12 +145,59 @@
                  width: 500
              });
 
+             $('#winInporConfirm').jqxWindow({
+                 maxHeight: 600,
+                 height: 550,
+                 width: 930
+             });
+
              $("#btnImportar").jqxButton();
+             $("#btnInserir").jqxButton();
+             $("#btnInserir").on('click', function(){
+                 var rowsInsert = $("#gridImport").jqxGrid("getrows");
+
+                 for(var i=0; rowsInsert.length < i; i++) {
+                     $.ajax({
+                        url:  "/saveNotas",
+                        cache: false,
+                        data: {
+                            "id": $('#gridImport').jqxGrid('getcelltextbyid', i, "id"),
+                            "nota1b": $('#gridImport').jqxGrid('getcelltextbyid', i, "nota1b"),
+                            "falta1b": $('#gridImport').jqxGrid('getcelltextbyid', i, "falta1b"),
+                            "nota2b": $('#gridImport').jqxGrid('getcelltextbyid', i, "nota2b"),
+                            "falta2b": $('#gridImport').jqxGrid('getcelltextbyid', i, "falta2b"),
+                            "nota3b": $('#gridImport').jqxGrid('getcelltextbyid', i, "nota3b"),
+                            "falta3b": $('#gridImport').jqxGrid('getcelltextbyid', i, "falta3b"),
+                            "nota4b": $('#gridImport').jqxGrid('getcelltextbyid', i, "nota4b"),
+                            "falta4b": $('#gridImport').jqxGrid('getcelltextbyid', i, "falta4b"),
+                            "recuperacao": $('#gridImport').jqxGrid('getcelltextbyid', i, "PF"),
+                            "situacaofinal": 0,
+                            "mediaanual": 0,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        type: "POST",
+                        datatype: 'json',
+                        async: false,
+                        success: function(response) {
+                            var respint = parseInt(response);
+                            if(respint == 1) {
+                                console.log('Dados salvos com sucesso na linha '+ i);
+                            } else {
+                                console.log('Houve erro ao salvar os dados');
+                            }
+                        }
+                    });
+
+                 }
+
+             });
+
              $("#btnImportar").on('click', function(event) {
                  $('#formplan').trigger("reset");
-               _progress = document.getElementById('_progress');
-               _progress.style.width = '10%';
-                $("#winupload").jqxWindow('Open');
+                 $("#idatrib").val($('#gridatribuicao').jqxGrid('getcelltextbyid', rowProfessores, "id"));
+                 _progress = document.getElementById('_progress');
+                 _progress.style.width = '10%';
+                 $("#winupload").jqxWindow('Open');
              });
 
             var urlUploa = '/importXlsNotas';
@@ -165,13 +217,60 @@
                     if(request.readyState == 4){
                         try {
                             var resp = JSON.parse(request.response);
+
+                            $("#winInporConfirm").jqxWindow('Open');
+                            $('#gridImport').jqxGrid('clear');
+
+                            var source =
+                            {
+                                datatype: "json",
+                                datafields: [
+                                    { name: 'id' },
+                                    { name: 'nome' },
+                                    { name: 'nota1b' },
+                                    { name: 'nota2b' },
+                                    { name: 'nota3b' },
+                                    { name: 'nota4b' },
+                                    { name: 'falta1b' },
+                                    { name: 'falta2b' },
+                                    { name: 'falta3b' },
+                                    { name: 'falta4b' },
+                                    { name: 'PF' }
+                                ],
+                                localdata: resp
+                            };
+
+                            var dataAdapter = new $.jqx.dataAdapter(source);
+
+                            $("#gridImport").jqxGrid(
+                            {
+                                width: 800,
+                                source: dataAdapter,
+                                columnsresize: true,
+                                columns: [
+                                    { text: 'ID', datafield: 'id', width: 20 },
+                                    { text: 'Nome', datafield: 'nome', width: 200 },
+                                    { text: 'Nt.1b', datafield: 'nota1b', width: 70 },
+                                    { text: 'Ft.1b', datafield: 'falta1b', width: 70 },
+                                    { text: 'Nt.2b', datafield: 'nota2b', width: 70 },
+                                    { text: 'Ft.2b', datafield: 'falta2b', width: 70 },
+                                    { text: 'Nt.3b', datafield: 'nota3b', width: 70 },
+                                    { text: 'Ft.3b', datafield: 'falta3b', width: 70 },
+                                    { text: 'Nt.4b', datafield: 'nota4b', width: 70 },
+                                    { text: 'Ft.4b', datafield: 'falta4b', width: 70 }
+
+                                ]
+                            });
+                            $('#gridImport').jqxGrid('hidecolumn', 'id');
+                            $("#winupload").jqxWindow('close');
+
+
                         } catch (e){
                             var resp = {
                                 status: 'error',
                                 data: 'Unknown error occurred: [' + request.responseText + ']'
                             };
                         }
-                        console.log(resp.status + ': ' + resp.data);
                     }
                 };
 
@@ -505,8 +604,6 @@
                 $('#gridAlunos').jqxGrid('hidecolumn', 'id');
             }
 
-
-
             function fillAtribuicao()
             {
                 $("#gridatribuicao").jqxGrid('clear');
@@ -522,7 +619,7 @@
                         { name: 'profsel', type: 'string'},
                     ],
                     data: {
-                        'idturma': $("#turma").val().split('-')[0],
+                       'idturma': $("#turma").val().split('-')[0],
                         csrfmiddlewaretoken: '{{ csrf_token }}'
                     },
                     type: 'POST',
@@ -530,7 +627,6 @@
                     async: false
                 };
                 dataAdapter2 = new $.jqx.dataAdapter(source2);
-
 
                 $("#gridatribuicao").jqxGrid(
                 {

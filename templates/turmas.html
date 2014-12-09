@@ -149,21 +149,21 @@
 
 
          <div style="overflow: hidden; padding: 15px;" id="windowContent">
-
-          Atenção: caso remova uma disciplina você também irá remover todas as notas lançadas para este aluno.
           <br />
           <table>
               <tr>
-                  <td>Disciplina <div id="disciplinasaladd"></div> <input type="button" value="+" id="adddisc" /> </td>
-                  <td><input type="button" id="removeDisc" /> </td>
+                  <td style="vertical-align: top">Disciplina  </td>
+                  <td style="vertical-align: top"><div id="disciplinasaladd"></div></td>
+                  <td style="vertical-align: top"><input type="button" value="+" id="adddisc" /> </td>
               </tr>
+              <tr style="height: 70px;">
+                  <td colspan="3" style="vertical-align: bottom"><input type="button" id="removeDisc" value="Remover" /> </td>
+              </tr>
+
           </table>
-          <div id="alunodiscs"
+          <div id="alunodiscs"></div>
          </div>
       </div>
-
-
-
 
     <script language="javascript">
 
@@ -178,6 +178,7 @@
                 var dataAdapter2;
                 var cursosData = new Array();
                 var profes = new Array();
+                var rowDiscAl = -1;
 
                 {% for i in cursos %}
                     cursosData[{{ i.id }}]="{{i.id}}-{{ i.nome }} - {{ i.anoGrade }}";
@@ -202,9 +203,140 @@
                     width: 250
                 });
 
+                $('#editAl').jqxWindow({
+                    maxHeight: 450,
+                    maxWidth: 420,
+                    height: 600,
+                    width: 440
+                });
+
+                function fillUserDisc()
+                {
+                    var url = "/listDiscAluno";
+                    // prepare the data
+                    var source2 =
+                    {
+                        datatype: "json",
+                        datafields: [
+                            { name: 'id'},
+                            { name: 'nome', type: 'string'},
+                        ],
+                        data: {
+                           'id': $('#gridAlunos').jqxGrid('getcelltextbyid', rowAl, "id"),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        type: 'POST',
+                        url: url,
+                        async: false
+                    };
+                    dataAdapter2 = new $.jqx.dataAdapter(source2);
+
+
+                    $("#alunodiscs").jqxGrid(
+                    {
+                        width: 400,
+                        source: dataAdapter2,
+                        editable: true,
+                        columns: [
+                            { text: 'ID', datafield: 'id', width: 0, visible: false },
+                            { text: 'Name', datafield: 'nome', width: 395, editable: false},
+                        ]
+                    });
+
+                    $('#alunodiscs').jqxGrid('hidecolumn', 'id');
+
+                    $('#alunodiscs').on('rowselect', function (event){
+                        rowDiscAl = event.args.rowindex;
+                    });
+                }
+
+                $("#editAluno").on('click', function() {
+                    $('#editAl').jqxWindow('open');
+                    $("#alunodiscs").jqxGrid('clear');
+                    fillUserDisc();
+
+
+                    $("#adddisc").off('click');
+                    $("#adddisc").on('click', function() {
+                        $.ajax({
+                             url: "/cadTurmaAlunosDisc",
+                             data: {
+                                 "aluno":  $('#gridAlunos').jqxGrid('getcelltextbyid', rowAl, "id"),
+                                 "iddisc": $("#disciplinasaladd").val(),
+                                 "todos": false,
+                                 "idturma": $("#turma").val().split('-')[0],
+                                 csrfmiddlewaretoken: '{{ csrf_token }}'
+                             },
+                             cache: false,
+                             type: "POST",
+                             datatype: 'json',
+                             async: false,
+                             success: function (response) {
+                                 var respint = parseInt(response);
+                                 if (respint == 1) {
+                                     fillUserDisc();
+                                 } else {
+                                     alert('Erro ao cadastrar a disciplina');
+                                 }
+                             }
+                         });
+                    });
+
+                    $("#removeDisc").off('click');
+                    $("#removeDisc").on('click', function(){
+
+                        $.ajax({
+                             url: "/remDiscAluno",
+                             data: {
+                                 "idnt":  $('#alunodiscs').jqxGrid('getcelltextbyid', rowDiscAl, "id"),
+                                 csrfmiddlewaretoken: '{{ csrf_token }}'
+                             },
+                             cache: false,
+                             type: "POST",
+                             datatype: 'json',
+                             async: false,
+                             success: function (response) {
+                                 var respint = parseInt(response);
+                                 if (respint == 1) {
+                                     fillUserDisc();
+                                 } else {
+                                     alert('Erro ao cadastrar a disciplina');
+                                 }
+                             }
+                         });
+                    });
+
+                    var source =
+                    {
+                        datatype: "json",
+                        datafields: [
+                            { name: 'id' },
+                            { name: 'nome' }
+                        ],
+                        data: {
+                           'idturma': $("#turma").val().split('-')[0],
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        type: 'POST',
+                        url: '/listDiscTurma',
+                    };
+                    var dataAdapter = new $.jqx.dataAdapter(source);
+
+                    $("#disciplinasaladd").jqxDropDownList({
+                            selectedIndex: 0, source: dataAdapter, displayMember: "nome", valueMember: "id", width: 300, height: 20
+                        });
+                });
+
+
                 $("#removealuno").jqxWindow({ width: 500, height: 200 });
                 $("#btnSim").jqxButton();
                 $("#btnNao").jqxButton();
+
+                $("#removeDisc").jqxButton();
+                $("#adddisc").jqxButton();
+
+
+
                 $("#editAluno").jqxButton();
 
                 $("#btnNao").on('click', function() {
@@ -375,7 +507,7 @@
                     );
 
                     $('#gridAlunos').jqxGrid('hidecolumn', 'id');
-                     $('#gridAlunos').on('rowselect', function (event){
+                    $('#gridAlunos').on('rowselect', function (event){
                         rowAl = event.args.rowindex;
                     });
 

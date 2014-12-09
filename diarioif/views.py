@@ -451,7 +451,8 @@ def cadTurmaAlunosDisc(request):
             for disc in dics:
                 try:
                     # verifica se já não há nada para esta disciplina  - Isto evita duplicidade
-                    nota = Notafalta.objects.get(disciplina=disc, curso=turma.curso, turma=turma, aluno=aluno)
+                    print "Aluno ", aluno.id, " Disc: ", disc.id, " Curso: ", turma.curso.id, " Turma: ", turma.id
+                    nota =Notafalta.objects.get(disciplina=disc, turma=turma, aluno=aluno)
 
                     # Pula pq já tem cadastro e não tem problema
                     continue
@@ -477,9 +478,8 @@ def cadTurmaAlunosDisc(request):
 
             try:
                 # verifica se já não há nada para esta disciplina  - Isto evita duplicidade
-                nota = Notafalta.objects.get(disciplina=atr.disciplina, curso=turma.curso, turma=turma, aluno=aluno)
-                return HttpResponse(1)
-
+                print "2Aluno ", aluno.id, " Disc: ", atr.disciplina.id, " Curso: ", turma.curso.id, " Turma: ", turma.id
+                nota = Notafalta.objects.get(disciplina=atr.disciplina, turma=turma, aluno=aluno)
             except:
                 nota = Notafalta()
 
@@ -497,6 +497,21 @@ def cadTurmaAlunosDisc(request):
             return HttpResponse(1)
     except Exception, e:
         return HttpResponse(-1)
+
+@login_required()
+def remDiscAluno(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+
+    try:
+        idant = request.POST['idnt']
+        ntf = Notafalta.objects.get(pk=int(idant))
+        ntf.delete()
+
+        return HttpResponse(1)
+    except:
+        return HttpResponse(-1)
+
 
 @login_required()
 def remAlunoTurma(request):
@@ -534,11 +549,10 @@ def listDiscAluno(request):
     for nt in notas:
         nta = {}
         nta['id'] = nt.id
-        nta['nome'] = nt.id
+        nta['nome'] = nt.disciplina.nome
         disc.append(nta)
 
     return HttpResponse(json.dumps(disc), content_type="application/json")
-
 
 
 @login_required()

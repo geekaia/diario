@@ -176,9 +176,6 @@ class BoletimLayout:
             elements.append(Paragraph("<br /><br />NOME: "+aluno['nome'], styles['leftName']))
             elements.append(Paragraph("CURSO: "+aluno['curso']+" Ano: "+str(+aluno['anosemestre'])+" Turma: "+aluno['turma.nome']+"<br/><br/>", styles['leftName']))
 
-
-
-
             cabecalhoT = []
             cabecalhoT.append(Paragraph('DISCIPLINA', styles['stTituloName']))
             cabecalhoT.append(Paragraph('MÉDIA 1ºB', styles['stTituloName']))
@@ -280,7 +277,7 @@ def gemPdf(request, idcurso=None, idturma=None, ano=None, periodo=None, idaluno=
 
                 dicsL = Disciplina.objects.filter(curso=turma.curso, periodo=turma.anosemestre)
                 aluno['nome'] = prof.nome.upper()
-                aluno['curso'] = prof.nome.upper()
+                aluno['curso'] = turma.curso.nome.upper()
                 aluno['anosemestre'] = turma.anosemestre
                 aluno['turma.nome'] = turma.nome
 

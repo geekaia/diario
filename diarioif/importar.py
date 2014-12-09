@@ -29,7 +29,9 @@ from usuarios import gera_senha
 from usuarios import geraUsuario
 from django.forms import *
 from xlrd import open_workbook,cellname
-from usuarios import temAcesso
+from usuarios import temAcesso, remover_acentos
+from utils import defaultencode
+
 
 @login_required()
 def addvarios(request):
@@ -140,40 +142,104 @@ class FileUploadedForm(forms.Form):
     uploaded_file = forms.FileField(required=False)
 
 def importXlsNotas(request):
+    listAls = []
+    listResp = []
+
     if temAcesso(request):
         return HttpResponse(status=500)
+
     try:
+        idattrib = request.POST['idatrib']
+        atrib = AtribAula.objects.get(pk=int(idattrib))
 
+        data = Notafalta.objects.values_list('aluno').filter(turma=atrib.turma).distinct()
+        # Carrega a listagem de todos os alunos do cursoi
+        for i in data:
+            aluno = {}
+            prof = ProfileUser.objects.get(pk=int(i[0]))
 
+            # Aqui gera uma excessão caso o aluno não faça mais esta disciplina
+            try:
+                ntf = Notafalta.objects.get(aluno=prof, disciplina=atrib.disciplina, turma=atrib.turma)
+                aluno['id'] = ntf.id
+                aluno['nome'] = prof.nome
+                listAls.append(aluno)
+            except:
+                print "Err"
+
+        # Não poderemos ter 2 alunos que match thenselves
         if request.method == 'POST':
             form = FileUploadedForm(request.POST, request.FILES)
             if form.is_valid():
                 file = request.FILES.get('uploaded_file')
-        #
-        # if request.method == 'POST':
-        #     file = request.FILES.get('file')
 
                 f = file.read()
                 book = open_workbook(file_contents=f)
                 sheet = book.sheet_by_name('Resultado')
 
-                print 'Nome', '\t\t\t\tNota 1B', 'Nota 2B', 'Nota 3B', 'Nota 4B', 'PF'
-                for row_index in range(12, 47):
-                    print sheet.cell(row_index,2).value,  sheet.cell(row_index,21).value, sheet.cell(row_index,24).value, sheet.cell(row_index,27).value, sheet.cell(row_index,30).value, sheet.cell(row_index,39).value
-            # file = request.FILES.get('fileToUpload')
+                #print 'Nome', '\t\t\t\tNota 1B', 'Nota 2B', 'Nota 3B', 'Nota 4B', 'PF'
+                for row_index in range(12, 60):
+                    try:
+                        # Percorre toda a listagem de alunos para verificar se há pessoas que
+                        cont = 0
 
-                # print "File: ", file.name
+                        # Renta converter a primeira coluna -- caso ocorra uma excessão não tem aluno na linha
+                        row = int(sheet.cell(row_index, 0).value)
 
-                return HttpResponse(1)
+                        if len(sheet.cell(row_index, 2).value) < 3:
+                          continue
 
+                        sheet1b = book.sheet_by_name('Nota 1B') # 45 AT
+                        sheet2b = book.sheet_by_name('Nota 2B')
+                        sheet3b = book.sheet_by_name('Nota 3B')
+                        sheet4b = book.sheet_by_name('Nota 4B')
 
+                        ft1b = int(sheet1b.cell(row_index, 45).value)
+                        ft2b = int(sheet2b.cell(row_index, 45).value)
+                        ft3b = int(sheet3b.cell(row_index, 45).value)
+                        ft4b = int(sheet4b.cell(row_index, 45).value)
+
+                        for al in listAls:
+                            nomePlan = remover_acentos(sheet.cell(row_index, 2).value)
+                            nomeList = remover_acentos(al['nome'])
+
+                            if nomePlan in nomeList or nomeList in nomePlan and (len(nomeList)>3 and len(nomePlan)>3):
+                                al['nota1b'] = sheet.cell(row_index, 21).value
+                                al['nota2b'] = sheet.cell(row_index, 24).value
+                                al['nota3b'] = sheet.cell(row_index, 27).value
+                                al['nota4b'] = sheet.cell(row_index, 30).value
+                                al['falta1b'] = ft1b
+                                al['falta2b'] = ft2b
+                                al['falta3b'] = ft3b
+                                al['falta4b'] = ft4b
+                                al['PF'] = sheet.cell(row_index, 39).value
+
+                                listResp.append(al)
+                                listAls[cont] = al
+
+                            cont += 1
+                    except:
+                        print 'Nao tem aluno nesta linha'
+
+            # Dados necessários
+             # { name: 'nome'},
+             #            { name: 'nota1b',  type: 'number'},
+             #            { name: 'falta1b',  type: 'number'},
+             #            { name: 'nota2b',  type: 'number'},
+             #            { name: 'falta2b',  type: 'number'},
+             #            { name: 'nota3b',  type: 'number'},
+             #            { name: 'falta3b',  type: 'number'},
+             #            { name: 'nota4b',  type: 'number'},
+             #            { name: 'falta4b',  type: 'number'},
+             #            { name: 'mediafinal',  type: 'number'},
+             #            { name: 'recuperacao',  type: 'number'},
+             #            { name: 'situacaofinal',  type: 'number'},
+             #            { name: 'mediaanual',  type: 'number'},
+             #            { name: 'mediapospf',  type: 'number'},
     except Exception, e:
-
         print 'Exception %s' % e
-        return HttpResponse(-1)
 
-    # return HttpResponse(1)
-
+    return HttpResponse(json.dumps(listResp, default=defaultencode), content_type="application/json")
 
 def fileupload(request):
     if temAcesso(request):

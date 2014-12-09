@@ -88,6 +88,7 @@ urlpatterns = patterns('',
     url(r'^cadTurmaAlunosDisc$', 'diarioif.views.cadTurmaAlunosDisc', name='cadTurmaAlunosDisc'),
     url(r'^remAlunoTurma$', 'diarioif.views.remAlunoTurma', name='remAlunoTurma'),
     url(r'^listDiscAluno$', 'diarioif.views.listDiscAluno', name='listDiscAluno'),
+    url(r'^remDiscAluno$', 'diarioif.views.remDiscAluno', name='remDiscAluno'),
 
 
     # Lancar notas
@@ -95,6 +96,7 @@ urlpatterns = patterns('',
     url(r'^notasAlunosTurma$', 'diarioif.lancarnotas.notasAlunosTurma', name='notasAlunosTurma'),
     url(r'^quantBimestre$', 'diarioif.lancarnotas.quantBimestre', name='quantBimestre'),
     url(r'^saveNotas$', 'diarioif.lancarnotas.saveNotas', name='saveNotas'),
+    url(r'^saveNotasImport$', 'diarioif.lancarnotas.saveNotasImport', name='saveNotasImport'),
 
 
     # Chamada

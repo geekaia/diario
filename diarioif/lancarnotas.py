@@ -21,17 +21,14 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.core.context_processors import csrf
+from decimal import *
 
 
 import json
-from decimal import Decimal
-
-
-
-from decimal import *
-
 from importar import FileUploadedForm
 from usuarios import temAcesso
+
+from utils import defaultencode
 
 @login_required()
 def notas(request):
@@ -48,18 +45,6 @@ def notas(request):
 
     return render(request, 'lancarnotas.html', context)
 
-# Necessário para serializar Decimal
-class fakefloat(float):
-    def __init__(self, value):
-        self._value = value
-    def __repr__(self):
-        return str(self._value)
-
-def defaultencode(o):
-    if isinstance(o, Decimal):
-        # Subclass float with custom repr?
-        return fakefloat(o)
-    raise TypeError(repr(o) + " is not JSON serializable")
 
 
 
@@ -130,6 +115,34 @@ def saveNotas(request):
 
 
 @login_required()
+def saveNotasImport(request):
+    if temAcesso(request):
+        return HttpResponse(status=500)
+    try:
+        nota = Notafalta.objects.get(pk=request.POST['id'])
+        nota.nota1b = Decimal(request.POST['nota1b'])
+        nota.nota2b = Decimal(request.POST['nota2b'])
+        nota.nota3b = Decimal(request.POST['nota3b'])
+        nota.nota4b = Decimal(request.POST['nota4b'])
+        nota.falta1b = int(request.POST['falta1b'])
+        nota.falta2b = int(request.POST['falta2b'])
+        nota.falta3b = int(request.POST['falta3b'])
+        nota.falta4b = int(request.POST['falta4b'])
+        nota.recuperacao = Decimal(request.POST['recuperacao'])
+        nota.situacaofinal = request.POST['situacaofinal']
+
+        # Falta gera uma função que recalcule a situação final do aluno
+        nota.save()
+
+
+        return HttpResponse(1)
+    except Exception, e:
+        print "Error %s", e
+
+        return HttpResponse(-1)
+
+
+@login_required()
 def quantBimestre(request):
     if temAcesso(request):
         return HttpResponse(status=500)
@@ -157,4 +170,6 @@ def quantBimestre(request):
         return HttpResponse(quantP)
     except:
         return HttpResponse(-1)
+
+
 

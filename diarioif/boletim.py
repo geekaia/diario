@@ -21,9 +21,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.core.context_processors import csrf
-from django.utils.encoding import smart_str, smart_unicode
 
-from unicodedata import normalize
 from usuarios import temAcesso
 
 def boletim(request):

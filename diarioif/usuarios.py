@@ -22,8 +22,8 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.core.context_processors import csrf
 from django.utils.encoding import smart_str, smart_unicode
+from utils import remover_acentos
 
-from unicodedata import normalize
 
 def loginUser(request):
 
@@ -430,17 +430,6 @@ def geraUsuario(nomecompleto):
 
                 if len(new) == 0:
                     return username
-
-
-
-
-def remover_acentos(txt, codif='utf-8'):
-    return normalize('NFKD', txt.decode(codif)).encode('ASCII','ignore')
-
-    if __name__ == '__main__':
-        from doctest import testmod
-        testmod()
-
 
 
 

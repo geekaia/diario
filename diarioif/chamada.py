@@ -318,6 +318,3 @@ def removerDia(request):
     except:
         return HttpResponse(-1)
 
-
-
-

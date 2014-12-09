@@ -23,12 +23,12 @@ from django.contrib.auth.models import User
 from django.core.context_processors import csrf
 from django.utils.encoding import smart_str, smart_unicode
 
-from unicodedata import normalize
+#from unicodedata import normalize
 
-from lancarnotas import defaultencode
 
 from usuarios import temAcesso
-from lancarnotas import defaultencode
+from utils import defaultencode
+
 
 @login_required()
 def minhasfaltas(request):
