@@ -22,6 +22,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.core.context_processors import csrf
 from decimal import *
+getcontext().rounding=ROUND_HALF_UP # Para arredondar
 
 
 import json
@@ -86,22 +87,74 @@ def notasAlunosTurma(request):
     return HttpResponse(json.dumps(alunos, default=defaultencode), content_type="application/json")
 
 
+def toDecimal(val):
+    try:
+        return Decimal(str(val))
+    except:
+        return Decimal(str(0.0))
+
+def toInt(val):
+    try:
+        return int(val)
+    except:
+        return 0
+
+
 @login_required()
 def saveNotas(request):
     if temAcesso(request):
         return HttpResponse(status=500)
+
+    rec = ''
     try:
-        nota = Notafalta.objects.get(pk=request.POST['id'])
-        nota.nota1b = Decimal(request.POST['nota1b'])
-        nota.nota2b = Decimal(request.POST['nota2b'])
-        nota.nota3b = Decimal(request.POST['nota3b'])
-        nota.nota4b = Decimal(request.POST['nota4b'])
-        nota.falta1b = int(request.POST['falta1b'])
-        nota.falta2b = int(request.POST['falta2b'])
-        nota.falta3b = int(request.POST['falta3b'])
-        nota.falta4b = int(request.POST['falta4b'])
-        nota.recuperacao = Decimal(request.POST['recuperacao'])
-        nota.situacaofinal = request.POST['situacaofinal']
+        rec = request.POST['situacaofinal']
+    except:
+        print 'Erro sitf'
+
+    try:
+        nota = Notafalta.objects.get(pk=int(request.POST['id']))
+        nota.nota1b = toDecimal(request.POST['nota1b'])
+        nota.nota2b = toDecimal(request.POST['nota2b'])
+        nota.nota3b = toDecimal(request.POST['nota3b'])
+        nota.nota4b = toDecimal(request.POST['nota4b'])
+        nota.falta1b = toInt(request.POST['falta1b'])
+        nota.falta2b = toInt(request.POST['falta2b'])
+        nota.falta3b = toInt(request.POST['falta3b'])
+        nota.falta4b = toInt(request.POST['falta4b'])
+        nota.recuperacao = toDecimal(request.POST['recuperacao'])
+
+        getcontext().prec=3
+
+
+        # Para cursos anuais e bimestrais
+        md = Decimal(str((float(nota.nota1b) + float(nota.nota2b) + float(nota.nota3b) + float(nota.nota4b))/4.))
+        nota.mediaanual = round(md, 2) # Arredonda igual o excell
+
+        # print 'okkkk'
+
+
+        if nota.mediaanual >= 6:
+            nota.situacaofinal = 'Aprovado'
+            nota.mediafinal = nota.mediaanual
+            nota.mediapospf = nota.mediaanual
+        elif nota.mediaanual < 3:
+            nota.situacaofinal = 'Reprovado' if nota.situacaofinal !='APC' else 'APC'
+            nota.mediafinal = nota.mediaanual
+            nota.mediapospf = nota.mediaanual
+        else: # Aprovado pelo conselho
+            md = Decimal(str((float(nota.mediaanual) + float(nota.recuperacao))/2.))
+            nota.mediapospf = round(md, 2)
+            nota.mediafinal = nota.mediapospf
+
+            if nota.mediapospf >= 5:
+                nota.situacaofinal = 'Aprovado'
+            else:
+                nota.situacaofinal = 'Reprovado'
+
+        if nota.id == 1665:
+            print "Sitf ", nota.situacaofinal
+            print "mf ", nota.mediafinal
+
 
         # Falta gera uma função que recalcule a situação final do aluno
         nota.save()
@@ -109,37 +162,10 @@ def saveNotas(request):
 
         return HttpResponse(1)
     except Exception, e:
-        print "Error %s", e
+        print "Error %s " % e
 
-        return HttpResponse(-1)
+    return HttpResponse(-1)
 
-
-@login_required()
-def saveNotasImport(request):
-    if temAcesso(request):
-        return HttpResponse(status=500)
-    try:
-        nota = Notafalta.objects.get(pk=request.POST['id'])
-        nota.nota1b = Decimal(request.POST['nota1b'])
-        nota.nota2b = Decimal(request.POST['nota2b'])
-        nota.nota3b = Decimal(request.POST['nota3b'])
-        nota.nota4b = Decimal(request.POST['nota4b'])
-        nota.falta1b = int(request.POST['falta1b'])
-        nota.falta2b = int(request.POST['falta2b'])
-        nota.falta3b = int(request.POST['falta3b'])
-        nota.falta4b = int(request.POST['falta4b'])
-        nota.recuperacao = Decimal(request.POST['recuperacao'])
-        nota.situacaofinal = request.POST['situacaofinal']
-
-        # Falta gera uma função que recalcule a situação final do aluno
-        nota.save()
-
-
-        return HttpResponse(1)
-    except Exception, e:
-        print "Error %s", e
-
-        return HttpResponse(-1)
 
 
 @login_required()

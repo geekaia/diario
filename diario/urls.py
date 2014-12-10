@@ -96,7 +96,6 @@ urlpatterns = patterns('',
     url(r'^notasAlunosTurma$', 'diarioif.lancarnotas.notasAlunosTurma', name='notasAlunosTurma'),
     url(r'^quantBimestre$', 'diarioif.lancarnotas.quantBimestre', name='quantBimestre'),
     url(r'^saveNotas$', 'diarioif.lancarnotas.saveNotas', name='saveNotas'),
-    url(r'^saveNotasImport$', 'diarioif.lancarnotas.saveNotasImport', name='saveNotasImport'),
 
 
     # Chamada

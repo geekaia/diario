@@ -63,6 +63,11 @@ def importarAlunos(request):
 
         alunosAds = []
 
+
+        allprofs = ProfileUser.objects.all()
+
+
+
         for aluno in listAlunos:
             print 'Aluno: ', aluno
 
@@ -76,42 +81,75 @@ def importarAlunos(request):
             nome = smart_unicode(aluno)
             nomestr = smart_str(nome)
 
+
+
             # Se o nome tiver poucos caracteres será ignorado
             if len(nome) < 6:
                 continue
 
-            print "Ok1 nome ", nome
-            email = geraUsuario(nomestr)+"@naosei.com"
-            print "Ok2"
-            senha = gera_senha(40)[0]
-            user = User.objects.create_user(geraUsuario(nomestr), email, senha)
-            user.set_password(senha)
-            user.is_staff = False
-            user.is_superuser = False
-            user.save()
+            cadNew = True
+            proffind = None
 
-            # Profile do Usuario
-            profuser = ProfileUser()
-            profuser.user = user
-            profuser.nome = nome
-            profuser.email = email
-            profuser.mae = ''
-            profuser.rua = ''
-            profuser.pai = ''
-            profuser.nacionalidade = ''
-            profuser.naturalidade = ''
-            profuser.orgaoexp = ''
-            profuser.tipo = 'Aluno'
 
-            profuser.save()
+            # Procura para ver se o usuário já está cadastrado no Banco de dados
+            hasProf = ProfileUser.objects.filter(nome__icontains=nome)
 
-            matri = Matricula()
-            matri.curso = turma.curso
-            matri.atual = True
-            matri.dataMatricula = datetime.now()
-            matri.user = profuser.user
-            matri.save()
+            if len(hasProf) == 0:
+                for i in allprofs:
+                    nomeDatabase = remover_acentos(i.nome)
+                    nomeTxt = remover_acentos(nome)
 
+                    if nomeDatabase.lower() in nomeTxt.lower() or nomeTxt.lower() in nomeDatabase.lower():
+                        cadNew = False
+                        proffind = i
+                        break
+            else:
+                cadNew = False
+                proffind = hasProf[0]
+
+
+            if cadNew == True:
+                email = geraUsuario(nomestr)+"@naosei.com"
+                senha = gera_senha(40)[0]
+                user = User.objects.create_user(geraUsuario(nomestr), email, senha)
+                user.set_password(senha)
+                user.is_staff = False
+                user.is_superuser = False
+                user.save()
+
+                # Profile do Usuario
+                profuser = ProfileUser()
+                profuser.user = user
+                profuser.nome = nome
+                profuser.email = email
+                profuser.mae = ''
+                profuser.rua = ''
+                profuser.pai = ''
+                profuser.nacionalidade = ''
+                profuser.naturalidade = ''
+                profuser.orgaoexp = ''
+                profuser.tipo = 'Aluno'
+
+                profuser.save()
+            else:
+                profuser = proffind
+
+
+            # Procura Para ver se o aluno ja está matriculado neste curso
+            nMatri = False
+            try:
+                matri = Matricula.objects.get(curso=turma.curso, user=profuser.user)
+                matri.atual = True
+                matri.save()
+            except:
+                matri = Matricula()
+                matri.curso = turma.curso
+                matri.atual = True
+                matri.dataMatricula = datetime.now()
+                matri.user = profuser.user
+                matri.save()
+
+            # Isto é necessário para todas as vezes em que criamos um novo usuário
             sitMat = SituacaoMatricula()
             sitMat.data = datetime.now()
             sitMat.situacao = 'Matriculado'
@@ -121,10 +159,16 @@ def importarAlunos(request):
             discs = Disciplina.objects.filter(curso=turma.curso, periodo=turma.anosemestre)
 
             for disc in discs:
+                # Verifica se já está cadastrado nesta disciplina
+                ntfs = Notafalta.objects.filter(aluno=profuser, disciplina=disc, turma=turma)
+
+                if len(ntfs) >= 1:
+                    # O aluno já está matriculado nesta disciplina
+                    continue
+
                 nota = Notafalta()
                 nota.aluno = profuser
                 nota.disciplina = disc
-                nota.curso = turma.curso
                 nota.turma = turma
                 nota.falta1b = 0
                 nota.falta2b = 0
