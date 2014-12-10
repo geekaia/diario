@@ -264,22 +264,6 @@ def importXlsNotas(request):
                             cont += 1
                     except:
                         print 'Nao tem aluno nesta linha'
-
-            # Dados necessários
-             # { name: 'nome'},
-             #            { name: 'nota1b',  type: 'number'},
-             #            { name: 'falta1b',  type: 'number'},
-             #            { name: 'nota2b',  type: 'number'},
-             #            { name: 'falta2b',  type: 'number'},
-             #            { name: 'nota3b',  type: 'number'},
-             #            { name: 'falta3b',  type: 'number'},
-             #            { name: 'nota4b',  type: 'number'},
-             #            { name: 'falta4b',  type: 'number'},
-             #            { name: 'mediafinal',  type: 'number'},
-             #            { name: 'recuperacao',  type: 'number'},
-             #            { name: 'situacaofinal',  type: 'number'},
-             #            { name: 'mediaanual',  type: 'number'},
-             #            { name: 'mediapospf',  type: 'number'},
     except Exception, e:
         print 'Exception %s' % e
 

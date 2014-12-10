@@ -58,38 +58,48 @@ def temAcesso(request):
     prof = ProfileUser.objects.get(user=user)
 
     # Usuario
-    alunoslist = ['/viewnotas',
-                  '/viewpresenca',
-                  '/viewtarefas',
-                  '/MinhasAtividades',
-                  '/MinhasAtividadesl',
-                  '/minhasfaltas',
-                  '/MinhasTurmas',
-                  '/MinhasMatriculas',
-                  '/MinhasDisciplinas',
-                  '/MinhasFaltas']
+    alunoslist = [
+        '/viewnotas',
+        '/viewpresenca',
+        '/viewtarefas',
+        '/MinhasAtividades',
+        '/MinhasAtividadesl',
+        '/minhasfaltas',
+        '/MinhasTurmas',
+        '/MinhasMatriculas',
+        '/MinhasDisciplinas',
+        '/MinhasFaltas'
+    ]
 
-    profslist = ['/calendarioano']
+    profslist = [
+        '/calendarioano',
+        '/lancarnotas',
+        '/getPeriodos',
+        '/getTurmas',
+        '/listDiscTurma',
+        '/notasAlunosTurma',
+        '/saveNotas',
+        '/importXlsNotas',
+        '/quantBimestre',
+        '/chamada',
+        '/getDiasBimestre'
+    ]
 
     if prof.tipo == 'Aluno':
         print "Page: ", page
-        if page in alunoslist:
-
-            return False
-        else:
-            return True
-
+        for l in alunoslist:
+            if page in l or l in page:
+                return False
+        return True
     elif prof.tipo == 'Administrador': # Pode fazer tudo no sistema
         return False
     elif prof.tipo == 'Secretaria':
         return False
     elif prof.tipo == 'Professor':
-        if page in profslist:
-            return False
-        else:
-            return True
-
-
+        for l in profslist:
+            if page in l or l in page:
+                return False
+        return True
 
 
 @login_required()

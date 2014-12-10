@@ -40,8 +40,8 @@ def notas(request):
     cursos = Curso.objects.all()
     context['cursos'] = cursos
 
-    profs = ProfileUser.objects.filter(tipo='Professor')
-    context['profs'] = profs
+    # profs = ProfileUser.objects.filter(tipo='Professor')
+    # context['profs'] = profs
     context['form'] = FileUploadedForm
 
     return render(request, 'lancarnotas.html', context)
@@ -105,6 +105,9 @@ def saveNotas(request):
     if temAcesso(request):
         return HttpResponse(status=500)
 
+    user = User.objects.get(pk=request.user.id)
+    prof = ProfileUser.objects.get(user=user)
+
     rec = ''
     try:
         rec = request.POST['situacaofinal']
@@ -113,6 +116,14 @@ def saveNotas(request):
 
     try:
         nota = Notafalta.objects.get(pk=int(request.POST['id']))
+
+        # Prosso salvar esta nota -- aqui evita que um professor salve notas e/ou presenças de outros professores
+        if prof.tipo == 'Professor':
+            canAtr = AtribAula.objects.filter(disciplina=nota.disciplina, turma=nota.turma, professor=prof)
+            if len(canAtr) == 0:
+                return HttpResponse(-1)
+
+
         nota.nota1b = toDecimal(request.POST['nota1b'])
         nota.nota2b = toDecimal(request.POST['nota2b'])
         nota.nota3b = toDecimal(request.POST['nota3b'])

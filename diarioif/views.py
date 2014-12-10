@@ -569,9 +569,22 @@ def listDiscTurma(request):
         t = Turma.objects.get(pk=idturma)
         dicsL = Disciplina.objects.filter(curso=t.curso, periodo=t.anosemestre)
 
+        usr = User.objects.get(pk=request.user.id)
+        prof = ProfileUser.objects.get(user=usr)
+
+        tudo = False
+        if prof.tipo in ['Secretaria', 'Administrador']:
+            tudo = True
+
 
         for i in dicsL:
-            atrib = AtribAula.objects.filter(disciplina=i, turma=t)
+
+            if tudo == True:
+                atrib = AtribAula.objects.filter(disciplina=i, turma=t)
+            else:
+                atrib = AtribAula.objects.filter(disciplina=i, turma=t, professor=prof)
+
+
 
             for at in atrib:
                 dic = {}
