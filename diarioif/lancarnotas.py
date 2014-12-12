@@ -123,7 +123,6 @@ def saveNotas(request):
             if len(canAtr) == 0:
                 return HttpResponse(-1)
 
-
         nota.nota1b = toDecimal(request.POST['nota1b'])
         nota.nota2b = toDecimal(request.POST['nota2b'])
         nota.nota3b = toDecimal(request.POST['nota3b'])
